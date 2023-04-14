@@ -1,12 +1,12 @@
 object Versions {
 
     // KTX
-    const val CORE = "1.10.0"
+    const val CORE = "1.9.0"
     const val LIFECYCLE_RUNTIME = "2.6.1"
 
     // COMPOSE
-    const val COMPOSE = "1.4.1"
-    const val MATERIAL3 = "1.1.0-beta02"
+    const val COMPOSE = "1.3.3"
+    const val MATERIAL3 = "1.0.1"
     const val ACTIVITY = "1.7.0"
 
     // TEST

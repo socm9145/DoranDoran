@@ -1,13 +1,31 @@
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
-fun DependencyHandler.addCommonComposeDependencies() {
-    composeDependencies.forEach {
-        add("implementation", it)
+fun DependencyHandler.kapt(list: List<String>) {
+    list.forEach { dependency ->
+        add("kapt", dependency)
     }
 }
 
-fun DependencyHandler.addAppDependencies() {
-    appDependencies.forEach {
-        add("implementation", it)
+fun DependencyHandler.implementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("implementation", dependency)
+    }
+}
+
+fun DependencyHandler.androidTestImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("androidTestImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.testImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("testImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.debugImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("debugImplementation", dependency)
     }
 }

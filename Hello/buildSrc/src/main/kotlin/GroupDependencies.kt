@@ -1,16 +1,29 @@
-internal val composeDependencies = listOf(
+val composeDependencies = listOf(
     Compose.UI,
     Compose.PREVIEW,
     Compose.MATERIAL3,
-    AndroidTest.COMPOSE_JUNIT,
-    Debug.COMPOSE_TOOLING,
-    Debug.COMPOSE_TEST_MANIFEST
 )
 
-internal val appDependencies = listOf(
+val composeDebug = listOf(
+    Debug.COMPOSE_TOOLING,
+    Debug.COMPOSE_TEST_MANIFEST,
+)
+
+val appDependencies = listOf(
     KTX.CORE,
     KTX.LIFECYCLE_RUNTIME,
     Compose.ACTIVITY,
+)
+
+val androidLibraryDependencies = listOf(
+    KTX.CORE,
+)
+
+val defaultUnitTest = listOf(
     UnitTest.JUNIT,
-    AndroidTest.ESPRESSO_CORE
+)
+
+val defaultAndroidTest = listOf(
+    AndroidTest.ESPRESSO_CORE,
+    AndroidTest.ANDROID_JUNIT,
 )

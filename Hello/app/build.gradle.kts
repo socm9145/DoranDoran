@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.purple.hello"
     compileSdk = AppConfig.compileSdk
+    buildToolsVersion = AppConfig.buildToolsVersion
 
     defaultConfig {
         applicationId = "com.purple.hello"
@@ -23,7 +24,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -43,6 +44,9 @@ android {
 }
 
 dependencies {
-    addAppDependencies()
-    addCommonComposeDependencies()
+    implementation(composeDependencies)
+    debugImplementation(composeDebug)
+    implementation(appDependencies)
+    testImplementation(defaultUnitTest)
+    androidTestImplementation(defaultAndroidTest)
 }
