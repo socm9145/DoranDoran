@@ -1,8 +1,4 @@
 FROM mysql:8.0.31
-#ENV MYSQL_DATABASE=jobtender
-#ENV MYSQL_ROOT_PASSWORD=root
-#ENV MYSQL_USER=jobtender
-#ENV MYSQL_PASSWORD=jobtender
 
 # COPY ./sql/ /docker-entrypoint-initdb.d/
 

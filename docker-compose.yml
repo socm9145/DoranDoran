@@ -4,7 +4,7 @@ services:
     build: ./database/mysql
     env_file:
       - ./database/mysql.env
-    container_name: db_mysql
+    container_name: database_mysql
     environment:
       - TZ=Asia/Seoul
       - LANG=C.UTF-8
@@ -15,65 +15,3 @@ services:
     volumes:
       - ../database/mysql/res/data:/var/lib/mysql
     command: "mysqld"
-
-  # nginx:
-  #   image: nginx:1.15-alpine
-  #   container_name: nginx
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./data/nginx:/etc/nginx/conf.d
-  #     - ./frontend/build:/usr/share/nginx/html
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  #   # command: certonly --webroot --webroot-path=/var/www/certbot --email socm9145@naver.com --agree-tos --no-eff-email -d jobtender.shop -d www.jobtender.shop
-  
-  # frontend:
-  #   build: ./frontend
-  #   container_name: frontend
-  #   environment:
-  #     - TZ=Asia/Seoul
-  #   volumes:
-  #     - ./frontend:/frontend
-  
-  # backend_spring:
-  #   container_name: backend_spring
-  #   environment:
-  #     - TZ=Asia/Seoul
-  #   build: ./backend
-  #   ports: 
-  #     - "8000:8000"
-  #   volumes:
-  #     - ./backend:/srv/docker-server
-  #   # working_dir: /backend
-  #   # command: ["./gradlew", "bootrun"]
-  #   depends_on:
-  #     - mysqldb
-  #   restart: unless-stopped
-
-  # backend_flask:
-  #   container_name: backend_flask
-  #   environment:
-  #     - TZ=Asia/Seoul
-  #     - LANG=C.UTF-8
-  #     - LC_ALL=C.UTF-8
-  #   build: ./python/python_backend
-  #   ports:
-  #     - "8001:8001"
-  #   volumes:
-  #   - ./python/python_backend:/backend_flask
-  #   depends_on:
-  #     - mysqldb
-  #   restart: unless-stopped
