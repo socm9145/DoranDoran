@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -45,5 +46,12 @@ public class UserController {
         List<ReadRoomOutDTO> readRoomOutDTOs = roomService.readRoomByUserId(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(readRoomOutDTOs);
+    }
+
+    @GetMapping("/filter")
+    public String filterTest(HttpServletRequest request){
+        long userId = (long) request.getAttribute("userId");
+
+        return "User ID: " + userId;
     }
 }
