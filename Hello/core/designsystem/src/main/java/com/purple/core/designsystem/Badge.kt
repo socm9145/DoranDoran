@@ -22,7 +22,11 @@ fun HiBadge(
 @Preview
 @Composable
 private fun PreviewBadge() {
-    MaterialTheme {
-        HiBadge(content = "123")
-    }
+    HiBadge(content = "123")
+}
+
+@Preview
+@Composable
+private fun PreviewBadgeNoContent() {
+    HiBadge(content = "")
 }
