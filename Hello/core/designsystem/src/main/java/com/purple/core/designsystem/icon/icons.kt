@@ -12,12 +12,8 @@ object HiIcons {
     val MoreVert = Icons.Rounded.MoreVert
     val Settings = Icons.Rounded.Settings
     val ArrowRight = Icons.Rounded.KeyboardArrowRight
-
-    // CalendarMonth
-    val DateRange = Icons.Rounded.DateRange
-
-    // PersonAdd
-    val Send = Icons.Rounded.Send
+    val Calendar = Icons.Rounded.DateRange
+    val PersonAdd = Icons.Rounded.Send
 }
 
 sealed class Icon {
