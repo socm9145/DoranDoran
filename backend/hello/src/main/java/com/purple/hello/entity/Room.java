@@ -15,14 +15,14 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long roomId;
     String roomCode;
-    String roomQuery;
+    String roomQuestion;
     String roomPassword;
     int beginTime;
     @Temporal(TemporalType.TIMESTAMP)
     Date createAt;
     // mapping
-    @OneToMany(mappedBy = "alarm", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<Alarm> alarm = new ArrayList<>();
-    @OneToMany(mappedBy = "userRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<UserRoom> userRoom = new ArrayList<>();
 }

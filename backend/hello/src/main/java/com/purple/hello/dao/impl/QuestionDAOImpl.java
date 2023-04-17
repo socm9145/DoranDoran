@@ -1,8 +1,8 @@
 package com.purple.hello.dao.impl;
 
-import com.purple.hello.dao.QueryDAO;
+import com.purple.hello.dao.QuestionDAO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QueryDAOImpl implements QueryDAO {
+public class QuestionDAOImpl implements QuestionDAO {
 }

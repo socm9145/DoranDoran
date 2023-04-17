@@ -23,4 +23,6 @@ public class Alarm {
     User srcUser;
     @ManyToOne(fetch = FetchType.LAZY)
     User dstUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    Room room;
 }

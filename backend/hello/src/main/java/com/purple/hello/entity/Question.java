@@ -6,11 +6,11 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "queries")
-public class Query {
+@Table(name = "questions")
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long queryId;
+    long questionId;
     @Column(nullable = false)
     String content;
 }
