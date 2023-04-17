@@ -2,6 +2,7 @@ package com.purple.hello.entity;
 
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -35,4 +36,18 @@ public class UserRoom {
     User user;
     @ManyToOne(fetch = FetchType.LAZY)
     Room room;
+    //construct
+    @Builder
+    public UserRoom(long userRoomId, UserRoomRole userRoomRole, String userName, String roomName, BoolAlarm safeAlarm, BoolAlarm moveAlarm, BoolAlarm dayAlarm, Date createAt, User user, Room room) {
+        this.userRoomId = userRoomId;
+        this.userRoomRole = userRoomRole;
+        this.userName = userName;
+        this.roomName = roomName;
+        this.safeAlarm = safeAlarm;
+        this.moveAlarm = moveAlarm;
+        this.dayAlarm = dayAlarm;
+        this.createAt = createAt;
+        this.user = user;
+        this.room = room;
+    }
 }

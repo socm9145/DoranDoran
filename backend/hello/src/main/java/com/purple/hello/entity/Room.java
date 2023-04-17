@@ -1,5 +1,6 @@
 package com.purple.hello.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -25,4 +26,16 @@ public class Room {
     List<Alarm> alarm = new ArrayList<>();
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<UserRoom> userRoom = new ArrayList<>();
+    // construct
+    @Builder
+    public Room(long roomId, String roomCode, String roomQuestion,
+                String roomPassword, int beginTime, Date createAt) {
+        this.roomId = roomId;
+        this.roomCode = roomCode;
+        this.roomQuestion = roomQuestion;
+        this.roomPassword = roomPassword;
+        this.beginTime = beginTime;
+
+    }
+
 }

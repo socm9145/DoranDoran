@@ -14,4 +14,5 @@ public class CreateUserRoomInDTO {
     String roomName;
     String userName;
     String roomPassword;
+    String roomQuestion;
 }

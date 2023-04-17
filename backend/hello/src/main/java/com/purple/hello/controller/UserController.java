@@ -28,8 +28,6 @@ public class UserController {
     private final UserRoomService userRoomService;
     @Autowired
     private final UserService userService;
-    @Autowired
-
     UserController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
                    UserRoomService userRoomService, UserService userService){
         this.alarmService = alarmService;

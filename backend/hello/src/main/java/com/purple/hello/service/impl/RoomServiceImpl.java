@@ -1,6 +1,7 @@
 package com.purple.hello.service.impl;
 
 import com.purple.hello.dao.RoomDAO;
+import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
         return this.roomDAO.readRoomByUserId(userId);
+    }
 
+    @Override
+    public void createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+        this.roomDAO.createRoom(createUserRoomInDTO);
     }
 }
