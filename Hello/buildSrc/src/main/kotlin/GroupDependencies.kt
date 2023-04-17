@@ -9,6 +9,10 @@ val composeDebug = listOf(
     Debug.COMPOSE_TEST_MANIFEST,
 )
 
+val imageLoadDependencies = listOf(
+    Coil.COMPOSE
+)
+
 val appDependencies = listOf(
     KTX.CORE,
     KTX.LIFECYCLE_RUNTIME,

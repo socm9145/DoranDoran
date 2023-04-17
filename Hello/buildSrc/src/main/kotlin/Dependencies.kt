@@ -9,6 +9,9 @@ object Versions {
     const val MATERIAL3 = "1.0.1"
     const val ACTIVITY = "1.7.0"
 
+    // COIL
+    const val COIL = "2.3.0"
+
     // TEST
     const val JUNIT = "4.13.2"
 
@@ -27,6 +30,10 @@ object Compose {
     const val PREVIEW = "androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE}"
     const val MATERIAL3 = "androidx.compose.material3:material3:${Versions.MATERIAL3}"
     const val ACTIVITY = "androidx.activity:activity-compose:${Versions.ACTIVITY}"
+}
+
+object Coil {
+    const val COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
 }
 
 object UnitTest {

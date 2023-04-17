@@ -39,10 +39,14 @@ android {
 }
 
 dependencies {
-    implementation(composeDependencies)
-    debugImplementation(composeDebug)
 
+    implementation(project(":core:designsystem"))
+
+    implementation(composeDependencies)
+    implementation(imageLoadDependencies)
     implementation(androidLibraryDependencies)
+
+    debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
 }
