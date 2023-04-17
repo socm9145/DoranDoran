@@ -1,4 +1,4 @@
-package com.purple.core.designsystem
+package com.purple.core.designsystem.component
 
 import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
