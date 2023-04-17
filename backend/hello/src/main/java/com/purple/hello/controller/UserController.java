@@ -1,7 +1,49 @@
 package com.purple.hello.controller;
 
+import com.purple.hello.dto.out.ReadRoomOutDTO;
+import com.purple.hello.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/user")
 public class UserController {
+    @Autowired
+    private final AlarmService alarmService;
+    @Autowired
+    private final FeedService feedService;
+    @Autowired
+    private final QuestionService questionService;
+    @Autowired
+    private final RoomService roomService;
+    @Autowired
+    private final UserRoomService userRoomService;
+    @Autowired
+    private final UserService userService;
+    @Autowired
+
+    UserController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
+                   UserRoomService userRoomService, UserService userService){
+        this.alarmService = alarmService;
+        this.feedService = feedService;
+        this.questionService = questionService;
+        this.roomService = roomService;
+        this.userRoomService = userRoomService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<ReadRoomOutDTO>> readRoomByUserId(@RequestParam("userId") long userId){
+        List<ReadRoomOutDTO> readRoomOutDTOs = roomService.readRoomByUserId(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(readRoomOutDTOs);
+    }
 }

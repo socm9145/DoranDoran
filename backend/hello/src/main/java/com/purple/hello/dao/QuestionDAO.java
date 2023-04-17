@@ -1,4 +1,4 @@
 package com.purple.hello.dao;
 
-public interface QueryDAO {
+public interface QuestionDAO {
 }
