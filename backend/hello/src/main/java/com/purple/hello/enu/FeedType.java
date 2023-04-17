@@ -1,5 +1,5 @@
 package com.purple.hello.enu;
 
 public enum FeedType {
-    TYPE1, TYPE2, TYPE3;
+    FEED1, FEED2, FEED3;
 }
