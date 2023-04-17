@@ -2,15 +2,17 @@ package com.purple.hello.entity;
 
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user_rooms")
 public class UserRoom {
@@ -33,8 +35,10 @@ public class UserRoom {
     @OneToMany(mappedBy = "userRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<Feed> feed = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     User user;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
     Room room;
     //construct
     @Builder

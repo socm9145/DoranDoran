@@ -3,5 +3,5 @@ package com.purple.hello.dao;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 
 public interface UserRoomDAO {
-    void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO);
+    void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
 }

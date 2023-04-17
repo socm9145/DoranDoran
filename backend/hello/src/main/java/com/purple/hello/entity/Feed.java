@@ -1,12 +1,15 @@
 package com.purple.hello.entity;
 
 import com.purple.hello.enu.FeedType;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "feeds")
 public class Feed {
@@ -20,6 +23,7 @@ public class Feed {
     @Enumerated(EnumType.STRING)
     FeedType feedType;
     // mapping
+    @JoinColumn(name = "user_room_id")
     @ManyToOne(fetch = FetchType.LAZY)
     UserRoom userRoom;
 }

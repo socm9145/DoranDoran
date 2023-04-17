@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserRoomService {
-    void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO);
+    void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
 }

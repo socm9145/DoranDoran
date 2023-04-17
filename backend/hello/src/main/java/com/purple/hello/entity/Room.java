@@ -1,14 +1,16 @@
 package com.purple.hello.entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "rooms")
 public class Room {
@@ -35,7 +37,7 @@ public class Room {
         this.roomQuestion = roomQuestion;
         this.roomPassword = roomPassword;
         this.beginTime = beginTime;
-
+        this.createAt = createAt;
     }
 
 }

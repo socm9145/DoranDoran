@@ -14,7 +14,7 @@ public class UserRoomServiceImpl implements UserRoomService {
         this.userRoomDAO = userRoomDAO;
     }
     @Override
-    public void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO) {
-        this.userRoomDAO.createUserRoom(createUserRoomInDTO);
+    public void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
+        this.userRoomDAO.createUserRoom(createUserRoomInDTO, roomId);
     }
 }

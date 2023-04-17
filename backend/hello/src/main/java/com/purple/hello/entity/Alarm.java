@@ -1,13 +1,16 @@
 package com.purple.hello.entity;
 
 import com.purple.hello.enu.AlarmType;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "alarms")
 public class Alarm {
     @Id
@@ -19,10 +22,13 @@ public class Alarm {
     @Temporal(TemporalType.TIMESTAMP)
     Date createAt;
     // mapping
+    @JoinColumn(name = "src_user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     User srcUser;
+    @JoinColumn(name = "dst_user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     User dstUser;
+    @JoinColumn(name = "room_id")
     @ManyToOne(fetch = FetchType.LAZY)
     Room room;
 }

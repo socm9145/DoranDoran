@@ -2,6 +2,7 @@ package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.entity.Room;
 import com.purple.hello.repo.RoomRepo;
@@ -25,7 +26,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public void createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
         Room room = Room.builder()
                 .beginTime(0)
                 .createAt(new Date())
@@ -34,6 +35,12 @@ public class RoomDAOImpl implements RoomDAO {
                 .roomPassword(createUserRoomInDTO.getRoomPassword())
                 .build();
 
-        roomRepo.save(room);
+        room = roomRepo.save(room);
+
+        CreateRoomOutDTO createRoomOutDTO = CreateRoomOutDTO.builder()
+                .roomId(room.getRoomId())
+                .build();
+
+        return createRoomOutDTO;
     }
 }

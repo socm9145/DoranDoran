@@ -10,9 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserRoomInDTO {
-    String roomCode;
-    String roomName;
+    long userId;
     String userName;
+    String roomName;
     String roomPassword;
     String roomQuestion;
 }
