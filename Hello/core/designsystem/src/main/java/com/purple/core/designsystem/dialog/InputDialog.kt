@@ -3,10 +3,7 @@ package com.purple.core.designsystem.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,7 +80,10 @@ private fun HiDialogContent(
     confirmButtonText: String,
     dismissButtonText: String,
 ) {
-    val allValueFilled = questionContent.all { it.answer.isNotEmpty() }
+    val questionContentState = remember {
+        questionContent.map { input -> mutableStateOf(input.answer.orEmpty()) }
+    }
+    val isEnabled = questionContentState.all { it.value.isNotEmpty() }
 
     HiTheme {
         Card(
@@ -96,10 +96,9 @@ private fun HiDialogContent(
                     .background(color = MaterialTheme.colorScheme.onPrimary)
                     .padding(DialogPadding),
             ) {
-                questionContent.forEach {
-                    val (value, setValue) = remember { mutableStateOf(it.answer.orEmpty()) }
-                    val (isError, setError) = remember { mutableStateOf(it.answer.isEmpty()) }
-
+                questionContent.forEachIndexed { index, input ->
+                    val value = questionContentState[index]
+                    val isError = value.value.isEmpty()
                     Column(
                         modifier = Modifier
                             .padding(ContentPadding),
@@ -110,18 +109,17 @@ private fun HiDialogContent(
                         ) {
                             Text(
                                 color = MaterialTheme.colorScheme.onSurface,
-                                text = it.question,
+                                text = input.question,
                                 style = HiTypography.headlineSmall,
                             )
                         }
                         OutlinedTextField(
-                            value = value,
+                            value = value.value,
                             onValueChange = { newValue ->
-                                setValue(newValue)
-                                setError(newValue.isEmpty())
+                                value.value = newValue
                             },
-                            placeholder = { Text(text = it.placeHolder) },
-                            supportingText = { Text(text = it.supportingText) },
+                            placeholder = { Text(text = input.placeHolder) },
+                            supportingText = { Text(text = input.supportingText) },
                             singleLine = true,
                             maxLines = 1,
                             textStyle = HiTypography.bodyLarge,
@@ -141,7 +139,7 @@ private fun HiDialogContent(
                     )
                     HiFilledButton(
                         onClick = onConfirm,
-                        enabled = allValueFilled,
+                        enabled = isEnabled,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
