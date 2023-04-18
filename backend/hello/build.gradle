@@ -28,6 +28,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    //json
+    implementation 'org.json:json:20200518'
 }
 
 tasks.named('test') {
