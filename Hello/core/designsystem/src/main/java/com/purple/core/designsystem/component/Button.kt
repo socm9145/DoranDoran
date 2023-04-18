@@ -55,12 +55,14 @@ fun HiOutlinedButton(
 @Composable
 fun HiFilledButton(
     onClick: () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -74,11 +76,13 @@ fun HiFilledButton(
 @Composable
 fun HiFilledButton(
     onClick: () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
 ) {
     HiFilledButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier,
         contentPadding = ButtonDefaults.ContentPadding,
     ) {
@@ -113,5 +117,5 @@ private fun PreviewHiOutlinedButton() {
 @Preview
 @Composable
 private fun PreviewHiFilledButton() {
-    HiFilledButton(onClick = {}, modifier = Modifier, text = { Text(text = "test button") })
+    HiFilledButton(onClick = {}, enabled = true, modifier = Modifier, text = { Text(text = "test button") })
 }
