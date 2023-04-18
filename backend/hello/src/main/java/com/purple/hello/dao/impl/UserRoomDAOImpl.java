@@ -2,6 +2,7 @@ package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.in.UpdateRoomNameInDTO;
 import com.purple.hello.dto.in.UpdateUserNameInDTO;
 import com.purple.hello.entity.*;
@@ -57,8 +58,28 @@ public class UserRoomDAOImpl implements UserRoomDAO {
         room.getUserRoom().add(userRoom);
         user.getUserRoom().add(userRoom);
 
-        //this.roomRepo.save(room);
-        //this.userRepo.save(user);
+        this.userRoomRepo.save(userRoom);
+    }
+
+    @Override
+    public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+        Room room = this.roomRepo.getById(createUserRoomJoinInDTO.getRoomId());
+        User user = this.userRepo.getById(createUserRoomJoinInDTO.getUserId());
+
+        UserRoom userRoom = UserRoom.builder()
+                .createAt(new Date())
+                .dayAlarm(BoolAlarm.Y)
+                .moveAlarm(BoolAlarm.Y)
+                .safeAlarm(BoolAlarm.Y)
+                .roomName(createUserRoomJoinInDTO.getRoomName())
+                .userName(createUserRoomJoinInDTO.getUserName())
+                .userRoomRole(UserRoomRole.ROLE2)
+                .user(user)
+                .room(room)
+                .build();
+
+        room.getUserRoom().add(userRoom);
+        user.getUserRoom().add(userRoom);
 
         this.userRoomRepo.save(userRoom);
     }
