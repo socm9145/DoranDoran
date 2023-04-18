@@ -2,6 +2,7 @@ package com.purple.hello.service.impl;
 
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.in.UpdateRoomNameInDTO;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,11 @@ public class UserRoomServiceImpl implements UserRoomService {
     @Override
     public void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
         this.userRoomDAO.createUserRoom(createUserRoomInDTO, roomId);
+    }
+
+    @Override
+    public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+        this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
     }
     /**
      * userRoomName을 변경시키는 dao를 호출하는 함수

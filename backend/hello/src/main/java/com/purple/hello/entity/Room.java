@@ -17,6 +17,7 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long roomId;
+    @Column(unique = true)
     String roomCode;
     String roomQuestion;
     String roomPassword;
