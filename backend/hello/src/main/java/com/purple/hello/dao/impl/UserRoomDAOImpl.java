@@ -67,7 +67,6 @@ public class UserRoomDAOImpl implements UserRoomDAO {
      * */
     @Override
     public String updateRoomNameByRoomIdAndUserId(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
-        System.out.println(userId + " " + updateRoomNameInDTO.getUserRoomId() + " " + updateRoomNameInDTO.getRoomName());
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         jpaUpdateClause.set(qUserRoom.roomName, updateRoomNameInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(updateRoomNameInDTO.getUserRoomId()).and(qUserRoom.user.userId.eq(userId)))
