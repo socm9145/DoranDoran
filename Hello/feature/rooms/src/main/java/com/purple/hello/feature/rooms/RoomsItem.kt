@@ -53,7 +53,7 @@ fun RoomItem(
 @Preview
 @Composable
 private fun PreviewRoomItem() {
-    val room = FakeFactory.makeRoom("우리집")
+    val room = FakeFactory.makeRoom(1, "우리집")
     HiTheme {
         RoomItem(
             roomName = room.name,

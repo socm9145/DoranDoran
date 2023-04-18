@@ -8,8 +8,17 @@ object FakeFactory {
         return User(id, name, profileUrl)
     }
 
-    fun makeRoom(name: String): Room {
-        return Room(1, name, makeMembers())
+    fun makeRoom(id: Int, name: String): Room {
+        return Room(id, name, makeMembers())
+    }
+
+    fun makeRooms(): List<Room> {
+        return listOf(
+            makeRoom(1, "AA 집"),
+            makeRoom(2, "BB 집"),
+            makeRoom(3, "CC 집"),
+            makeRoom(4, "DD 집"),
+        )
     }
 
     fun makeMembers(): List<User> {
