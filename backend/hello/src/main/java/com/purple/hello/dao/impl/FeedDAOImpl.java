@@ -1,14 +1,13 @@
 package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.FeedDAO;
+import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
 import com.purple.hello.dto.tool.UserIdDTO;
 import com.purple.hello.dto.tool.UserIdDateDTO;
-import com.purple.hello.entity.QFeed;
-import com.purple.hello.entity.QRoom;
-import com.purple.hello.entity.QUser;
-import com.purple.hello.entity.QUserRoom;
+import com.purple.hello.entity.*;
 import com.purple.hello.repo.FeedRepo;
+import com.purple.hello.repo.UserRoomRepo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,10 @@ public class FeedDAOImpl implements FeedDAO {
     private final QRoom qRoom = QRoom.room;
     @Autowired
     private final FeedRepo feedRepo;
-    public FeedDAOImpl(FeedRepo feedRepo){
+    private final UserRoomRepo userRoomRepo;
+    public FeedDAOImpl(FeedRepo feedRepo, UserRoomRepo userRoomRepo){
         this.feedRepo = feedRepo;
+        this.userRoomRepo = userRoomRepo;
     }
 
     @Override
@@ -86,5 +87,25 @@ public class FeedDAOImpl implements FeedDAO {
         }
 
         return compareFeedByRoomIdOutDTOs;
+    }
+
+    @Override
+    public boolean createFeedByUserIdAndRoomId(CreateFeedInDTO createFeedInDTO) {
+        // feed 데이터 저장
+        Feed feed = Feed.builder()
+                .feedUrl(createFeedInDTO.getFeedUrl())
+                .content(createFeedInDTO.getContent())
+                .feedType(createFeedInDTO.getFeedType())
+                .createAt(new Date())
+                .build();
+
+        UserRoom userRoom = this.userRoomRepo.getById(createFeedInDTO.getUserRoomId());
+
+        userRoom.getFeed().add(feed);
+        feed.setUserRoom(userRoom);
+
+        this.feedRepo.save(feed);
+
+        return true;
     }
 }

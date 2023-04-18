@@ -1,5 +1,6 @@
 package com.purple.hello.dto.in;
 
+import com.purple.hello.enu.FeedType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateFeedInDTO {
-    String roomPassword;
-    String roomCode;
+    String feedUrl;
+    String content;
+    FeedType feedType;
+    long userRoomId;
 }
