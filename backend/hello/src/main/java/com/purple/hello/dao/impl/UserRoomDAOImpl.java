@@ -38,7 +38,6 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     public void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
         Room room = this.roomRepo.getById(roomId);
         User user = this.userRepo.getById(createUserRoomInDTO.getUserId());
-        System.out.println(user);
 
         UserRoom userRoom = UserRoom.builder()
                 .userRoomRole(UserRoomRole.ROLE1)
