@@ -1,4 +1,4 @@
-package com.purple.hello.feature.groups
+package com.purple.hello.feature.rooms
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.purple.hello.feature.groups
+package com.purple.hello.feature.rooms
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

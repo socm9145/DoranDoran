@@ -40,6 +40,7 @@ android {
 dependencies {
 
     implementation(project(":core:designsystem"))
+    implementation(project(":domain:rooms"))
 
     implementation(composeDependencies)
     implementation(imageLoadDependencies)
