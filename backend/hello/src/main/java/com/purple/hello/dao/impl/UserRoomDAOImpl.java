@@ -4,6 +4,7 @@ import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.in.UpdateRoomNameInDTO;
+import com.purple.hello.dto.in.UpdateUserNameInDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
@@ -84,7 +85,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     /**
-     * userRoomId와 userId가 일치하면 userRoomName을 변경시키고 변경된 이름을 그대로 반환하는 함수
+     * userRoomId와 userId가 일치하면 roomName을 변경시키고 변경된 이름을 그대로 반환하는 함수
      * */
     @Override
     public String updateRoomNameByRoomIdAndUserId(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
@@ -93,5 +94,17 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .where(qUserRoom.userRoomId.eq(updateRoomNameInDTO.getUserRoomId()).and(qUserRoom.user.userId.eq(userId)))
                 .execute();
         return updateRoomNameInDTO.getRoomName();
+    }
+
+    /**
+     * userRoomId와 userId가 일치하면 userName을 변경시키고 변경된 이름을 그대로 반환하는 함수
+     * */
+    @Override
+    public String updateUserNameByRoomIdAndUserId(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
+        jpaUpdateClause.set(qUserRoom.userName, updateUserNameInDTO.getUserName())
+                .where(qUserRoom.userRoomId.eq(updateUserNameInDTO.getUserRoomId()).and(qUserRoom.user.userId.eq(userId)))
+                .execute();
+        return updateUserNameInDTO.getUserName();
     }
 }
