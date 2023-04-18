@@ -1,4 +1,4 @@
-package com.purple.hello.dto.in;
+package com.purple.hello.dto.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserRoomInDTO {
+public class CompareFeedByRoomIdOutDTO {
     long userId;
-    String userName;
-    String roomName;
-    String roomPassword;
-    String roomQuestion;
+    boolean isSubmit;
 }

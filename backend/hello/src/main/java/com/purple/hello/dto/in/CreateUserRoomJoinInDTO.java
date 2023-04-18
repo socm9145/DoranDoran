@@ -9,10 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserRoomInDTO {
+public class CreateUserRoomJoinInDTO {
+    long roomId;
     long userId;
-    String userName;
+    String roomCode;
     String roomName;
+    String userName;
     String roomPassword;
-    String roomQuestion;
 }

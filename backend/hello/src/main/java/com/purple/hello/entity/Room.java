@@ -1,19 +1,23 @@
 package com.purple.hello.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "rooms")
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long roomId;
+    @Column(unique = true)
     String roomCode;
     String roomQuestion;
     String roomPassword;
@@ -25,4 +29,16 @@ public class Room {
     List<Alarm> alarm = new ArrayList<>();
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<UserRoom> userRoom = new ArrayList<>();
+    // construct
+    @Builder
+    public Room(long roomId, String roomCode, String roomQuestion,
+                String roomPassword, int beginTime, Date createAt) {
+        this.roomId = roomId;
+        this.roomCode = roomCode;
+        this.roomQuestion = roomQuestion;
+        this.roomPassword = roomPassword;
+        this.beginTime = beginTime;
+        this.createAt = createAt;
+    }
+
 }

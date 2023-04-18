@@ -2,6 +2,7 @@ package com.purple.hello.controller;
 
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.service.*;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,6 @@ public class UserController {
     private final UserRoomService userRoomService;
     @Autowired
     private final UserService userService;
-    @Autowired
-
     UserController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
                    UserRoomService userRoomService, UserService userService){
         this.alarmService = alarmService;
@@ -41,6 +40,9 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiOperation(
+            value = "그룹방 출력 API"
+            , notes = "그룹 화면에서 사용자에게 맞는 그룹방을 출력해주는 API")
     @GetMapping("/")
     public ResponseEntity<List<ReadRoomOutDTO>> readRoomByUserId(@RequestParam("userId") long userId){
         List<ReadRoomOutDTO> readRoomOutDTOs = roomService.readRoomByUserId(userId);
