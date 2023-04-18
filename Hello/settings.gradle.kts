@@ -17,3 +17,4 @@ rootProject.name = "Hello"
 include(":app")
 include(":core:designsystem")
 include(":core:ui")
+include(":feature:groups")
