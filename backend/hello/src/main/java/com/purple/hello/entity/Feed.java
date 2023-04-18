@@ -26,4 +26,13 @@ public class Feed {
     @JoinColumn(name = "user_room_id")
     @ManyToOne(fetch = FetchType.LAZY)
     UserRoom userRoom;
+
+    @Builder
+    public Feed(long feedId, String feedUrl, String content, Date createAt, FeedType feedType) {
+        this.feedId = feedId;
+        this.feedUrl = feedUrl;
+        this.content = content;
+        this.createAt = createAt;
+        this.feedType = feedType;
+    }
 }
