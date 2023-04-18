@@ -1,10 +1,8 @@
 package com.purple.hello.service.impl;
 
 import com.purple.hello.dao.UserRoomDAO;
-import com.purple.hello.dto.in.CreateUserRoomInDTO;
-import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
-import com.purple.hello.dto.in.UpdateRoomNameInDTO;
-import com.purple.hello.dto.in.UpdateUserNameInDTO;
+import com.purple.hello.dto.in.*;
+import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,5 +40,14 @@ public class UserRoomServiceImpl implements UserRoomService {
     @Transactional
     public String updateUserNameByRoomIdAndUserId(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
         return userRoomDAO.updateUserNameByRoomIdAndUserId(userId, updateUserNameInDTO);
+    }
+
+    /**
+     * userRoom의 moveAlarm을 변경시키는 dao를 호출하는 함수
+     * */
+    @Override
+    @Transactional
+    public BoolAlarm updateMoveAlarmByRoomIdAndUserId(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+        return userRoomDAO.updateMoveAlarmByRoomIdAndUserId(userId, updateMoveAlarmInDTO);
     }
 }
