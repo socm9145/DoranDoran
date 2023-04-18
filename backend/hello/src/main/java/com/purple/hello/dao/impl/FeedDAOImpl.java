@@ -3,6 +3,7 @@ package com.purple.hello.dao.impl;
 import com.purple.hello.dao.FeedDAO;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
+import com.purple.hello.dto.out.CreateFeedOutDTO;
 import com.purple.hello.dto.tool.UserIdDTO;
 import com.purple.hello.dto.tool.UserIdDateDTO;
 import com.purple.hello.entity.*;
@@ -61,7 +62,6 @@ public class FeedDAOImpl implements FeedDAO {
             }
         }
 
-
         // 특정 그룹방의 모든 회원을 반환
         List<UserIdDTO> allUserIdDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(UserIdDTO.class, qUser.userId))
@@ -90,7 +90,7 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public boolean createFeedByUserIdAndRoomId(CreateFeedInDTO createFeedInDTO) {
+    public CreateFeedOutDTO createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO) {
         // feed 데이터 저장
         Feed feed = Feed.builder()
                 .feedUrl(createFeedInDTO.getFeedUrl())
@@ -99,13 +99,27 @@ public class FeedDAOImpl implements FeedDAO {
                 .createAt(new Date())
                 .build();
 
+        // 연관관계 설정
         UserRoom userRoom = this.userRoomRepo.getById(createFeedInDTO.getUserRoomId());
 
         userRoom.getFeed().add(feed);
         feed.setUserRoom(userRoom);
 
-        this.feedRepo.save(feed);
+        // DB(영속성 콘텍스트) 저장
+        Feed rFeed = this.feedRepo.save(feed);
 
-        return true;
+        // 반환 객체 초기화
+        CreateFeedOutDTO createFeedOutDTO = CreateFeedOutDTO
+                .builder()
+                .feedId(rFeed.getFeedId())
+                .content(rFeed.getContent())
+                .feedType(rFeed.getFeedType())
+                .feedUrl(rFeed.getFeedUrl())
+                .createAt(new Date())
+                .userRoomId(userRoom.getUserRoomId())
+                .build();
+
+        // 반환
+        return createFeedOutDTO;
     }
 }

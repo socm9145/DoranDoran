@@ -3,6 +3,7 @@ package com.purple.hello.service.impl;
 import com.purple.hello.dao.FeedDAO;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
+import com.purple.hello.dto.out.CreateFeedOutDTO;
 import com.purple.hello.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public boolean createFeedByUserIdAndRoomId(CreateFeedInDTO createFeedInDTO) {
-        return this.feedDAO.createFeedByUserIdAndRoomId(createFeedInDTO);
+    public CreateFeedOutDTO createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO) {
+        return this.feedDAO.createFeedByUserRoomId(createFeedInDTO);
     }
 }

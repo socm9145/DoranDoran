@@ -3,6 +3,7 @@ package com.purple.hello.controller;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
+import com.purple.hello.dto.out.CreateFeedOutDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
@@ -95,8 +96,8 @@ public class RoomController {
     @ApiOperation(value = "피드 생성 API",
                   notes = "이용자가 피드를 올릴 경우 피드 정보를 저장해주는 API")
     @PostMapping("/feed")
-    public ResponseEntity<Boolean> createFeedByUserIdAndRoomId(CreateFeedInDTO createFeedInDTO){
-        boolean result = this.feedService.createFeedByUserIdAndRoomId(createFeedInDTO);
+    public ResponseEntity<CreateFeedOutDTO> createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO){
+        CreateFeedOutDTO result = this.feedService.createFeedByUserRoomId(createFeedInDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
