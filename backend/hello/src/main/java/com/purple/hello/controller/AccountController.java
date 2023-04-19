@@ -82,10 +82,8 @@ public class AccountController {
         if(accessToken == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효한 AccessToken이 아닙니다");
         }
-        // refresh token 유효성 확인
-        // 유효하면?
+        // TODO App 과 협업으로 추가 작성 예정 (refresh token 유효성 확인, 유효하면?, 유효하지 않으면)
 
-        // 유효하지 않으면
         long userId = userService.isValidRefreshToken(refreshToken);
         return null;
     }

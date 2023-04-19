@@ -50,4 +50,9 @@ public class UserRoomServiceImpl implements UserRoomService {
     public BoolAlarm updateMoveAlarmByRoomIdAndUserId(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
         return userRoomDAO.updateMoveAlarmByRoomIdAndUserId(userId, updateMoveAlarmInDTO);
     }
+
+    @Override
+    public BoolAlarm updateSafeAlarmByRoomIdAndUserId(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+        return userRoomDAO.updateSafeAlarmByRoomIdAndUserId(updateSafeAlarmInDTO);
+    }
 }

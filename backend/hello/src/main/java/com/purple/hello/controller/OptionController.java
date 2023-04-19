@@ -2,9 +2,11 @@ package com.purple.hello.controller;
 
 import com.purple.hello.dto.in.UpdateMoveAlarmInDTO;
 import com.purple.hello.dto.in.UpdateRoomNameInDTO;
+import com.purple.hello.dto.in.UpdateSafeAlarmInDTO;
 import com.purple.hello.dto.in.UpdateUserNameInDTO;
 import com.purple.hello.dto.out.UpdateMoveAlarmOutDTO;
 import com.purple.hello.dto.out.UpdateRoomNameOutDTO;
+import com.purple.hello.dto.out.UpdateSafeAlarmOutDTO;
 import com.purple.hello.dto.out.UpdateUserNameOutDTO;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.service.*;
@@ -73,5 +75,17 @@ public class OptionController {
         BoolAlarm moveAlarm = userRoomService.updateMoveAlarmByRoomIdAndUserId(userId, updateMoveAlarmInDTO);
         UpdateMoveAlarmOutDTO updateMoveAlarmOutDTO = new UpdateMoveAlarmOutDTO(moveAlarm);
         return ResponseEntity.status(HttpStatus.OK).body(updateMoveAlarmOutDTO);
+    }
+    @ApiOperation(
+            value = "안전 감지 알람 변경 API (v)",
+            notes = "그룹 내 이용자의 위험이 감지된 경우 이외 사용자에게 알람을 전하는 API")
+    @PutMapping("/room/safe-alarm")
+    public ResponseEntity<?> updateSafeAlarmByRoomIdAndUserId(@RequestBody UpdateSafeAlarmInDTO updateSafeAlarmInDTO, HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        updateSafeAlarmInDTO.setUserId(userId);
+        UpdateSafeAlarmOutDTO updateSafeAlarmOutDTO = new UpdateSafeAlarmOutDTO(
+                userRoomService.updateSafeAlarmByRoomIdAndUserId(updateSafeAlarmInDTO)
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(updateSafeAlarmOutDTO);
     }
 }
