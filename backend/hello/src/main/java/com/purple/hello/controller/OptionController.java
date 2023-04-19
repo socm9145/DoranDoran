@@ -1,9 +1,6 @@
 package com.purple.hello.controller;
 
-import com.purple.hello.dto.in.UpdateMoveAlarmInDTO;
-import com.purple.hello.dto.in.UpdateRoomNameInDTO;
-import com.purple.hello.dto.in.UpdateSafeAlarmInDTO;
-import com.purple.hello.dto.in.UpdateUserNameInDTO;
+import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.UpdateMoveAlarmOutDTO;
 import com.purple.hello.dto.out.UpdateRoomNameOutDTO;
 import com.purple.hello.dto.out.UpdateSafeAlarmOutDTO;
@@ -87,5 +84,16 @@ public class OptionController {
                 userRoomService.updateSafeAlarm(updateSafeAlarmInDTO)
         );
         return ResponseEntity.status(HttpStatus.OK).body(updateSafeAlarmOutDTO);
+    }
+
+    @ApiOperation(
+            value = "그룹 탈퇴 API (v)"
+            , notes = "일반 사용자가 그룹에서 나가게 하는 API. 모든 이용자가 사용 가능하다.")
+    @PutMapping("/room/user-role")
+    public ResponseEntity<Void> deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO, HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        deleteUserRoomInDTO.setUserId(userId);
+        userRoomService.deleteUserRoom(deleteUserRoomInDTO);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
