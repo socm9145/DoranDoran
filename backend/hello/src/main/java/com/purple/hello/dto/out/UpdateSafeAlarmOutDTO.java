@@ -1,4 +1,4 @@
-package com.purple.hello.dto.in;
+package com.purple.hello.dto.out;
 
 import com.purple.hello.enu.BoolAlarm;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateSafeAlarmInDTO {
-    long roomId;
-    long userId;
+public class UpdateSafeAlarmOutDTO {
     BoolAlarm safeAlarm;
 }

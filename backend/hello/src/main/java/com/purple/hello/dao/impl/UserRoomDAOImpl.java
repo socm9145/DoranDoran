@@ -118,4 +118,14 @@ public class UserRoomDAOImpl implements UserRoomDAO {
         BoolAlarm boolAlarm = updateMoveAlarmInDTO.getMoveAlarm();
         return boolAlarm;
     }
+
+    @Override
+    public BoolAlarm updateSafeAlarmByRoomIdAndUserId(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
+        jpaUpdateClause.set(qUserRoom.safeAlarm, updateSafeAlarmInDTO.getSafeAlarm())
+                .where(qUserRoom.userRoomId.eq(updateSafeAlarmInDTO.getRoomId()).and(qUserRoom.user.userId.eq(
+                        updateSafeAlarmInDTO.getUserId())))
+                .execute();
+        return updateSafeAlarmInDTO.getSafeAlarm();
+    }
 }

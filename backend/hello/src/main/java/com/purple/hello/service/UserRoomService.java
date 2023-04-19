@@ -11,4 +11,6 @@ public interface UserRoomService {
     String updateRoomNameByRoomIdAndUserId(long userId, UpdateRoomNameInDTO updateRoomNameInDTO);
     String updateUserNameByRoomIdAndUserId(long userId, UpdateUserNameInDTO updateUserNameInDTO);
     BoolAlarm updateMoveAlarmByRoomIdAndUserId(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
+
+    BoolAlarm updateSafeAlarmByRoomIdAndUserId(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
 }
