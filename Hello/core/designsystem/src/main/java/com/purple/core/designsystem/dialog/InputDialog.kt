@@ -80,10 +80,10 @@ private fun HiDialogContent(
     confirmButtonText: String,
     dismissButtonText: String,
 ) {
-    val questionContentStates = remember {
+    val questionContentList = remember {
         questionContent.map { input -> mutableStateOf(input.answer.orEmpty()) }
     }
-    val isConfirmButtonEnabled = questionContentStates.all { it.value.isNotEmpty() }
+    val isConfirmEnabled = questionContentList.all { it.value.isNotEmpty() }
 
     HiTheme {
         Card(
@@ -97,7 +97,7 @@ private fun HiDialogContent(
                     .padding(DialogPadding),
             ) {
                 questionContent.forEachIndexed { index, input ->
-                    val inputText = questionContentStates[index]
+                    val inputText = questionContentList[index]
                     val isError = inputText.value.isEmpty()
                     Column(
                         modifier = Modifier
@@ -139,7 +139,7 @@ private fun HiDialogContent(
                     )
                     HiFilledButton(
                         onClick = onConfirm,
-                        enabled = isConfirmButtonEnabled,
+                        enabled = isConfirmEnabled,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
