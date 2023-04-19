@@ -39,7 +39,7 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomId(long roomId, Date date) {
+    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) {
         // 특정 그룹방에서 특정 날짜에 피드를 올린 유저의 ID를 반환
         List<UserIdDateDTO> userIdDateDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(UserIdDateDTO.class, qUser.userId, qFeed.createAt))
@@ -90,7 +90,7 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public CreateFeedOutDTO createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO) {
+    public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) {
         // feed 데이터 저장
         Feed feed = Feed.builder()
                 .feedUrl(createFeedInDTO.getFeedUrl())

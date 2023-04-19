@@ -59,8 +59,8 @@ public class RoomController {
             value = "그룹방 입장 정보 출력 API",
             notes = "그룹방 코드를 입력할 경우 다이얼로그에 사용할 정보를 출력해주는 API")
     @GetMapping("/join")
-    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoin(@RequestParam("code") String roomCode){
-        ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoin(roomCode);
+    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam("code") String roomCode){
+        ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomCode(roomCode);
 
         return ResponseEntity.status(HttpStatus.OK).body(readUserRoomJoinOutDTO);
     }
@@ -90,14 +90,14 @@ public class RoomController {
     public ResponseEntity<List<CompareFeedByRoomIdOutDTO>> compareFeedByUserIdAndRoomId(@RequestParam("roomId") long roomId,
                                                                                         @DateTimeFormat(pattern="yyyy-MM-dd") Date date){
         List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdOutDTOS
-                = this.feedService.compareFeedByRoomId(roomId, date);
+                = this.feedService.compareFeedByRoomIdAndDate(roomId, date);
         return ResponseEntity.status(HttpStatus.OK).body(compareFeedByRoomIdOutDTOS);
     }
     @ApiOperation(value = "피드 생성 API",
                   notes = "이용자가 피드를 올릴 경우 피드 정보를 저장해주는 API")
     @PostMapping("/feed")
-    public ResponseEntity<CreateFeedOutDTO> createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO){
-        CreateFeedOutDTO result = this.feedService.createFeedByUserRoomId(createFeedInDTO);
+    public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
+        CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

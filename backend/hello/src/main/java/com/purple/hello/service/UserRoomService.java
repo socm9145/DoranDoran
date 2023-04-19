@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 public interface UserRoomService {
     void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
     void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
-    String updateRoomNameByRoomIdAndUserId(long userId, UpdateRoomNameInDTO updateRoomNameInDTO);
-    String updateUserNameByRoomIdAndUserId(long userId, UpdateUserNameInDTO updateUserNameInDTO);
-    BoolAlarm updateMoveAlarmByRoomIdAndUserId(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
+    String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO);
+    String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO);
+    BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
 
-    BoolAlarm updateSafeAlarmByRoomIdAndUserId(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
+    BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
 }

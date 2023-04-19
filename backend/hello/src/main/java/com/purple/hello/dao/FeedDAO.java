@@ -9,6 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface FeedDAO {
-    List<CompareFeedByRoomIdOutDTO> compareFeedByRoomId(long roomId, Date date);
-    CreateFeedOutDTO createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO);
+    List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date);
+    CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO);
 }

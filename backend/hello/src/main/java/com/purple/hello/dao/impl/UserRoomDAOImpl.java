@@ -84,7 +84,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
      * userRoomId와 userId가 일치하면 roomName을 변경시키고 변경된 이름을 그대로 반환하는 함수
      * */
     @Override
-    public String updateRoomNameByRoomIdAndUserId(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
+    public String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         jpaUpdateClause.set(qUserRoom.roomName, updateRoomNameInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(updateRoomNameInDTO.getUserRoomId()).and(qUserRoom.user.userId.eq(userId)))
@@ -96,7 +96,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
      * userRoomId와 userId가 일치하면 userName을 변경시키고 변경된 이름을 그대로 반환하는 함수
      * */
     @Override
-    public String updateUserNameByRoomIdAndUserId(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
+    public String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         jpaUpdateClause.set(qUserRoom.userName, updateUserNameInDTO.getUserName())
                 .where(qUserRoom.userRoomId.eq(updateUserNameInDTO.getUserRoomId()).and(qUserRoom.user.userId.eq(userId)))
@@ -108,7 +108,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
      * userRoomId와 userId가 일치하면 moveAlarm을 변경시키고 변경된 설정을 그대로 반환하는 함수
      * */
     @Override
-    public BoolAlarm updateMoveAlarmByRoomIdAndUserId(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+    public BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         jpaUpdateClause.set(qUserRoom.moveAlarm, updateMoveAlarmInDTO.getMoveAlarm())
                 .where(qUserRoom.userRoomId.eq(updateMoveAlarmInDTO.getUserRoomId()).and(qUserRoom.user.userId.eq(userId)))
@@ -119,7 +119,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public BoolAlarm updateSafeAlarmByRoomIdAndUserId(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+    public BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         jpaUpdateClause.set(qUserRoom.safeAlarm, updateSafeAlarmInDTO.getSafeAlarm())
                 .where(qUserRoom.userRoomId.eq(updateSafeAlarmInDTO.getRoomId()).and(qUserRoom.user.userId.eq(

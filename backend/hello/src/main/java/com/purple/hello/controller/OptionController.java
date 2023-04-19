@@ -49,9 +49,9 @@ public class OptionController {
             value = "그룹 이름 변경 API (v)"
             , notes = "해당 그룹의 이름을 변경해주는 API. 모든 이용자가 변경 가능하다.")
     @PutMapping("/room/name")
-    public ResponseEntity<UpdateRoomNameOutDTO> updateRoomNameByRoomIdAndUserId(@RequestBody UpdateRoomNameInDTO updateRoomNameInDTO, HttpServletRequest request){
+    public ResponseEntity<UpdateRoomNameOutDTO> updateRoomName(@RequestBody UpdateRoomNameInDTO updateRoomNameInDTO, HttpServletRequest request){
         long userId = Long.parseLong(request.getAttribute("userId").toString());
-        String updatedRoomName = userRoomService.updateRoomNameByRoomIdAndUserId(userId, updateRoomNameInDTO);
+        String updatedRoomName = userRoomService.updateRoomName(userId, updateRoomNameInDTO);
         UpdateRoomNameOutDTO updateRoomNameOutDTO = new UpdateRoomNameOutDTO(updatedRoomName);
         return ResponseEntity.status(HttpStatus.OK).body(updateRoomNameOutDTO);
     }
@@ -60,9 +60,9 @@ public class OptionController {
             value = "나의 이름 변경 API (v)"
             , notes = "해당 그룹에서 사용할 이용자의 이름을 변경해주는 API. 그룹방 별로 모든 이용자가 사용할 수 있다.")
     @PutMapping("/room/user")
-    public ResponseEntity<UpdateUserNameOutDTO> updateUserNameByRoomIdAndUserId(@RequestBody UpdateUserNameInDTO updateUserNameInDTO, HttpServletRequest request){
+    public ResponseEntity<UpdateUserNameOutDTO> updateUserName(@RequestBody UpdateUserNameInDTO updateUserNameInDTO, HttpServletRequest request){
         long userId = Long.parseLong(request.getAttribute("userId").toString());
-        String updatedUserName = userRoomService.updateUserNameByRoomIdAndUserId(userId, updateUserNameInDTO);
+        String updatedUserName = userRoomService.updateUserName(userId, updateUserNameInDTO);
         UpdateUserNameOutDTO updateUserNameOutDTO = new UpdateUserNameOutDTO(updatedUserName);
         return ResponseEntity.status(HttpStatus.OK).body(updateUserNameOutDTO);
     }
@@ -70,9 +70,9 @@ public class OptionController {
             value = "무동작 감지 알람 변경 API (v)"
             , notes = "그룹 내 이용자의 무동작이 감지된 경우 이외 사용자에게 알람을 전하는 API")
     @PutMapping("/room/move-alarm")
-    public ResponseEntity<UpdateMoveAlarmOutDTO> updateMoveAlarmByRoomIdAndUserId(UpdateMoveAlarmInDTO updateMoveAlarmInDTO, HttpServletRequest request){
+    public ResponseEntity<UpdateMoveAlarmOutDTO> updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO, HttpServletRequest request){
         long userId = Long.parseLong(request.getAttribute("userId").toString());
-        BoolAlarm moveAlarm = userRoomService.updateMoveAlarmByRoomIdAndUserId(userId, updateMoveAlarmInDTO);
+        BoolAlarm moveAlarm = userRoomService.updateMoveAlarm(userId, updateMoveAlarmInDTO);
         UpdateMoveAlarmOutDTO updateMoveAlarmOutDTO = new UpdateMoveAlarmOutDTO(moveAlarm);
         return ResponseEntity.status(HttpStatus.OK).body(updateMoveAlarmOutDTO);
     }
@@ -80,11 +80,11 @@ public class OptionController {
             value = "안전 감지 알람 변경 API (v)",
             notes = "그룹 내 이용자의 위험이 감지된 경우 이외 사용자에게 알람을 전하는 API")
     @PutMapping("/room/safe-alarm")
-    public ResponseEntity<?> updateSafeAlarmByRoomIdAndUserId(@RequestBody UpdateSafeAlarmInDTO updateSafeAlarmInDTO, HttpServletRequest request){
+    public ResponseEntity<?> updateSafeAlarm(@RequestBody UpdateSafeAlarmInDTO updateSafeAlarmInDTO, HttpServletRequest request){
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         updateSafeAlarmInDTO.setUserId(userId);
         UpdateSafeAlarmOutDTO updateSafeAlarmOutDTO = new UpdateSafeAlarmOutDTO(
-                userRoomService.updateSafeAlarmByRoomIdAndUserId(updateSafeAlarmInDTO)
+                userRoomService.updateSafeAlarm(updateSafeAlarmInDTO)
         );
         return ResponseEntity.status(HttpStatus.OK).body(updateSafeAlarmOutDTO);
     }

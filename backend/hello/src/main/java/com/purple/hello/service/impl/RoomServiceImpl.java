@@ -35,7 +35,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoin(String roomCode) {
-        return this.roomDAO.readUserRoomJoin(roomCode);
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) {
+        return this.roomDAO.readUserRoomJoinByRoomCode(roomCode);
     }
 }

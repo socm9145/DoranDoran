@@ -10,6 +10,6 @@ import java.util.List;
 
 @Service
 public interface FeedService {
-    List<CompareFeedByRoomIdOutDTO> compareFeedByRoomId(long roomId, Date date);
-    CreateFeedOutDTO createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO);
+    List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date);
+    CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO);
 }

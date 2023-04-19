@@ -29,8 +29,8 @@ public class UserRoomServiceImpl implements UserRoomService {
      * */
     @Override
     @Transactional
-    public String updateRoomNameByRoomIdAndUserId(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
-        return userRoomDAO.updateRoomNameByRoomIdAndUserId(userId, updateRoomNameInDTO);
+    public String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
+        return userRoomDAO.updateRoomName(userId, updateRoomNameInDTO);
     }
 
     /**
@@ -38,8 +38,8 @@ public class UserRoomServiceImpl implements UserRoomService {
      * */
     @Override
     @Transactional
-    public String updateUserNameByRoomIdAndUserId(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
-        return userRoomDAO.updateUserNameByRoomIdAndUserId(userId, updateUserNameInDTO);
+    public String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
+        return userRoomDAO.updateUserName(userId, updateUserNameInDTO);
     }
 
     /**
@@ -47,12 +47,12 @@ public class UserRoomServiceImpl implements UserRoomService {
      * */
     @Override
     @Transactional
-    public BoolAlarm updateMoveAlarmByRoomIdAndUserId(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
-        return userRoomDAO.updateMoveAlarmByRoomIdAndUserId(userId, updateMoveAlarmInDTO);
+    public BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+        return userRoomDAO.updateMoveAlarm(userId, updateMoveAlarmInDTO);
     }
 
     @Override
-    public BoolAlarm updateSafeAlarmByRoomIdAndUserId(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
-        return userRoomDAO.updateSafeAlarmByRoomIdAndUserId(updateSafeAlarmInDTO);
+    public BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+        return userRoomDAO.updateSafeAlarm(updateSafeAlarmInDTO);
     }
 }

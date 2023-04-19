@@ -21,12 +21,12 @@ public class FeedServiceImpl implements FeedService {
 
 
     @Override
-    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomId(long roomId, Date date) {
-        return this.feedDAO.compareFeedByRoomId(roomId, date);
+    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) {
+        return this.feedDAO.compareFeedByRoomIdAndDate(roomId, date);
     }
 
     @Override
-    public CreateFeedOutDTO createFeedByUserRoomId(CreateFeedInDTO createFeedInDTO) {
-        return this.feedDAO.createFeedByUserRoomId(createFeedInDTO);
+    public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) {
+        return this.feedDAO.createFeed(createFeedInDTO);
     }
 }

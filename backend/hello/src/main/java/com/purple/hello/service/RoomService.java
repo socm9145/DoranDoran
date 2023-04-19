@@ -15,5 +15,5 @@ public interface RoomService {
 
     boolean comparePasswordByRoomCode(long roomId, String password);
 
-    ReadUserRoomJoinOutDTO readUserRoomJoin(String roomCode);
+    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
 }

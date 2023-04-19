@@ -66,7 +66,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoin(String roomCode) {
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) {
         // 조인이 맞나 ? in이 맞나 ?
         List<ReadUserRoomJoinOutDTO> readUserRoomJoinOutDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadUserRoomJoinOutDTO.class, qRoom.roomId, qUserRoom.roomName, qRoom.roomQuestion))
