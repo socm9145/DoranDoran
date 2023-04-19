@@ -24,27 +24,19 @@ public class UserRoomServiceImpl implements UserRoomService {
     public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
         this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
     }
-    /**
-     * userRoom의 roomName을 변경시키는 dao를 호출하는 함수
-     * */
+
     @Override
     @Transactional
     public String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
         return userRoomDAO.updateRoomName(userId, updateRoomNameInDTO);
     }
 
-    /**
-     * userRoom의 userName을 변경시키는 dao를 호출하는 함수
-     * */
     @Override
     @Transactional
     public String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
         return userRoomDAO.updateUserName(userId, updateUserNameInDTO);
     }
 
-    /**
-     * userRoom의 moveAlarm을 변경시키는 dao를 호출하는 함수
-     * */
     @Override
     @Transactional
     public BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
@@ -52,7 +44,14 @@ public class UserRoomServiceImpl implements UserRoomService {
     }
 
     @Override
+    @Transactional
     public BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
         return userRoomDAO.updateSafeAlarm(updateSafeAlarmInDTO);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) {
+        userRoomDAO.deleteUserRoom(deleteUserRoomInDTO);
     }
 }
