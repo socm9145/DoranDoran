@@ -46,9 +46,5 @@ dependencies {
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
 
-    /*
-    * TODO : 외부 라이브러리 쓰기로 확정 시, gradle 정리 할 것 !
-    * */
-    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.1.1")
-    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.1.1")
+    implementation(calendarLibrary)
 }

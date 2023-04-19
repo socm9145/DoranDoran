@@ -1,23 +1,26 @@
 object Versions {
 
-    // KTX
+    // Ktx
     const val CORE = "1.9.0"
     const val LIFECYCLE_RUNTIME = "2.6.1"
 
-    // COMPOSE
+    // Compose
     const val COMPOSE = "1.3.3"
     const val MATERIAL3 = "1.0.1"
     const val ACTIVITY = "1.7.0"
 
-    // COIL
+    // Coil
     const val COIL = "2.3.0"
 
-    // TEST
+    // Test
     const val JUNIT = "4.13.2"
 
     // Android Test
     const val ESPRESSO_CORE = "3.5.1"
     const val ANDROID_JUNIT = "1.1.5"
+
+    // Calendar Library
+    const val CALENDAR_LIBRARY = "1.1.1"
 }
 
 object KTX {
@@ -49,4 +52,8 @@ object AndroidTest {
 object Debug {
     const val COMPOSE_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE}"
     const val COMPOSE_TEST_MANIFEST = "androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}"
+}
+object CalendarLibrary {
+    const val CALENDAR_CORE = "com.maxkeppeler.sheets-compose-dialogs:core:${Versions.CALENDAR_LIBRARY}"
+    const val CALENDAR = "com.maxkeppeler.sheets-compose-dialogs:calendar:${Versions.CALENDAR_LIBRARY}"
 }
