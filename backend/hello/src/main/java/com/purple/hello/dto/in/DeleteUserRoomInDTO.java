@@ -10,5 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteUserRoomInDTO {
-    long roomId;
+    long userId;
+    long userRoomId;
 }
