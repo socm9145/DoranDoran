@@ -18,6 +18,9 @@ object Versions {
     // Android Test
     const val ESPRESSO_CORE = "3.5.1"
     const val ANDROID_JUNIT = "1.1.5"
+
+    // Hilt
+    const val HILT = "1.0.0"
 }
 
 object KTX {
@@ -49,4 +52,8 @@ object AndroidTest {
 object Debug {
     const val COMPOSE_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE}"
     const val COMPOSE_TEST_MANIFEST = "androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}"
+}
+
+object Hilt {
+    const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT}"
 }

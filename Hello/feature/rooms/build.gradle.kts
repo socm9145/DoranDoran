@@ -44,7 +44,8 @@ dependencies {
 
     implementation(composeDependencies)
     implementation(imageLoadDependencies)
-    implementation(androidLibraryDependencies)
+    implementation(appDependencies)
+    implementation(hiltDependencies)
 
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
