@@ -2,7 +2,6 @@ package com.purple.core.designsystem.dialog
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarView
@@ -32,17 +32,17 @@ fun HiDatePickerDialog(
     onConfirm: (LocalDate) -> Unit,
 ) {
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
-    val isError = remember(selectedDate.value) {
+    val isDateError = remember(selectedDate.value) {
         mutableStateOf(selectedDate.value.isAfter(LocalDate.now()))
     }
     HiTheme {
-        Box {
+        Popup {
             Surface(
                 shape = MaterialTheme.shapes.extraLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
             ) {
                 CalendarView(
-                    header = if (isError.value) {
+                    header = if (isDateError.value) {
                         Header.Custom(
                             header = {
                                 Text(
@@ -61,7 +61,7 @@ fun HiDatePickerDialog(
                     },
                     useCaseState = rememberUseCaseState(
                         onCloseRequest = { onDismiss() },
-                        onFinishedRequest = { if (!isError.value) onConfirm(selectedDate.value) },
+                        onFinishedRequest = { if (!isDateError.value) onConfirm(selectedDate.value) },
                         onDismissRequest = { onDismiss() },
                     ),
                     config = CalendarConfig(
