@@ -44,9 +44,13 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:rooms"))
+
     implementation(composeDependencies)
-    debugImplementation(composeDebug)
     implementation(appDependencies)
+    implementation(hiltDependencies)
+
+    debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
 }
