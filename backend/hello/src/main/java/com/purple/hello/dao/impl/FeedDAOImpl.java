@@ -4,6 +4,7 @@ import com.purple.hello.dao.FeedDAO;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
 import com.purple.hello.dto.out.CreateFeedOutDTO;
+import com.purple.hello.dto.out.ReadFeedOutDTO;
 import com.purple.hello.dto.tool.UserIdDTO;
 import com.purple.hello.dto.tool.UserIdDateDTO;
 import com.purple.hello.entity.*;
@@ -121,5 +122,30 @@ public class FeedDAOImpl implements FeedDAO {
 
         // 반환
         return createFeedOutDTO;
+    }
+
+    @Override
+    public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) {
+        List<ReadFeedOutDTO> readFeedOutDTOs = new JPAQuery<>(em)
+                .select(Projections.constructor(ReadFeedOutDTO.class, qFeed.feedId, qFeed.feedUrl, qFeed.content, qUser.userId, qFeed.createAt))
+                .from(qUser)
+                .join(qUserRoom)
+                .on(qUser.userId.eq(qUserRoom.user.userId))
+                .join(qRoom)
+                .on(qRoom.roomId.eq(qUserRoom.room.roomId))
+                .join(qFeed)
+                .on(qFeed.userRoom.userRoomId.eq(qUserRoom.userRoomId))
+                .where(qRoom.roomId.eq(roomId))
+                .fetch();
+
+        List<ReadFeedOutDTO> rReadFeedOutDTOs = new ArrayList<>();
+
+        for (ReadFeedOutDTO readFeedOutDTO : readFeedOutDTOs){
+            if (readFeedOutDTO.getCreateAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    .equals(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
+                rReadFeedOutDTOs.add(readFeedOutDTO);
+        }
+
+        return rReadFeedOutDTOs;
     }
 }

@@ -4,6 +4,7 @@ import com.purple.hello.dao.FeedDAO;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
 import com.purple.hello.dto.out.CreateFeedOutDTO;
+import com.purple.hello.dto.out.ReadFeedOutDTO;
 import com.purple.hello.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,10 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) {
         return this.feedDAO.createFeed(createFeedInDTO);
+    }
+
+    @Override
+    public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) {
+        return this.feedDAO.readFeedByRoomIdAndDate(roomId, date);
     }
 }
