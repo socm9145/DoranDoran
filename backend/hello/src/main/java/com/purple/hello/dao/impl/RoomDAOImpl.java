@@ -2,6 +2,7 @@ package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
@@ -12,8 +13,10 @@ import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.RoomRepo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
@@ -87,5 +90,26 @@ public class RoomDAOImpl implements RoomDAO {
                 .build();
 
         return  readUserRoomJoinOutDTO;
+    }
+
+    @Override
+    public String readRoomCodeByRoomId(long roomId) {
+//        String priUrl = new JPAQuery<>(em)
+//                .select(Projections.constructor(String.class, qRoom.roomCode))
+//                .from(qRoom)
+//                .where(qRoom.roomId.eq(roomId))
+//                .fetchFirst();
+        Room room = roomRepo.findRoomByRoomId(roomId);
+        String priUrl = room.getRoomCode();
+        return priUrl;
+    }
+
+    @Override
+    @Transactional
+    public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO) {
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qRoom);
+        jpaUpdateClause.set(qRoom.roomCode, updateRoomCodeInDTO.getRoomCode())
+                .where(qRoom.roomId.eq(updateRoomCodeInDTO.getRoomId()))
+                .execute();
     }
 }

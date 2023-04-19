@@ -3,10 +3,9 @@ package com.purple.hello.controller;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
-import com.purple.hello.dto.out.CreateFeedOutDTO;
-import com.purple.hello.dto.out.CreateRoomOutDTO;
-import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
-import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
+import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
+import com.purple.hello.dto.out.*;
+import com.purple.hello.room.RoomCode;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +14,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/room")
 public class RoomController {
+    @Autowired
+    private RoomCode roomCode;
     @Autowired
     private final AlarmService alarmService;
     @Autowired
@@ -99,6 +102,39 @@ public class RoomController {
     public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
         CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+    @ApiOperation(value = "초대 링크 생성 API",
+                    notes = "해당 그룹방 초대 링크를 출력")
+    @GetMapping("/code")
+    public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId){
+        // 방의 초대 링크를 가져온다
+        String priUrl = roomService.readRoomCodeByRoomId(roomId);
+        Instant currentTime = Instant.now();
+        ReadRoomCodeOutDTO readRoomCodeOutDTO = new ReadRoomCodeOutDTO();
+        UpdateRoomCodeInDTO updateRoomCodeInDTO = new UpdateRoomCodeInDTO();
+        updateRoomCodeInDTO.setRoomId(roomId);
+        if(priUrl != null){
+            String createdTimeStr = roomCode.getTime(priUrl);
+            Instant createdTime = Instant.parse(createdTimeStr);
+            Duration diff = Duration.between(createdTime, currentTime);
+            // 가져온 초대 링크와 현재 시간을 비교해서 기간이 끝났으면 재생성
+            if(diff.compareTo(Duration.ofDays(1)) > 0){
+                // 만료 되었음
+                String newUrl = roomCode.makeUrl(roomId, currentTime);
+                readRoomCodeOutDTO.setRoomCode(newUrl);
+                // 생성된 디퍼드 딥링크를 디비에 다시 저장
+                updateRoomCodeInDTO.setRoomCode(newUrl);
+                roomService.updateRoomCodeByRoomId(updateRoomCodeInDTO);
+            }else{
+                readRoomCodeOutDTO.setRoomCode(priUrl);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(readRoomCodeOutDTO);
+        }
+        String newUrl = roomCode.makeUrl(roomId, currentTime);
+        updateRoomCodeInDTO.setRoomCode(newUrl);
+        roomService.updateRoomCodeByRoomId(updateRoomCodeInDTO);
+        readRoomCodeOutDTO.setRoomCode(newUrl);
+        return ResponseEntity.status(HttpStatus.OK).body(readRoomCodeOutDTO);
     }
 
 }
