@@ -2,16 +2,19 @@ package com.purple.hello.service.impl;
 
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadRoomCodeOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
+import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,9 +26,11 @@ public class RoomServiceImpl implements RoomService {
     private RoomCode roomCode;
     @Autowired
     private final RoomDAO roomDAO;
-
-    RoomServiceImpl(RoomDAO roomDAO){
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder){
         this.roomDAO = roomDAO;
+        this.passwordEncoder = passwordEncoder;
     }
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
@@ -34,12 +39,14 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+        createUserRoomInDTO.setRoomPassword(passwordEncoder.encode(createUserRoomInDTO.getRoomPassword()));
         return this.roomDAO.createRoom(createUserRoomInDTO);
     }
 
     @Override
     public boolean comparePasswordByRoomCode(long roomId, String password) {
-        return this.roomDAO.comparePasswordByRoomCode(roomId, password);
+        String storedPassword = this.roomDAO.comparePasswordByRoomCode(roomId);
+        return passwordEncoder.matches(password, storedPassword);
     }
 
     @Override
@@ -48,6 +55,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
+    public void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+        updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
+        this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
+    }
     public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) {
         String url = roomDAO.readRoomCodeByRoomId(roomId);
         Instant currentTime = Instant.now();

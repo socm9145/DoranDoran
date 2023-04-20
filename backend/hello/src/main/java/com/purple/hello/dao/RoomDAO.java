@@ -1,6 +1,7 @@
 package com.purple.hello.dao;
 
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
@@ -12,13 +13,10 @@ import java.util.List;
 public interface RoomDAO {
     List<ReadRoomOutDTO> readRoomByUserId(long userId);
     CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO);
-
-    boolean comparePasswordByRoomCode(long roomId, String password);
-
+    String comparePasswordByRoomCode(long roomId);
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
-
+    void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
     String readRoomCodeByRoomId(long roomId);
-
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
 }

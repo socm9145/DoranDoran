@@ -11,5 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateRoomPasswordInDTO {
     long roomId;
+    long userId;
     String roomPassword;
 }

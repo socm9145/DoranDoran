@@ -2,6 +2,7 @@ package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
@@ -63,11 +63,9 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public boolean comparePasswordByRoomCode(long roomId, String password) {
+    public String comparePasswordByRoomCode(long roomId) {
         Room room = this.roomRepo.findById(roomId).get();
-
-
-        return room.getRoomPassword().equals(password);
+        return room.getRoomPassword();
     }
 
     @Override
@@ -95,6 +93,21 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
+    public void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+        UserRoomRole userRoomRole = new JPAQuery<>(em)
+                .select(qUserRoom.userRoomRole)
+                .from(qUserRoom)
+                .where(qUserRoom.room.roomId.eq(updateRoomPasswordInDTO.getRoomId())
+                        .and(qUserRoom.user.userId.eq(updateRoomPasswordInDTO.getUserId())))
+                .fetchOne();
+
+        if(userRoomRole == UserRoomRole.ROLE1){
+            JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qRoom);
+            jpaUpdateClause.set(qRoom.roomPassword, updateRoomPasswordInDTO.getRoomPassword())
+                    .where(qRoom.roomId.eq(updateRoomPasswordInDTO.getRoomId()))
+                    .execute();
+        }
+    }
     public String readRoomCodeByRoomId(long roomId) {
         Room room = roomRepo.findRoomByRoomId(roomId);
         String priUrl = room.getRoomCode();
@@ -108,6 +121,8 @@ public class RoomDAOImpl implements RoomDAO {
         jpaUpdateClause.set(qRoom.roomCode, updateRoomCodeInDTO.getRoomCode())
                 .where(qRoom.roomId.eq(updateRoomCodeInDTO.getRoomId()))
                 .execute();
+    }
+
     public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) {
         Room room = this.roomRepo.findById(deleteRoomInDTO.getRoomId()).get();
 
