@@ -2,6 +2,7 @@ package com.purple.hello.service.impl;
 
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
+import com.purple.hello.entity.UserRoom;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,14 @@ public class UserRoomServiceImpl implements UserRoomService {
     }
 
     @Override
+    @Transactional
     public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
-        this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
+        boolean isAlreadyUser = checkUserExist(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
+        if(isAlreadyUser){
+            this.userRoomDAO.updateUserRoomRejoin(createUserRoomJoinInDTO);
+        }else{
+            this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
+        }
     }
 
     @Override
@@ -53,5 +60,14 @@ public class UserRoomServiceImpl implements UserRoomService {
     @Transactional
     public void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) {
         userRoomDAO.deleteUserRoom(deleteUserRoomInDTO);
+    }
+
+    private boolean checkUserExist(long userId, long roomId) {
+        UserRoom userRoom = userRoomDAO.readUserRoomByUserIdAndRoomId(userId, roomId);
+        if(userRoom != null) {
+            return true;
+        }else {
+            return false;
+        }
     }
 }

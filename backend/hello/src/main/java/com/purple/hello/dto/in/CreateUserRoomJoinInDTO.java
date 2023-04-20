@@ -12,7 +12,6 @@ import lombok.Setter;
 public class CreateUserRoomJoinInDTO {
     long roomId;
     long userId;
-    String roomCode;
     String roomName;
     String userName;
     String roomPassword;

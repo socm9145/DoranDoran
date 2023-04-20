@@ -1,6 +1,7 @@
 package com.purple.hello.dao;
 
 import com.purple.hello.dto.in.*;
+import com.purple.hello.entity.UserRoom;
 import com.purple.hello.enu.BoolAlarm;
 
 public interface UserRoomDAO {
@@ -11,4 +12,6 @@ public interface UserRoomDAO {
     BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
     BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
     void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
+    UserRoom readUserRoomByUserIdAndRoomId(long userId, long roomId);
+    void updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
 }
