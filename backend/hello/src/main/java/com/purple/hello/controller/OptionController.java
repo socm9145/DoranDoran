@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ResourceBundle;
 
 @RestController("/option")
 public class OptionController {
@@ -84,6 +86,16 @@ public class OptionController {
                 userRoomService.updateSafeAlarm(updateSafeAlarmInDTO)
         );
         return ResponseEntity.status(HttpStatus.OK).body(updateSafeAlarmOutDTO);
+    }
+
+    @ApiOperation(
+            value = "그룹 폭파 API",
+            notes = "방 생성자가 그룹방을 삭제하는 API. 관리자만 사용 가능하다.")
+    @DeleteMapping("/room")
+    public ResponseEntity<Boolean> deleteRoom(@RequestBody DeleteRoomInDTO deleteRoomInDTO) {
+        boolean result = this.roomService.deleteRoom(deleteRoomInDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @ApiOperation(
