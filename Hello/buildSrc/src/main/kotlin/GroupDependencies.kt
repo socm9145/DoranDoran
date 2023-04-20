@@ -35,3 +35,8 @@ val defaultAndroidTest = listOf(
     AndroidTest.ESPRESSO_CORE,
     AndroidTest.ANDROID_JUNIT,
 )
+
+val calendarLibrary = listOf(
+    CalendarLibrary.CALENDAR_CORE,
+    CalendarLibrary.CALENDAR,
+)

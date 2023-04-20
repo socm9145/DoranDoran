@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -22,7 +23,7 @@ fun HiOutlinedButton(
         onClick = onClick,
         modifier = modifier,
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Color.Unspecified,
             contentColor = MaterialTheme.colorScheme.primary,
         ),
         border = BorderStroke(
@@ -54,12 +55,14 @@ fun HiOutlinedButton(
 @Composable
 fun HiFilledButton(
     onClick: () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -73,11 +76,13 @@ fun HiFilledButton(
 @Composable
 fun HiFilledButton(
     onClick: () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
 ) {
     HiFilledButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier,
         contentPadding = ButtonDefaults.ContentPadding,
     ) {
@@ -112,5 +117,5 @@ private fun PreviewHiOutlinedButton() {
 @Preview
 @Composable
 private fun PreviewHiFilledButton() {
-    HiFilledButton(onClick = {}, modifier = Modifier, text = { Text(text = "test button") })
+    HiFilledButton(onClick = {}, enabled = true, modifier = Modifier, text = { Text(text = "test button") })
 }

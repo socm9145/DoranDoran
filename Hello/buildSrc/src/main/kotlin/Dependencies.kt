@@ -1,18 +1,18 @@
 object Versions {
 
-    // KTX
+    // Ktx
     const val CORE = "1.9.0"
     const val LIFECYCLE_RUNTIME = "2.6.1"
 
-    // COMPOSE
+    // Compose
     const val COMPOSE = "1.3.3"
     const val MATERIAL3 = "1.0.1"
     const val ACTIVITY = "1.7.0"
 
-    // COIL
+    // Coil
     const val COIL = "2.3.0"
 
-    // TEST
+    // Test
     const val JUNIT = "4.13.2"
 
     // Android Test
@@ -21,6 +21,9 @@ object Versions {
 
     // Hilt
     const val HILT = "1.0.0"
+
+    // Calendar Library
+    const val CALENDAR_LIBRARY = "1.1.1"
 }
 
 object KTX {
@@ -56,4 +59,9 @@ object Debug {
 
 object Hilt {
     const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT}"
+}
+
+object CalendarLibrary {
+    const val CALENDAR_CORE = "com.maxkeppeler.sheets-compose-dialogs:core:${Versions.CALENDAR_LIBRARY}"
+    const val CALENDAR = "com.maxkeppeler.sheets-compose-dialogs:calendar:${Versions.CALENDAR_LIBRARY}"
 }
