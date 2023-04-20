@@ -80,10 +80,10 @@ private fun HiDialogContent(
     confirmButtonText: String,
     dismissButtonText: String,
 ) {
-    val questionContentState = remember {
+    val questionContentList = remember {
         questionContent.map { input -> mutableStateOf(input.answer.orEmpty()) }
     }
-    val isEnabled = questionContentState.all { it.value.isNotEmpty() }
+    val isConfirmEnabled = questionContentList.all { it.value.isNotEmpty() }
 
     HiTheme {
         Card(
@@ -97,8 +97,8 @@ private fun HiDialogContent(
                     .padding(DialogPadding),
             ) {
                 questionContent.forEachIndexed { index, input ->
-                    val value = questionContentState[index]
-                    val isError = value.value.isEmpty()
+                    val inputText = questionContentList[index]
+                    val isError = inputText.value.isEmpty()
                     Column(
                         modifier = Modifier
                             .padding(ContentPadding),
@@ -114,9 +114,9 @@ private fun HiDialogContent(
                             )
                         }
                         OutlinedTextField(
-                            value = value.value,
-                            onValueChange = { newValue ->
-                                value.value = newValue
+                            value = inputText.value,
+                            onValueChange = { newInputText ->
+                                inputText.value = newInputText
                             },
                             placeholder = { Text(text = input.placeHolder) },
                             supportingText = { Text(text = input.supportingText) },
@@ -139,7 +139,7 @@ private fun HiDialogContent(
                     )
                     HiFilledButton(
                         onClick = onConfirm,
-                        enabled = isEnabled,
+                        enabled = isConfirmEnabled,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
