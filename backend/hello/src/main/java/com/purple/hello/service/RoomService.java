@@ -1,12 +1,15 @@
 package com.purple.hello.service;
 
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
+import com.purple.hello.dto.out.ReadRoomCodeOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -19,6 +22,9 @@ public interface RoomService {
 
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
 
+    ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
+
+    void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
 }

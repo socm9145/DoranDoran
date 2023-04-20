@@ -4,6 +4,7 @@ import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.out.*;
+import com.purple.hello.generator.RoomCode;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/room")
 public class RoomController {
+    @Autowired
+    private RoomCode roomCode;
     @Autowired
     private final AlarmService alarmService;
     @Autowired
@@ -95,6 +98,13 @@ public class RoomController {
     @PostMapping("/feed")
     public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
         CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+    @ApiOperation(value = "초대 링크 생성 API",
+                    notes = "해당 그룹방 초대 링크를 출력")
+    @GetMapping("/code")
+    public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId){
+        ReadRoomCodeOutDTO result = roomService.readRoomCodeByRoomId(roomId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
