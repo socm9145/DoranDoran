@@ -44,8 +44,8 @@ public class RoomController {
     }
 
     @ApiOperation(
-            value = "그룹방 생성 API (v)"
-            , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API")
+            value = "그룹방 생성 API (▲)"
+            , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API / 반환형이 있으면 좋을듯 / 룸 코드는 어떡하지?")
     @PostMapping("/create")
     public ResponseEntity<Void> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO){
         // room 객체 생성
@@ -66,7 +66,7 @@ public class RoomController {
     }
 
     @ApiOperation(
-            value = "그룹방 정보 추가 API (v)",
+            value = "그룹방 정보 추가 API ",
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
     public ResponseEntity<Boolean> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
@@ -81,7 +81,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
-    @ApiOperation(value = "사진 제출 여부 확인 API",
+    @ApiOperation(value = "사진 제출 여부 확인 API (v)",
             notes = "이용자별 사진 제출 여부를 확인해주는 API")
     @GetMapping("/photo")
     public ResponseEntity<List<CompareFeedByRoomIdOutDTO>> compareFeedByUserIdAndRoomId(@RequestParam("roomId") long roomId,
@@ -90,14 +90,14 @@ public class RoomController {
                 = this.feedService.compareFeedByRoomIdAndDate(roomId, date);
         return ResponseEntity.status(HttpStatus.OK).body(compareFeedByRoomIdOutDTOS);
     }
-    @ApiOperation(value = "피드 생성 API",
+    @ApiOperation(value = "피드 생성 API (v)",
                   notes = "이용자가 피드를 올릴 경우 피드 정보를 저장해주는 API")
     @PostMapping("/feed")
     public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
         CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-    @ApiOperation(value = "초대 링크 생성 API",
+    @ApiOperation(value = "초대 링크 생성 API (v)",
                     notes = "해당 그룹방 초대 링크를 출력")
     @GetMapping("/code")
     public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId){
@@ -105,8 +105,8 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @ApiOperation(value = "날짜 기반 피드 출력 API",
-            notes = "해당 날짜에 기재한 피드 전체를 출력해주는 API")
+    @ApiOperation(value = "날짜 기반 피드 출력 API (x)",
+            notes = "해당 날짜에 기재한 피드 전체를 출력해주는 API / timezone 차이로 날짜 인식을 못하는 오류")
     @GetMapping("/date-feed")
     public ResponseEntity<List<ReadFeedOutDTO>> readFeedByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         List<ReadFeedOutDTO> readFeedOutDTOs = this.feedService.readFeedByRoomIdAndDate(roomId, date);
