@@ -1,27 +1,21 @@
 plugins {
     kotlin("android")
-    id("com.android.application")
+    id("com.android.library")
 }
-
 android {
-    namespace = "com.purple.hello"
+    namespace = "com.purple.hello.feature.groups"
     compileSdk = AppConfig.compileSdk
-    buildToolsVersion = AppConfig.buildToolsVersion
 
     defaultConfig {
-        applicationId = "com.purple.hello"
         minSdk = AppConfig.minSdk
-        targetSdk = AppConfig.targetSdk
-        versionCode = AppConfig.versionCode
-        versionName = AppConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -44,9 +38,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:rooms"))
+
+    implementation(project(":core:designsystem"))
+    implementation(project(":domain:rooms"))
 
     implementation(composeDependencies)
+    implementation(imageLoadDependencies)
     implementation(appDependencies)
     implementation(hiltDependencies)
 

@@ -19,6 +19,10 @@ val appDependencies = listOf(
     Compose.ACTIVITY,
 )
 
+val hiltDependencies = listOf(
+    Hilt.HILT_NAV_COMPOSE
+)
+
 val androidLibraryDependencies = listOf(
     KTX.CORE,
 )
