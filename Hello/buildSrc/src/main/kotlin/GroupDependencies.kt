@@ -36,3 +36,8 @@ val calendarLibrary = listOf(
     CalendarLibrary.CALENDAR_CORE,
     CalendarLibrary.CALENDAR,
 )
+
+val socialLogin = listOf(
+    SociaLogin.GOOGLE_LOGIN,
+    SociaLogin.KAKAO_LOGIN,
+)

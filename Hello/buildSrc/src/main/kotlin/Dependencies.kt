@@ -21,6 +21,10 @@ object Versions {
 
     // Calendar Library
     const val CALENDAR_LIBRARY = "1.1.1"
+
+    // Social Login
+    const val GOOGLE_LOGIN = "20.5.0"
+    const val KAKAO_LOGIN = "2.13.0"
 }
 
 object KTX {
@@ -56,4 +60,8 @@ object Debug {
 object CalendarLibrary {
     const val CALENDAR_CORE = "com.maxkeppeler.sheets-compose-dialogs:core:${Versions.CALENDAR_LIBRARY}"
     const val CALENDAR = "com.maxkeppeler.sheets-compose-dialogs:calendar:${Versions.CALENDAR_LIBRARY}"
+}
+object SociaLogin {
+    const val GOOGLE_LOGIN = "com.google.android.gms:play-services-auth:${Versions.GOOGLE_LOGIN}"
+    const val KAKAO_LOGIN = "com.kakao.sdk:v2-user:${Versions.KAKAO_LOGIN}"
 }

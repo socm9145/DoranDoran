@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     kotlin("android")
     id("com.android.library")
@@ -11,6 +13,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        manifestPlaceholders["kakaoApiKey"] = getApiKey("KAKAO_API_KEY")
+        buildConfigField("String", "KAKAO_NATIVE_KEY", getApiKey("KAKAO_NATIVE_KEY"))
     }
 
     buildTypes {
@@ -38,7 +42,6 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core:designsystem"))
 
     implementation(composeDependencies)
@@ -47,4 +50,10 @@ dependencies {
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
+
+    implementation(socialLogin)
+}
+
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
