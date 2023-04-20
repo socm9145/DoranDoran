@@ -1,6 +1,7 @@
 package com.purple.hello.dao;
 
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
@@ -14,4 +15,6 @@ public interface RoomDAO {
     boolean comparePasswordByRoomCode(long roomId, String password);
 
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
+
+    boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
 }
