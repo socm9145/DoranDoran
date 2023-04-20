@@ -1,4 +1,4 @@
-package com.purple.hello.room;
+package com.purple.hello.generator;
 
 import org.springframework.stereotype.Component;
 

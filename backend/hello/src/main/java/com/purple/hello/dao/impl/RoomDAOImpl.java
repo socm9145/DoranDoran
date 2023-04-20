@@ -94,11 +94,6 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public String readRoomCodeByRoomId(long roomId) {
-//        String priUrl = new JPAQuery<>(em)
-//                .select(Projections.constructor(String.class, qRoom.roomCode))
-//                .from(qRoom)
-//                .where(qRoom.roomId.eq(roomId))
-//                .fetchFirst();
         Room room = roomRepo.findRoomByRoomId(roomId);
         String priUrl = room.getRoomCode();
         return priUrl;
