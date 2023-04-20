@@ -70,15 +70,12 @@ public class RoomController {
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
     public ResponseEntity<Boolean> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
-        // 비밀번호 여부 확인
-        // 여기까지 해야 하나..
         boolean comparePasswordByRoomCode = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
                 createUserRoomJoinInDTO.getRoomPassword());
 
         if (!comparePasswordByRoomCode)
             return ResponseEntity.status(HttpStatus.OK).body(false);
 
-        // 그룹방 정보 추가
         this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);

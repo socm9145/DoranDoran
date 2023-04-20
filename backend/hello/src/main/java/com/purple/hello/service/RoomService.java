@@ -1,6 +1,7 @@
 package com.purple.hello.service;
 
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
@@ -22,6 +23,7 @@ public interface RoomService {
 
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
 
+    void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
 
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);

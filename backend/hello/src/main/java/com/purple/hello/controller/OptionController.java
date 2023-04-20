@@ -65,6 +65,18 @@ public class OptionController {
         UpdateUserNameOutDTO updateUserNameOutDTO = new UpdateUserNameOutDTO(updatedUserName);
         return ResponseEntity.status(HttpStatus.OK).body(updateUserNameOutDTO);
     }
+
+    @ApiOperation(
+            value = "그룹 비밀번호 변경 API (v)"
+            , notes = "해당 그룹방 비밀번호를 변경해주는 API. 관리자만 사용 가능하다.")
+    @PutMapping("/room/password")
+    public ResponseEntity<Void> updateRoomPassword(@RequestBody UpdateRoomPasswordInDTO updateRoomPasswordInDTO, HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        updateRoomPasswordInDTO.setUserId(userId);
+        roomService.updateRoomPassword(updateRoomPasswordInDTO);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @ApiOperation(
             value = "무동작 감지 알람 변경 API (v)"
             , notes = "그룹 내 이용자의 무동작이 감지된 경우 이외 사용자에게 알람을 전하는 API")
