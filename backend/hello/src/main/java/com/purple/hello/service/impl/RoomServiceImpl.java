@@ -13,10 +13,8 @@ import com.purple.hello.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -75,8 +73,7 @@ public class RoomServiceImpl implements RoomService {
     public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO) {
         roomDAO.updateRoomCodeByRoomId(updateRoomCodeInDTO);
     }
-    @Override
-    public String saveAndResult(long roomId, Instant time){
+    private String saveAndResult(long roomId, Instant time) {
         String newUrl = roomCode.makeUrl(roomId, time);
         UpdateRoomCodeInDTO updateRoomCodeInDTO = new UpdateRoomCodeInDTO();
         updateRoomCodeInDTO.setRoomId(roomId);
@@ -84,6 +81,7 @@ public class RoomServiceImpl implements RoomService {
 
         updateRoomCodeByRoomId(updateRoomCodeInDTO);
         return newUrl;
+    }
     public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) {
         return this.roomDAO.deleteRoom(deleteRoomInDTO);
     }

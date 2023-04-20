@@ -25,7 +25,6 @@ public interface RoomService {
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
 
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
-    String saveAndResult(long roomId, Instant time);
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
 }
