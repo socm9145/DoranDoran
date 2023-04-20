@@ -3,6 +3,7 @@ package com.purple.hello.service.impl;
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
+import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadRoomCodeOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
@@ -83,5 +84,7 @@ public class RoomServiceImpl implements RoomService {
 
         updateRoomCodeByRoomId(updateRoomCodeInDTO);
         return newUrl;
+    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) {
+        return this.roomDAO.deleteRoom(deleteRoomInDTO);
     }
 }

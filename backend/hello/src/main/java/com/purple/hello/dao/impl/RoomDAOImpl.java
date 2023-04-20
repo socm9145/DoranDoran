@@ -3,17 +3,18 @@ package com.purple.hello.dao.impl;
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
+import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
-import com.purple.hello.entity.QRoom;
-import com.purple.hello.entity.QUserRoom;
-import com.purple.hello.entity.Room;
+import com.purple.hello.dto.tool.DeleteRoomDTO;
+import com.purple.hello.entity.*;
 import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.RoomRepo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class RoomDAOImpl implements RoomDAO {
     EntityManager em;
     private final QRoom qRoom = QRoom.room;
     private final QUserRoom qUserRoom = QUserRoom.userRoom;
-
+    private final QUser qUser = QUser.user;
     @Autowired
     private final RoomRepo roomRepo;
     public RoomDAOImpl(RoomRepo roomRepo) {
@@ -64,6 +65,7 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public boolean comparePasswordByRoomCode(long roomId, String password) {
         Room room = this.roomRepo.findById(roomId).get();
+
 
         return room.getRoomPassword().equals(password);
     }
@@ -106,5 +108,26 @@ public class RoomDAOImpl implements RoomDAO {
         jpaUpdateClause.set(qRoom.roomCode, updateRoomCodeInDTO.getRoomCode())
                 .where(qRoom.roomId.eq(updateRoomCodeInDTO.getRoomId()))
                 .execute();
+    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) {
+        Room room = this.roomRepo.findById(deleteRoomInDTO.getRoomId()).get();
+
+        //List<DeleteRoomDTO> deleteRoomDTOs = new JPAQuery<>(em)
+        Long count = new JPAQueryFactory(em)
+                .selectFrom(qUser)
+                .join(qUserRoom)
+                .on(qUser.userId.eq(qUserRoom.user.userId))
+                .join(qRoom)
+                .on(qRoom.roomId.eq(qUserRoom.room.roomId))
+                .where(qRoom.roomId.eq(deleteRoomInDTO.getRoomId()))
+                .where(qUser.userId.eq(deleteRoomInDTO.getUserId()))
+                .where(qUserRoom.userRoomRole.eq(UserRoomRole.ROLE1))
+                .fetchCount();
+
+        if (count == 0)
+            return false;
+
+        this.roomRepo.delete(room);
+
+        return true;
     }
 }
