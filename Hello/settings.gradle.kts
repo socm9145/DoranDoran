@@ -18,6 +18,5 @@ rootProject.name = "Hello"
 include(":app")
 include(":core:designsystem")
 include(":core:ui")
-include(":feature:login")
 include(":feature:rooms")
 include(":domain:rooms")

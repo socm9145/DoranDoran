@@ -1,5 +1,6 @@
-package com.purple.hello.feature.login
+package com.purple.hello
 
+import android.app.Application
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,13 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.hello.feature.groups.R
 
 @Composable
 fun LoginScreen(
-//    viewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
 ) {
-//    val isLoggedIn = viewModel.isLoggedIn.collectAsState()
+    val isLoggedIn = loginViewModel.isLoggedIn.collectAsState()
+
     HiTheme {
         Surface(
             color = MaterialTheme.colorScheme.background,
@@ -39,7 +41,7 @@ fun LoginScreen(
                 HiLogoImage()
                 Spacer(modifier = Modifier.height(12.dp))
                 SignInKakaoButton(
-//                    viewModel = viewModel
+                    loginViewModel = loginViewModel,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 SignInGoogleButton()
@@ -61,12 +63,12 @@ fun HiLogoImage() {
 }
 
 @Composable
-fun SignInKakaoButton(
-//    viewModel: LoginViewModel
+private fun SignInKakaoButton(
+    loginViewModel: LoginViewModel,
 ) {
     SignInButton(
         onClick = {
-//            viewModel.kakaoLogin()
+            loginViewModel.kakaoLogin()
         },
         buttonContentColor = MaterialTheme.colorScheme.outlineVariant,
         painter = painterResource(id = R.drawable.ic_kakaotalk),
@@ -134,7 +136,5 @@ private fun SignInButton(
 @Preview
 @Composable
 private fun PreviewLoginScreen() {
-    LoginScreen(
-//        viewModel = LoginViewModel(application = Application())
-    )
+    LoginScreen(loginViewModel = LoginViewModel(Application()))
 }
