@@ -5,7 +5,7 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
-import com.purple.hello.dto.out.CreateRoomOutDTO;
+import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.dto.out.ReadRoomCodeOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
@@ -38,7 +38,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
         createUserRoomInDTO.setRoomPassword(passwordEncoder.encode(createUserRoomInDTO.getRoomPassword()));
         return this.roomDAO.createRoom(createUserRoomInDTO);
     }
@@ -62,6 +62,10 @@ public class RoomServiceImpl implements RoomService {
     }
     public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) {
         String url = roomDAO.readRoomCodeByRoomId(roomId);
+
+        if (url == null)
+            return null;
+
         Instant currentTime = Instant.now();
         ReadRoomCodeOutDTO readRoomCodeOutDTO = new ReadRoomCodeOutDTO();
         if(url != null && url.length() > 0){

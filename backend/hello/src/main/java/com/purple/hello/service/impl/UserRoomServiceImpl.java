@@ -2,6 +2,7 @@ package com.purple.hello.service.impl;
 
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
+import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class UserRoomServiceImpl implements UserRoomService {
         this.userRoomDAO = userRoomDAO;
     }
     @Override
-    public void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
-        this.userRoomDAO.createUserRoom(createUserRoomInDTO, roomId);
+    public CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
+        return this.userRoomDAO.createUserRoom(createUserRoomInDTO, roomId);
     }
 
     @Override

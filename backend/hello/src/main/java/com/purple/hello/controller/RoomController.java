@@ -4,6 +4,7 @@ import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.out.*;
+import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
@@ -44,23 +45,33 @@ public class RoomController {
     }
 
     @ApiOperation(
-            value = "그룹방 생성 API (▲)"
+            value = "그룹방 생성 API (v) vv"
             , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API / 반환형이 있으면 좋을듯 / 룸 코드는 어떡하지?")
     @PostMapping("/create")
-    public ResponseEntity<Void> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO){
+    public ResponseEntity<CreateRoomOutDTO> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO){
         // room 객체 생성
-        CreateRoomOutDTO createRoomOutDTO = this.roomService.createRoom(createUserRoomInDTO);
-        // userRoom 객체 생성
-        this.userRoomService.createUserRoom(createUserRoomInDTO, createRoomOutDTO.getRoomId());
+        CreateRoomDTO createRoomDTO = this.roomService.createRoom(createUserRoomInDTO);
 
-        return new ResponseEntity(HttpStatus.OK);
+        if (createRoomDTO == null)
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
+        // userRoom 객체 생성
+        CreateRoomOutDTO createRoomOutDTO = this.userRoomService.createUserRoom(createUserRoomInDTO, createRoomDTO.getRoomId());
+
+        if (createRoomOutDTO == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.status(HttpStatus.OK).body(createRoomOutDTO);
     }
     @ApiOperation(
-            value = "그룹방 입장 정보 출력 API",
+            value = "그룹방 입장 정보 출력 API (v) vv",
             notes = "그룹방 코드를 입력할 경우 다이얼로그에 사용할 정보를 출력해주는 API")
     @GetMapping("/join")
     public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam("code") String roomCode){
         ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomCode(roomCode);
+
+        if (readUserRoomJoinOutDTO == null)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 
         return ResponseEntity.status(HttpStatus.OK).body(readUserRoomJoinOutDTO);
     }
@@ -90,7 +101,7 @@ public class RoomController {
                 = this.feedService.compareFeedByRoomIdAndDate(roomId, date);
         return ResponseEntity.status(HttpStatus.OK).body(compareFeedByRoomIdOutDTOS);
     }
-    @ApiOperation(value = "피드 생성 API (v)",
+    @ApiOperation(value = "피드 생성 API (v) ",
                   notes = "이용자가 피드를 올릴 경우 피드 정보를 저장해주는 API")
     @PostMapping("/feed")
     public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
@@ -102,6 +113,10 @@ public class RoomController {
     @GetMapping("/code")
     public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId){
         ReadRoomCodeOutDTO result = roomService.readRoomCodeByRoomId(roomId);
+
+        if (result == null)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

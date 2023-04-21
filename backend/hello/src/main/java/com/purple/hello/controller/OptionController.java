@@ -45,7 +45,7 @@ public class OptionController {
     }
 
     @ApiOperation(
-            value = "그룹 이름 변경 API "
+            value = "그룹 이름 변경 API (^)"
             , notes = "해당 그룹의 이름을 변경해주는 API. 모든 이용자가 변경 가능하다.")
     @PutMapping("/room/name")
     public ResponseEntity<UpdateRoomNameOutDTO> updateRoomName(@RequestBody UpdateRoomNameInDTO updateRoomNameInDTO, HttpServletRequest request){

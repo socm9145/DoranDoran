@@ -5,7 +5,7 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
-import com.purple.hello.dto.out.CreateRoomOutDTO;
+import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
 import com.purple.hello.dto.tool.MemberDTO;
@@ -57,6 +57,10 @@ public class RoomDAOImpl implements RoomDAO {
         query.setParameter("userId", userId);
 
         List resultList = query.getResultList();
+
+        if (resultList.size() == 0)
+            return null;
+
         Map<Long, List<ReadRoomDTO>> map = new HashMap<>();
 
         for (Object o : resultList){
@@ -103,22 +107,27 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 6; i++)
+            sb.append((char)(97 + (int)(Math.random()*26)));
+
         Room room = Room.builder()
                 .beginTime(0)
                 .createAt(new Date())
-                .roomCode("room-code")
+                .roomCode(sb.toString())
                 .roomQuestion(createUserRoomInDTO.getRoomQuestion())
                 .roomPassword(createUserRoomInDTO.getRoomPassword())
                 .build();
 
         room = roomRepo.save(room);
 
-        CreateRoomOutDTO createRoomOutDTO = CreateRoomOutDTO.builder()
+        CreateRoomDTO createRoomDTO = CreateRoomDTO.builder()
                 .roomId(room.getRoomId())
                 .build();
 
-        return createRoomOutDTO;
+        return createRoomDTO;
     }
 
     @Override
@@ -129,7 +138,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) {
-        // 조인이 맞나 ? in이 맞나 ?
+
         List<ReadUserRoomJoinOutDTO> readUserRoomJoinOutDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadUserRoomJoinOutDTO.class, qRoom.roomId, qUserRoom.roomName, qRoom.roomQuestion))
                 .from(qRoom)
@@ -168,8 +177,12 @@ public class RoomDAOImpl implements RoomDAO {
         }
     }
     public String readRoomCodeByRoomId(long roomId) {
-        Room room = roomRepo.findRoomByRoomId(roomId);
-        String priUrl = room.getRoomCode();
+        Optional<Room> room = roomRepo.findById(roomId);
+
+        if (room.isEmpty())
+            return null;
+
+        String priUrl = room.get().getRoomCode();
         return priUrl;
     }
 
