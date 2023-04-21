@@ -64,6 +64,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                     // 로그인 실패 시,
                     if (error != null) {
+                        Log.e(TAG, "카카오 로그인 실패", error)
                         // 사용자 취소
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
