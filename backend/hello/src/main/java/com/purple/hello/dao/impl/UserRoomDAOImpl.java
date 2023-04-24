@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UserRoomDAOImpl implements UserRoomDAO {
@@ -152,5 +153,36 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .set(qUserRoom.roomName, createUserRoomJoinInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(userRoom.getUserRoomId()))
                 .execute();
+    }
+
+    @Override
+    public void updateUserRoomRoleByUserRoomId(long userRoomId, UserRoomRole userRoomRole) {
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
+        jpaUpdateClause.set(qUserRoom.userRoomRole, userRoomRole)
+                .where(qUserRoom.userRoomId.eq(userRoomId))
+                .execute();
+    }
+
+    @Override
+    public UserRoom readUserRoomByUserRoomId(long userRoomId) {
+        UserRoom userRoom = new JPAQuery<>(em)
+                .select(qUserRoom.userRoom)
+                .from(qUserRoom)
+                .where(qUserRoom.userRoomId.eq(userRoomId))
+                .fetchOne();
+        return userRoom;
+    }
+
+    @Override
+    public List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int limit) {
+        List<UserRoom> userRooms = new JPAQuery<>(em)
+                .select(qUserRoom)
+                .from(qUserRoom)
+                .where(qUserRoom.room.roomId.eq(roomId)
+                        .and(qUserRoom.userRoomId.ne(userRoomId))
+                        .and(qUserRoom.userRoomRole.ne(UserRoomRole.ROLE3)))
+                .limit(limit)
+                .fetch();
+        return userRooms;
     }
 }

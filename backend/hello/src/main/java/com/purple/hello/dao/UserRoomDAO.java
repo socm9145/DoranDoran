@@ -3,6 +3,9 @@ package com.purple.hello.dao;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.entity.UserRoom;
 import com.purple.hello.enu.BoolAlarm;
+import com.purple.hello.enu.UserRoomRole;
+
+import java.util.List;
 
 public interface UserRoomDAO {
     void createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
@@ -14,4 +17,7 @@ public interface UserRoomDAO {
     void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
     UserRoom readUserRoomByUserIdAndRoomId(long userId, long roomId);
     void updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
+    void updateUserRoomRoleByUserRoomId(long userRoomId, UserRoomRole userRoomRole);
+    UserRoom readUserRoomByUserRoomId(long userRoomId);
+    List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int userRoomLimit);
 }
