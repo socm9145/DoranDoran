@@ -63,7 +63,7 @@ private fun PreviewRoomItem() {
     val room = FakeFactory.makeRoom(1, "우리집")
     HiTheme {
         RoomItem(
-            roomName = room.name,
+            roomName = room.personalOptions.roomName,
             members = room.members,
             onClick = {},
         )

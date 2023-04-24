@@ -67,9 +67,9 @@ private fun LazyGridScope.roomsScreen(
     when (roomsState) {
         RoomsUiState.Loading -> Unit
         is RoomsUiState.Loaded -> {
-            items(roomsState.rooms, key = { it.id }) { room ->
+            items(roomsState.rooms, key = { it.roomId }) { room ->
                 RoomItem(
-                    roomName = room.name,
+                    roomName = room.personalOptions.roomName,
                     members = room.members,
                     onClick = {},
                 )
