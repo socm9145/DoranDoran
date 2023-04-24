@@ -46,6 +46,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public boolean comparePasswordByRoomCode(long roomId, String password) {
         String storedPassword = this.roomDAO.comparePasswordByRoomCode(roomId);
+
+        if (storedPassword == null)
+            return false;
+
         return passwordEncoder.matches(password, storedPassword);
     }
 

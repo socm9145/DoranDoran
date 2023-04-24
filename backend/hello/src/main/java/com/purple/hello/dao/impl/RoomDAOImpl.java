@@ -132,8 +132,12 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public String comparePasswordByRoomCode(long roomId) {
-        Room room = this.roomRepo.findById(roomId).get();
-        return room.getRoomPassword();
+
+        Optional<Room> room = this.roomRepo.findById(roomId);
+        if (room.isEmpty())
+            return null;
+
+        return room.get().getRoomPassword();
     }
 
     @Override
