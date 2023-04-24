@@ -3,6 +3,7 @@ package com.purple.hello.service.impl;
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
+import com.purple.hello.dto.out.CreateUserRoomJoinOutDTO;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class UserRoomServiceImpl implements UserRoomService {
     }
 
     @Override
-    public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
-        this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
+    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+        return this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
     }
 
     @Override

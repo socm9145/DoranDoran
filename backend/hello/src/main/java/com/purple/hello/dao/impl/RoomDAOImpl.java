@@ -161,7 +161,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+    public boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
         UserRoomRole userRoomRole = new JPAQuery<>(em)
                 .select(qUserRoom.userRoomRole)
                 .from(qUserRoom)
@@ -169,12 +169,17 @@ public class RoomDAOImpl implements RoomDAO {
                         .and(qUserRoom.user.userId.eq(updateRoomPasswordInDTO.getUserId())))
                 .fetchOne();
 
+        if (userRoomRole == null)
+            return false;
+
         if(userRoomRole == UserRoomRole.ROLE1){
             JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qRoom);
             jpaUpdateClause.set(qRoom.roomPassword, updateRoomPasswordInDTO.getRoomPassword())
                     .where(qRoom.roomId.eq(updateRoomPasswordInDTO.getRoomId()))
                     .execute();
         }
+
+        return true;
     }
     public String readRoomCodeByRoomId(long roomId) {
         Optional<Room> room = roomRepo.findById(roomId);

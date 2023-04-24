@@ -56,9 +56,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+    public boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
         updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
-        this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
+        return this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
     }
     public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) {
         String url = roomDAO.readRoomCodeByRoomId(roomId);

@@ -8,6 +8,7 @@ import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
+import org.json.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class RoomController {
 
     @ApiOperation(
             value = "그룹방 생성 API (v) vv"
-            , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API / 반환형이 있으면 좋을듯 / 룸 코드는 어떡하지?")
+            , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API")
     @PostMapping("/create")
     public ResponseEntity<CreateRoomOutDTO> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO){
         // room 객체 생성
@@ -59,7 +60,7 @@ public class RoomController {
         CreateRoomOutDTO createRoomOutDTO = this.userRoomService.createUserRoom(createUserRoomInDTO, createRoomDTO.getRoomId());
 
         if (createRoomOutDTO == null)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.status(HttpStatus.OK).body(createRoomOutDTO);
     }
@@ -77,38 +78,45 @@ public class RoomController {
     }
 
     @ApiOperation(
-            value = "그룹방 정보 추가 API ",
+            value = "그룹방 정보 추가 API vv",
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
-    public ResponseEntity<Boolean> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
+    public ResponseEntity<CreateUserRoomJoinOutDTO> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
         boolean comparePasswordByRoomCode = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
                 createUserRoomJoinInDTO.getRoomPassword());
 
         if (!comparePasswordByRoomCode)
-            return ResponseEntity.status(HttpStatus.OK).body(false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-        this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
+        CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(true);
+        return ResponseEntity.status(HttpStatus.OK).body(createUserRoomJoinOutDTO);
     }
 
-    @ApiOperation(value = "사진 제출 여부 확인 API (v)",
+    @ApiOperation(value = "사진 제출 여부 확인 API (v) vv",
             notes = "이용자별 사진 제출 여부를 확인해주는 API")
     @GetMapping("/photo")
     public ResponseEntity<List<CompareFeedByRoomIdOutDTO>> compareFeedByUserIdAndRoomId(@RequestParam("roomId") long roomId,
                                                                                         @DateTimeFormat(pattern="yyyy-MM-dd") Date date){
-        List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdOutDTOS
-                = this.feedService.compareFeedByRoomIdAndDate(roomId, date);
-        return ResponseEntity.status(HttpStatus.OK).body(compareFeedByRoomIdOutDTOS);
+        List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdOutDTOs = this.feedService.compareFeedByRoomIdAndDate(roomId, date);
+
+        if (compareFeedByRoomIdOutDTOs == null)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(compareFeedByRoomIdOutDTOs);
     }
-    @ApiOperation(value = "피드 생성 API (v) ",
+    @ApiOperation(value = "피드 생성 API (v) vv",
                   notes = "이용자가 피드를 올릴 경우 피드 정보를 저장해주는 API")
     @PostMapping("/feed")
     public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
         CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
+
+        if (result == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-    @ApiOperation(value = "초대 링크 생성 API (v)",
+    @ApiOperation(value = "초대 링크 생성 API (v) vv",
                     notes = "해당 그룹방 초대 링크를 출력")
     @GetMapping("/code")
     public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId){

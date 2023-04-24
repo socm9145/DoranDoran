@@ -15,7 +15,7 @@ public interface RoomDAO {
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO);
     String comparePasswordByRoomCode(long roomId);
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
-    void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
+    boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
     String readRoomCodeByRoomId(long roomId);
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);

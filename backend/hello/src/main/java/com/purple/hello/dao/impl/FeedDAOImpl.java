@@ -54,6 +54,9 @@ public class FeedDAOImpl implements FeedDAO {
                 .where(qRoom.roomId.eq(roomId))
                 .fetch();
 
+        if (userIdDateDTOs.isEmpty())
+            return null;
+
         List<UserIdDTO> userIdDTOs = new ArrayList<>();
 
         for (UserIdDateDTO userIdDateDTO : userIdDateDTOs){
@@ -92,6 +95,9 @@ public class FeedDAOImpl implements FeedDAO {
 
     @Override
     public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) {
+        if (this.userRoomRepo.findById(createFeedInDTO.getUserRoomId()).isEmpty())
+            return null;
+
         // feed 데이터 저장
         Feed feed = Feed.builder()
                 .feedUrl(createFeedInDTO.getFeedUrl())

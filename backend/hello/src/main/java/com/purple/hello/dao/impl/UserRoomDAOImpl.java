@@ -3,6 +3,7 @@ package com.purple.hello.dao.impl;
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
+import com.purple.hello.dto.out.CreateUserRoomJoinOutDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
@@ -75,9 +76,12 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
-        Room room = this.roomRepo.getById(createUserRoomJoinInDTO.getRoomId());
-        User user = this.userRepo.getById(createUserRoomJoinInDTO.getUserId());
+    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+        Optional<Room> room = this.roomRepo.findById(createUserRoomJoinInDTO.getRoomId());
+        Optional<User> user = this.userRepo.findById(createUserRoomJoinInDTO.getUserId());
+
+        if (room.isEmpty() || user.isEmpty())
+            return null;
 
         UserRoom userRoom = UserRoom.builder()
                 .createAt(new Date())
@@ -87,14 +91,28 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .roomName(createUserRoomJoinInDTO.getRoomName())
                 .userName(createUserRoomJoinInDTO.getUserName())
                 .userRoomRole(UserRoomRole.ROLE2)
-                .user(user)
-                .room(room)
+                .user(user.get())
+                .room(room.get())
                 .build();
 
-        room.getUserRoom().add(userRoom);
-        user.getUserRoom().add(userRoom);
+        room.get().getUserRoom().add(userRoom);
+        user.get().getUserRoom().add(userRoom);
 
-        this.userRoomRepo.save(userRoom);
+        UserRoom rUserRoom = this.userRoomRepo.save(userRoom);
+
+        CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = CreateUserRoomJoinOutDTO
+                .builder()
+                .createAt(rUserRoom.getCreateAt())
+                .userRoomRole(rUserRoom.getUserRoomRole())
+                .userRoomId(rUserRoom.getUserRoomId())
+                .userName(rUserRoom.getUserName())
+                .roomName(rUserRoom.getRoomName())
+                .dayAlarm(rUserRoom.getDayAlarm())
+                .moveAlarm(rUserRoom.getMoveAlarm())
+                .safeAlarm(rUserRoom.getSafeAlarm())
+                .build();
+
+        return createUserRoomJoinOutDTO;
     }
 
     @Override

@@ -22,7 +22,7 @@ public interface RoomService {
 
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
 
-    void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
+    boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
 
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
