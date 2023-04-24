@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     kotlin("android")
     id("com.android.application")
@@ -16,6 +18,8 @@ android {
         versionName = AppConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["kakaoApiKey"] = getApiKey("KAKAO_API_KEY")
+        buildConfigField("String", "KAKAO_NATIVE_KEY", getApiKey("KAKAO_NATIVE_KEY"))
     }
 
     buildTypes {
@@ -45,6 +49,7 @@ android {
 
 dependencies {
     implementation(project(":feature:rooms"))
+    implementation(project(":core:designsystem"))
 
     implementation(composeDependencies)
     implementation(appDependencies)
@@ -53,4 +58,10 @@ dependencies {
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
+
+    implementation(socialLogin)
+}
+
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
