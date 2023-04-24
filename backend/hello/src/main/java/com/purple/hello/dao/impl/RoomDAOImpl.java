@@ -6,11 +6,12 @@ import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
+import com.purple.hello.dto.out.ReadQuestionOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
-import com.purple.hello.dto.tool.DeleteRoomDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.enu.UserRoomRole;
+import com.purple.hello.repo.HistoryRepo;
 import com.purple.hello.repo.RoomRepo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -22,8 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class RoomDAOImpl implements RoomDAO {
@@ -34,8 +38,11 @@ public class RoomDAOImpl implements RoomDAO {
     private final QUser qUser = QUser.user;
     @Autowired
     private final RoomRepo roomRepo;
-    public RoomDAOImpl(RoomRepo roomRepo) {
+    @Autowired
+    private final HistoryRepo historyRepo;
+    public RoomDAOImpl(RoomRepo roomRepo, HistoryRepo historyRepo) {
         this.roomRepo = roomRepo;
+        this.historyRepo = historyRepo;
     }
 
     @Override
@@ -144,5 +151,13 @@ public class RoomDAOImpl implements RoomDAO {
         this.roomRepo.delete(room);
 
         return true;
+    }
+
+    public LocalDate getCreatedAtByRoomId(long roomId){
+        Room room = roomRepo.findRoomByRoomId(roomId);
+        LocalDate localDate = room.getCreateAt().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        return localDate;
     }
 }

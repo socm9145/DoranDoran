@@ -113,4 +113,13 @@ public class RoomController {
 
         return ResponseEntity.status(HttpStatus.OK).body(readFeedOutDTOs);
     }
+
+    @ApiOperation(value = "질문 출력 API",
+            notes = "해당 날짜에 사용할 질문을 랜덤으로 출력해주는 API")
+    @GetMapping("/question")
+    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId){
+        ReadQuestionOutDTO readQuestionOutDTO = roomService.readQuestionByRoomId(questionId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(readQuestionOutDTO);
+    }
 }
