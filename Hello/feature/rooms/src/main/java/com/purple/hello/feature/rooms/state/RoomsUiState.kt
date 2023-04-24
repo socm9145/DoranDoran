@@ -5,9 +5,9 @@ import com.purple.hello.domain.feature.model.Room
 sealed interface RoomsUiState {
     object Loading : RoomsUiState
 
-    data class Loaded(
+    data class Success(
         val rooms: List<Room>,
     ) : RoomsUiState
 
-    data class Error(val message: String?) : RoomsUiState
+    data class Error(val message: Throwable?) : RoomsUiState
 }

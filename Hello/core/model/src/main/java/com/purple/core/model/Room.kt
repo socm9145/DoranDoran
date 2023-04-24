@@ -1,4 +1,4 @@
-package com.purple.hello.domain.feature.model
+package com.purple.core.model
 
 data class Room(
     val roomId: Long,
