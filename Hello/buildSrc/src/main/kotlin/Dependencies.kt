@@ -21,6 +21,9 @@ object Versions {
 
     // Hilt
     const val HILT = "1.0.0"
+
+    // Kotlin
+    const val KOTLIN_COROUTINES = "1.6.4"
 }
 
 object KTX {
@@ -56,4 +59,8 @@ object Debug {
 
 object Hilt {
     const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT}"
+}
+
+object Kotlin {
+    const val KOTLIN_COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.KOTLIN_COROUTINES}"
 }
