@@ -20,6 +20,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["kakaoApiKey"] = getApiKey("KAKAO_API_KEY")
         buildConfigField("String", "KAKAO_NATIVE_KEY", getApiKey("KAKAO_NATIVE_KEY"))
+        buildConfigField("String", "GOOGLE_KEY", getApiKey("GOOGLE_KEY"))
     }
 
     buildTypes {

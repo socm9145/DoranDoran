@@ -20,6 +20,14 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     val isLoggedIn = MutableStateFlow<Boolean>(false)
 
+//    private val _user: MutableStateFlow<User?> = MutableStateFlow(null)
+//    val user: StateFlow<User?> = _user
+//
+//    suspend fun signIn(email: String, displayName: String) {
+//        delay(2000) //simulating network call
+//        _user.value = User(email, displayName)
+//    }
+
     fun kakaoLogin() {
         viewModelScope.launch {
             isLoggedIn.emit(handleKakaoLogin())
@@ -33,6 +41,15 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+//    fun googleLogin() {
+//        viewModelScope.launch {
+////            isLoggedIn.emit(handleGoogleLogin())
+//        }
+//    }
+//
+//    private fun handleGoogleLogin() {
+//    }
 
     private suspend fun handleKakaoLogout(): Boolean =
         suspendCoroutine { continuation ->
