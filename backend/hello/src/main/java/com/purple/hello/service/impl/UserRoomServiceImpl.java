@@ -1,21 +1,29 @@
 package com.purple.hello.service.impl;
 
+import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.CreateUserRoomJoinOutDTO;
+import com.purple.hello.entity.UserRoom;
 import com.purple.hello.enu.BoolAlarm;
+import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserRoomServiceImpl implements UserRoomService {
     @Autowired
     private final UserRoomDAO userRoomDAO;
-    public UserRoomServiceImpl(UserRoomDAO userRoomDAO){
+    @Autowired
+    private final RoomDAO roomDAO;
+    public UserRoomServiceImpl(UserRoomDAO userRoomDAO, RoomDAO roomDAO){
         this.userRoomDAO = userRoomDAO;
+        this.roomDAO = roomDAO;
     }
     @Override
     public CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
@@ -23,8 +31,14 @@ public class UserRoomServiceImpl implements UserRoomService {
     }
 
     @Override
-    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
-        return this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
+    @Transactional
+    public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+        boolean isAlreadyUser = checkUserExist(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
+        if(isAlreadyUser){
+            this.userRoomDAO.updateUserRoomRejoin(createUserRoomJoinInDTO);
+        }else{
+            this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
+        }
     }
 
     @Override
@@ -53,7 +67,31 @@ public class UserRoomServiceImpl implements UserRoomService {
 
     @Override
     @Transactional
-    public void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) {
-        userRoomDAO.deleteUserRoom(deleteUserRoomInDTO);
+    public boolean deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) {
+        final int USER_ROOM_LIMIT = 1;
+        UserRoom userRoom = userRoomDAO.readUserRoomByUserRoomId(deleteUserRoomInDTO.getUserRoomId());
+        List<UserRoom> userRooms = userRoomDAO.readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(userRoom.getRoom().getRoomId(), userRoom.getUserRoomId(), USER_ROOM_LIMIT);
+        if(userRooms.size() > 0) {
+            userRoomDAO.updateUserRoomRoleByUserRoomId(deleteUserRoomInDTO.getUserRoomId(), UserRoomRole.ROLE3);
+            userRoom = userRooms.get(0);
+            userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE1);
+        }else {
+            DeleteRoomInDTO deleteRoomInDTO = new DeleteRoomInDTO(userRoom.getRoom().getRoomId(), userRoom.getUser().getUserId());
+            if (roomDAO.deleteRoom(deleteRoomInDTO)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkUserExist(long userId, long roomId) {
+        UserRoom userRoom = userRoomDAO.readUserRoomByUserIdAndRoomId(userId, roomId);
+        if(userRoom != null) {
+            return true;
+        }else {
+            return false;
+        }
     }
 }

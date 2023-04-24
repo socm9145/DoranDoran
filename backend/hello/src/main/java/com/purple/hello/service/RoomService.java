@@ -28,4 +28,5 @@ public interface RoomService {
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
+    ReadQuestionOutDTO readQuestionByRoomId(long roomId);
 }

@@ -123,10 +123,13 @@ public class OptionController {
             value = "그룹 탈퇴 API "
             , notes = "일반 사용자가 그룹에서 나가게 하는 API. 모든 이용자가 사용 가능하다.")
     @PutMapping("/room/user-role")
-    public ResponseEntity<Void> deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO, HttpServletRequest request){
+    public ResponseEntity<String> deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO, HttpServletRequest request){
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         deleteUserRoomInDTO.setUserId(userId);
-        userRoomService.deleteUserRoom(deleteUserRoomInDTO);
-        return new ResponseEntity(HttpStatus.OK);
+        if(userRoomService.deleteUserRoom(deleteUserRoomInDTO)){
+            return ResponseEntity.status(HttpStatus.OK).body("SUCCESS");
+        }else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("FAILED");
+        }
     }
 }

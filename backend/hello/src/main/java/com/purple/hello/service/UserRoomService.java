@@ -14,5 +14,5 @@ public interface UserRoomService {
     String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO);
     BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
     BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
-    void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
+    boolean deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
 }

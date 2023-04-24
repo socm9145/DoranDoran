@@ -81,19 +81,15 @@ public class RoomController {
             value = "그룹방 정보 추가 API vv",
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
-    public ResponseEntity<CreateUserRoomJoinOutDTO> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
-        boolean comparePasswordByRoomCode = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
+    public ResponseEntity<Boolean> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
+        // TODO access-token에서 추출한 userId를 사용하도록 변경
+        boolean isCorrectPassword = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
                 createUserRoomJoinInDTO.getRoomPassword());
-
-        if (!comparePasswordByRoomCode)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-
-        CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
-
-        if (createUserRoomJoinOutDTO == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-
-        return ResponseEntity.status(HttpStatus.OK).body(createUserRoomJoinOutDTO);
+        if (!isCorrectPassword){
+            return ResponseEntity.status(HttpStatus.OK).body(false);
+        }
+        this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
     @ApiOperation(value = "사진 제출 여부 확인 API (v) vv",
@@ -138,5 +134,14 @@ public class RoomController {
         List<ReadFeedOutDTO> readFeedOutDTOs = this.feedService.readFeedByRoomIdAndDate(roomId, date);
 
         return ResponseEntity.status(HttpStatus.OK).body(readFeedOutDTOs);
+    }
+
+    @ApiOperation(value = "질문 출력 API",
+            notes = "해당 날짜에 사용할 질문을 랜덤으로 출력해주는 API")
+    @GetMapping("/question")
+    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId){
+        ReadQuestionOutDTO readQuestionOutDTO = roomService.readQuestionByRoomId(questionId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(readQuestionOutDTO);
     }
 }
