@@ -8,6 +8,8 @@ import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.repo.UserRepo;
 import com.purple.hello.repo.UserRoomRepo;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -127,6 +129,28 @@ public class UserRoomDAOImpl implements UserRoomDAO {
         jpaUpdateClause.set(qUserRoom.userRoomRole, UserRoomRole.ROLE3)
                 .where(qUserRoom.userRoomId.eq(deleteUserRoomInDTO.getUserRoomId())
                         .and(qUserRoom.user.userId.eq(deleteUserRoomInDTO.getUserId())))
+                .execute();
+    }
+
+    @Override
+    public UserRoom readUserRoomByUserIdAndRoomId(long userId, long roomId) {
+        UserRoom userRoom = new JPAQuery<>(em)
+                .select(qUserRoom)
+                .from(qUserRoom)
+                .where(qUserRoom.room.roomId.eq(roomId).and(qUserRoom.user.userId.eq(userId)))
+                .fetchOne();
+        return userRoom;
+    }
+
+    @Override
+    public void updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+        UserRoom userRoom = readUserRoomByUserIdAndRoomId(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
+
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
+        jpaUpdateClause.set(qUserRoom.userRoomRole, UserRoomRole.ROLE2)
+                .set(qUserRoom.userName, createUserRoomJoinInDTO.getUserName())
+                .set(qUserRoom.roomName, createUserRoomJoinInDTO.getRoomName())
+                .where(qUserRoom.userRoomId.eq(userRoom.getUserRoomId()))
                 .execute();
     }
 }

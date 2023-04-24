@@ -9,6 +9,8 @@ import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
 import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
+import com.purple.hello.dto.tool.MemberDTO;
+import com.purple.hello.dto.tool.ReadRoomDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.HistoryRepo;
@@ -28,6 +30,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.Query;
+import java.util.*;
 
 @Component
 public class RoomDAOImpl implements RoomDAO {
@@ -47,7 +51,65 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
-        return null;
+
+        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url " +
+                "        from users U " +
+                "        join user_rooms UR " +
+                "        on U.user_id = UR.user_id " +
+                "        join rooms R " +
+                "        on UR.room_id = R.room_id " +
+                "        join user_rooms UR2 " +
+                "        on UR2.room_id = R.room_id " +
+                "        join users U2 " +
+                "        on U2.user_id = UR2.user_id " +
+                "        where U.user_id = :userId";
+        Query query = em.createNativeQuery(sql);
+        query.setParameter("userId", userId);
+
+        List resultList = query.getResultList();
+        Map<Long, List<ReadRoomDTO>> map = new HashMap<>();
+
+        for (Object o : resultList){
+
+            Object [] result = (Object[]) o;
+            long userRoomId = ((Number)result[0]).longValue();
+            long roomId = ((Number)result[1]).longValue();
+
+            if (!map.containsKey(roomId))
+                map.put(roomId, new ArrayList<>());
+            
+            map.get(roomId).add(ReadRoomDTO.builder()
+                            .userRoomId(userRoomId)
+                            .roomId(roomId)
+                            .roomName((String)result[2])
+                            .userName((String)result[3])
+                            .userProfileUrl((String)result[4])
+                            .build());
+        }
+
+        List<ReadRoomOutDTO> readRoomOutDTOs = new ArrayList<>();
+
+        for (long key : map.keySet()){
+            ReadRoomOutDTO readRoomOutDTO = new ReadRoomOutDTO();
+            readRoomOutDTO.setUserRoomId(map.get(key).get(0).getUserRoomId());
+            readRoomOutDTO.setRoomId(key);
+            readRoomOutDTO.setRoomName(map.get(key).get(0).getRoomName());
+
+            List<MemberDTO> memberDTOs = new ArrayList<>();
+
+            for (ReadRoomDTO readRoomDTOs : map.get(key)){
+                MemberDTO memberDTO = MemberDTO.builder()
+                        .name(readRoomDTOs.getUserName())
+                        .profileUrl(readRoomDTOs.getUserProfileUrl())
+                        .build();
+
+                memberDTOs.add(memberDTO);
+            }
+            readRoomOutDTO.setMembers(memberDTOs);
+            readRoomOutDTOs.add(readRoomOutDTO);
+        }
+
+        return readRoomOutDTOs;
     }
 
     @Override
