@@ -1,8 +1,8 @@
 package com.purple.hello.feature.rooms.fake
 
-import com.purple.hello.domain.feature.model.PersonalOptions
-import com.purple.hello.domain.feature.model.Room
-import com.purple.hello.domain.feature.model.User
+import com.purple.core.model.PersonalOptions
+import com.purple.core.model.Room
+import com.purple.core.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
