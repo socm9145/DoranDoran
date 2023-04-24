@@ -3,8 +3,14 @@ package com.purple.hello.service.impl;
 import com.purple.hello.dao.HistoryDAO;
 import com.purple.hello.dao.QuestionDAO;
 import com.purple.hello.dao.RoomDAO;
-import com.purple.hello.dto.in.*;
-import com.purple.hello.dto.out.*;
+import com.purple.hello.dto.in.CreateUserRoomInDTO;
+import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
+import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
+import com.purple.hello.dto.in.DeleteRoomInDTO;
+import com.purple.hello.dto.tool.CreateRoomDTO;
+import com.purple.hello.dto.out.ReadRoomCodeOutDTO;
+import com.purple.hello.dto.out.ReadRoomOutDTO;
+import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
 import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.repo.QuestionRepo;
@@ -45,7 +51,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
         createUserRoomInDTO.setRoomPassword(passwordEncoder.encode(createUserRoomInDTO.getRoomPassword()));
         return this.roomDAO.createRoom(createUserRoomInDTO);
     }
@@ -53,6 +59,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public boolean comparePasswordByRoomCode(long roomId, String password) {
         String storedPassword = this.roomDAO.comparePasswordByRoomCode(roomId);
+
+        if (storedPassword == null)
+            return false;
+
         return passwordEncoder.matches(password, storedPassword);
     }
 
@@ -63,12 +73,16 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+    public boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
         updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
-        this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
+        return this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
     }
     public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) {
         String url = roomDAO.readRoomCodeByRoomId(roomId);
+
+        if (url == null)
+            return null;
+
         Instant currentTime = Instant.now();
         ReadRoomCodeOutDTO readRoomCodeOutDTO = new ReadRoomCodeOutDTO();
         if(url != null && url.length() > 0){

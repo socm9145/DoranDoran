@@ -41,11 +41,14 @@ public class UserController {
     }
 
     @ApiOperation(
-            value = "그룹방 출력 API"
+            value = "그룹방 출력 API (v) vv"
             , notes = "그룹 화면에서 사용자에게 맞는 그룹방을 출력해주는 API")
     @GetMapping("/")
     public ResponseEntity<List<ReadRoomOutDTO>> readRoomByUserId(@RequestParam("userId") long userId){
         List<ReadRoomOutDTO> readRoomOutDTOs = roomService.readRoomByUserId(userId);
+
+        if (readRoomOutDTOs == null)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 
         return ResponseEntity.status(HttpStatus.OK).body(readRoomOutDTOs);
     }

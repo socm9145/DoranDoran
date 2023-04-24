@@ -5,6 +5,7 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
+import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
 import com.purple.hello.dto.out.ReadRoomOutDTO;
@@ -67,6 +68,10 @@ public class RoomDAOImpl implements RoomDAO {
         query.setParameter("userId", userId);
 
         List resultList = query.getResultList();
+
+        if (resultList.size() == 0)
+            return null;
+
         Map<Long, List<ReadRoomDTO>> map = new HashMap<>();
 
         for (Object o : resultList){
@@ -113,33 +118,42 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public CreateRoomOutDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 6; i++)
+            sb.append((char)(97 + (int)(Math.random()*26)));
+
         Room room = Room.builder()
                 .beginTime(0)
                 .createAt(new Date())
-                .roomCode("room-code")
+                .roomCode(sb.toString())
                 .roomQuestion(createUserRoomInDTO.getRoomQuestion())
                 .roomPassword(createUserRoomInDTO.getRoomPassword())
                 .build();
 
         room = roomRepo.save(room);
 
-        CreateRoomOutDTO createRoomOutDTO = CreateRoomOutDTO.builder()
+        CreateRoomDTO createRoomDTO = CreateRoomDTO.builder()
                 .roomId(room.getRoomId())
                 .build();
 
-        return createRoomOutDTO;
+        return createRoomDTO;
     }
 
     @Override
     public String comparePasswordByRoomCode(long roomId) {
-        Room room = this.roomRepo.findById(roomId).get();
-        return room.getRoomPassword();
+
+        Optional<Room> room = this.roomRepo.findById(roomId);
+        if (room.isEmpty())
+            return null;
+
+        return room.get().getRoomPassword();
     }
 
     @Override
     public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) {
-        // 조인이 맞나 ? in이 맞나 ?
+
         List<ReadUserRoomJoinOutDTO> readUserRoomJoinOutDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadUserRoomJoinOutDTO.class, qRoom.roomId, qUserRoom.roomName, qRoom.roomQuestion))
                 .from(qRoom)
@@ -162,7 +176,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public void updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+    public boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
         UserRoomRole userRoomRole = new JPAQuery<>(em)
                 .select(qUserRoom.userRoomRole)
                 .from(qUserRoom)
@@ -170,16 +184,25 @@ public class RoomDAOImpl implements RoomDAO {
                         .and(qUserRoom.user.userId.eq(updateRoomPasswordInDTO.getUserId())))
                 .fetchOne();
 
+        if (userRoomRole == null)
+            return false;
+
         if(userRoomRole == UserRoomRole.ROLE1){
             JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qRoom);
             jpaUpdateClause.set(qRoom.roomPassword, updateRoomPasswordInDTO.getRoomPassword())
                     .where(qRoom.roomId.eq(updateRoomPasswordInDTO.getRoomId()))
                     .execute();
         }
+
+        return true;
     }
     public String readRoomCodeByRoomId(long roomId) {
-        Room room = roomRepo.findRoomByRoomId(roomId);
-        String priUrl = room.getRoomCode();
+        Optional<Room> room = roomRepo.findById(roomId);
+
+        if (room.isEmpty())
+            return null;
+
+        String priUrl = room.get().getRoomCode();
         return priUrl;
     }
 
