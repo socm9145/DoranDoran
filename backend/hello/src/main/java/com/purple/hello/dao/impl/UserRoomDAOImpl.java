@@ -119,45 +119,59 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
+    public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
-        jpaUpdateClause.set(qUserRoom.roomName, updateRoomNameInDTO.getRoomName())
+        long updatedRowCount = jpaUpdateClause.set(qUserRoom.roomName, updateRoomNameInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(updateRoomNameInDTO.getUserRoomId())
-                        .and(qUserRoom.user.userId.eq(userId)))
+                        .and(qUserRoom.user.userId.eq(updateRoomNameInDTO.getUserId())))
                 .execute();
-        return updateRoomNameInDTO.getRoomName();
+        if(updatedRowCount == 0) {
+            return false;
+        }else {
+            return true;
+        }
     }
 
     @Override
-    public String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
+    public boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
-        jpaUpdateClause.set(qUserRoom.userName, updateUserNameInDTO.getUserName())
+        long updatedRowCount = jpaUpdateClause.set(qUserRoom.userName, updateUserNameInDTO.getUserName())
                 .where(qUserRoom.userRoomId.eq(updateUserNameInDTO.getUserRoomId())
-                        .and(qUserRoom.user.userId.eq(userId)))
+                        .and(qUserRoom.user.userId.eq(updateUserNameInDTO.getUserId())))
                 .execute();
-        return updateUserNameInDTO.getUserName();
+        if(updatedRowCount == 0) {
+            return false;
+        }else {
+            return true;
+        }
     }
 
     @Override
-    public BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+    public boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
-        jpaUpdateClause.set(qUserRoom.moveAlarm, updateMoveAlarmInDTO.getMoveAlarm())
+        long updatedRowCount = jpaUpdateClause.set(qUserRoom.moveAlarm, updateMoveAlarmInDTO.getMoveAlarm())
                 .where(qUserRoom.userRoomId.eq(updateMoveAlarmInDTO.getUserRoomId())
-                        .and(qUserRoom.user.userId.eq(userId)))
+                        .and(qUserRoom.user.userId.eq(updateMoveAlarmInDTO.getUserId())))
                 .execute();
-
-        BoolAlarm boolAlarm = updateMoveAlarmInDTO.getMoveAlarm();
-        return boolAlarm;
+        if(updatedRowCount == 0) {
+            return false;
+        }else {
+            return true;
+        }
     }
 
     @Override
-    public BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+    public boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
-        jpaUpdateClause.set(qUserRoom.safeAlarm, updateSafeAlarmInDTO.getSafeAlarm())
+        long updatedRowCount = jpaUpdateClause.set(qUserRoom.safeAlarm, updateSafeAlarmInDTO.getSafeAlarm())
                 .where(qUserRoom.userRoomId.eq(updateSafeAlarmInDTO.getRoomId())
                         .and(qUserRoom.user.userId.eq(updateSafeAlarmInDTO.getUserId())))
                 .execute();
-        return updateSafeAlarmInDTO.getSafeAlarm();
+        if(updatedRowCount == 0) {
+            return false;
+        }else {
+            return true;
+        }
     }
 
     @Override
@@ -180,15 +194,34 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public void updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+    public CreateUserRoomJoinOutDTO updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
         UserRoom userRoom = readUserRoomByUserIdAndRoomId(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
-
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
-        jpaUpdateClause.set(qUserRoom.userRoomRole, UserRoomRole.ROLE2)
+        long updatedRowCount = jpaUpdateClause.set(qUserRoom.userRoomRole, UserRoomRole.ROLE2)
                 .set(qUserRoom.userName, createUserRoomJoinInDTO.getUserName())
                 .set(qUserRoom.roomName, createUserRoomJoinInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(userRoom.getUserRoomId()))
                 .execute();
+        if(updatedRowCount == 0) {
+            return null;
+        }else {
+            if(em.contains(userRoom)){
+                em.refresh(userRoom);
+            }
+            UserRoom rUserRoom = userRoomRepo.findById(userRoom.getUserRoomId()).get();
+            CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = CreateUserRoomJoinOutDTO
+                    .builder()
+                    .createAt(rUserRoom.getCreateAt())
+                    .userRoomRole(rUserRoom.getUserRoomRole())
+                    .userRoomId(rUserRoom.getUserRoomId())
+                    .userName(rUserRoom.getUserName())
+                    .roomName(rUserRoom.getRoomName())
+                    .dayAlarm(rUserRoom.getDayAlarm())
+                    .moveAlarm(rUserRoom.getMoveAlarm())
+                    .safeAlarm(rUserRoom.getSafeAlarm())
+                    .build();
+            return createUserRoomJoinOutDTO;
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateMoveAlarmInDTO {
+    long userId;
     long userRoomId;
     BoolAlarm moveAlarm;
 }

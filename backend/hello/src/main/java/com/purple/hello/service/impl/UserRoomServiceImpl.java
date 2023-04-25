@@ -32,36 +32,36 @@ public class UserRoomServiceImpl implements UserRoomService {
 
     @Override
     @Transactional
-    public void createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
         boolean isAlreadyUser = checkUserExist(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
         if(isAlreadyUser){
-            this.userRoomDAO.updateUserRoomRejoin(createUserRoomJoinInDTO);
+            return this.userRoomDAO.updateUserRoomRejoin(createUserRoomJoinInDTO);
         }else{
-            this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
+            return this.userRoomDAO.createUserRoomJoin(createUserRoomJoinInDTO);
         }
     }
 
     @Override
     @Transactional
-    public String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO) {
-        return userRoomDAO.updateRoomName(userId, updateRoomNameInDTO);
+    public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) {
+        return userRoomDAO.updateRoomName(updateRoomNameInDTO);
     }
 
     @Override
     @Transactional
-    public String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO) {
-        return userRoomDAO.updateUserName(userId, updateUserNameInDTO);
+    public boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) {
+        return userRoomDAO.updateUserName(updateUserNameInDTO);
     }
 
     @Override
     @Transactional
-    public BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
-        return userRoomDAO.updateMoveAlarm(userId, updateMoveAlarmInDTO);
+    public boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+        return userRoomDAO.updateMoveAlarm(updateMoveAlarmInDTO);
     }
 
     @Override
     @Transactional
-    public BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+    public boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
         return userRoomDAO.updateSafeAlarm(updateSafeAlarmInDTO);
     }
 
@@ -72,7 +72,7 @@ public class UserRoomServiceImpl implements UserRoomService {
         UserRoom userRoom = userRoomDAO.readUserRoomByUserRoomId(deleteUserRoomInDTO.getUserRoomId());
         List<UserRoom> userRooms = userRoomDAO.readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(userRoom.getRoom().getRoomId(), userRoom.getUserRoomId(), USER_ROOM_LIMIT);
         if(userRooms.size() > 0) {
-            userRoomDAO.updateUserRoomRoleByUserRoomId(deleteUserRoomInDTO.getUserRoomId(), UserRoomRole.ROLE3);
+            userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE3);
             userRoom = userRooms.get(0);
             userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE1);
         }else {
