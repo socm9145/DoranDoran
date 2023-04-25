@@ -28,27 +28,25 @@ public class JwtFilter implements Filter {
         String authorizationHeader = httpRequest.getHeader(AUTHORIZATION_HEADER);
 
         // AUTHORIZATION_HEADER 가 정상적으로 들어왔을 경우 JWT 를 추출하여 추가적인 작업을 하는 로직
-//        if(authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
-//            String jwt = authorizationHeader.substring(BEARER_PREFIX.length());
-//
-//            // 토큰 유효성 검사
-//            try{
-//                Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
-//                // 토큰 만료일 검사
-//                Date expiration = claims.getExpiration();
-//                if(expiration.before(new Date(System.currentTimeMillis()))){
-//                    throw new JwtException("Expired JWT token");
-//                }
-//
-//                // 유효한 토큰인 경우, request 에 userId 저장
-//                long userId = Long.parseLong(claims.getSubject());
-//                httpRequest.setAttribute("userId", userId);
-//            } catch (JwtException e){
-//                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-//                return;
-//            }
-//        }
-        httpRequest.setAttribute("userId", 1L);
+        if(authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            String jwt = authorizationHeader.substring(BEARER_PREFIX.length());
+            // 토큰 유효성 검사
+            try{
+                Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
+                // 토큰 만료일 검사
+                Date expiration = claims.getExpiration();
+                if(expiration.before(new Date(System.currentTimeMillis()))){
+                    throw new JwtException("Expired JWT token");
+                }
+
+                // 유효한 토큰인 경우, request 에 userId 저장
+                long userId = Long.parseLong(claims.getSubject());
+                httpRequest.setAttribute("userId", userId);
+            } catch (JwtException e){
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                return;
+            }
+        }
 
         chain.doFilter(request, response);
     }

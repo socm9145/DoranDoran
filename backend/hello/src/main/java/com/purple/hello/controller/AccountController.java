@@ -4,7 +4,11 @@ import com.purple.hello.dto.in.OauthUserInputDTO;
 import com.purple.hello.entity.User;
 import com.purple.hello.jwt.JwtTokenProvider;
 import com.purple.hello.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.json.JSONObject;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/account", produces = "application/json; charset=utf-8")
@@ -34,6 +39,8 @@ public class AccountController {
     private final UserRoomService userRoomService;
     @Autowired
     private final UserService userService;
+    @Value("${jwt.secret}")
+    private String secret;
     AccountController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
                    UserRoomService userRoomService, UserService userService){
         this.alarmService = alarmService;
@@ -44,28 +51,21 @@ public class AccountController {
         this.userService = userService;
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<?> login(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse){
+    @GetMapping("/login/kakao")
+    public ResponseEntity<String> loginKakao(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse){
         ResponseEntity<String> response = userService.getKakaoUserInfoWithAccessToken(token);
-
-        // 회원 정보 추출
         JSONObject jsonObject = new JSONObject(response.getBody());
         long oauthId = (long) jsonObject.get("id");
 
         User user = userService.readUserByOauthId(oauthId);
 
-        // 신규 회원인 경우
         if(user == null){
-            JSONObject userInfo = jsonObject.getJSONObject("kakao_account");
-            userInfo = userInfo.getJSONObject("profile");
-            String name = userInfo.getString("nickname");
-
-            OauthUserInputDTO oauthUserInputDTO = new OauthUserInputDTO(oauthId, name);
+            OauthUserInputDTO oauthUserInputDTO = new OauthUserInputDTO(oauthId);
             user = userService.insertUser(oauthUserInputDTO);
         }
 
         final String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserId()));
-        final String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getUserId()), accessToken);
+        final String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getUserId()));
 
         userService.updateRefreshToken(user.getUserId(), refreshToken);
 
@@ -78,21 +78,44 @@ public class AccountController {
     @GetMapping("/reissue")
     public ResponseEntity<?> reissue(@RequestHeader("Access-Token") String accessToken,
                                      @RequestHeader("Refresh-Token") String refreshToken,
-                                     HttpServletResponse httpServletResponse){
+                                     HttpServletResponse response){
         if(accessToken == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효한 AccessToken이 아닙니다");
         }
-        // TODO App 과 협업으로 추가 작성 예정 (refresh token 유효성 확인, 유효하면?, 유효하지 않으면)
 
-        long userId = userService.isValidRefreshToken(refreshToken);
-        return null;
+        User user = userService.isValidRefreshToken(refreshToken);
+
+        if(user != null){
+            try{
+                Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(refreshToken).getBody();
+                Date expiration = claims.getExpiration();
+                if(expiration.before(new Date(System.currentTimeMillis()))){
+                    throw new JwtException("Expired JWT token");
+                }
+                accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserId()));
+                refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getUserId()));
+
+                userService.updateRefreshToken(user.getUserId(), refreshToken);
+
+                response.addHeader("Access-Token", accessToken);
+                response.addHeader("Refresh-Token", refreshToken);
+                return ResponseEntity.status(HttpStatus.OK).body("REISSUE SUCCESS");
+            } catch (JwtException e){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token Expired");
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 Refresh Token");
+        }
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest httpServletRequest){
+    public ResponseEntity<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
         long userId = (long) httpServletRequest.getAttribute("userId");
 
-        return "User ID: " + userId;
+        httpServletResponse.addHeader("Access-Token", null);
+        httpServletResponse.addHeader("Refresh-Token", null);
+
+        return ResponseEntity.status(HttpStatus.OK).body("LOGOUT SUCCESS");
     }
     
 }
