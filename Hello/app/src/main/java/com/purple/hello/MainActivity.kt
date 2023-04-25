@@ -1,6 +1,5 @@
 package com.purple.hello
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +14,8 @@ import com.purple.hello.feature.rooms.RoomsRoute
 import com.purple.hello.ui.theme.HelloTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.purple.core.designsystem.theme.HiTheme
+import com.purple.hello.login.LoginScreen
+import com.purple.hello.login.LoginViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,6 +43,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     HiTheme {
-        LoginScreen(LoginViewModel(Application()))
+        LoginScreen(LoginViewModel())
     }
 }
