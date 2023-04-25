@@ -1,6 +1,8 @@
 plugins {
     kotlin("android")
+    kotlin("kapt")
     id("com.android.library")
+    id("com.google.dagger.hilt.android")
 }
 android {
     namespace = "com.purple.hello.feature.groups"
@@ -47,6 +49,9 @@ dependencies {
     implementation(imageLoadDependencies)
     implementation(appDependencies)
     implementation(hiltDependencies)
+
+    implementation(Hilt.HILT_ANDROID)
+    kapt(Hilt.HILT_ANDROID_COMPILER)
 
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)

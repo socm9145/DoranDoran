@@ -1,6 +1,8 @@
 plugins {
     kotlin("android")
+    kotlin("kapt")
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -53,4 +55,7 @@ dependencies {
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
+
+    implementation(Hilt.HILT_ANDROID)
+    kapt(Hilt.HILT_ANDROID_COMPILER)
 }
