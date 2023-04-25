@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 public interface UserRoomService {
     CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
     CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
-    String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO);
-    String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO);
-    BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
-    BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
+    boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO);
+    boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO);
+    boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
+    boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
     boolean deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
 }

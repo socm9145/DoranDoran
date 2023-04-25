@@ -81,15 +81,18 @@ public class RoomController {
             value = "그룹방 정보 추가 API vv",
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
-    public ResponseEntity<Boolean> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
+    public ResponseEntity<CreateUserRoomJoinOutDTO> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
         // TODO access-token에서 추출한 userId를 사용하도록 변경
         boolean isCorrectPassword = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
                 createUserRoomJoinInDTO.getRoomPassword());
-        if (!isCorrectPassword){
-            return ResponseEntity.status(HttpStatus.OK).body(false);
+        if (!isCorrectPassword) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(true);
+        CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
+        if(createUserRoomJoinOutDTO == null){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(createUserRoomJoinOutDTO);
     }
 
     @ApiOperation(value = "사진 제출 여부 확인 API (v) vv",
