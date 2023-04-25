@@ -9,9 +9,5 @@ java {
 }
 
 dependencies {
-    implementation(project(":core:model"))
-    implementation(project(":core:data"))
-
-    implementation("javax.inject:javax.inject:1")
     implementation(Kotlin.KOTLIN_COROUTINES)
 }

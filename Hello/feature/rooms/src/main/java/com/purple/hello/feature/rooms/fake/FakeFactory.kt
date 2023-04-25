@@ -1,17 +1,18 @@
 package com.purple.hello.feature.rooms.fake
 
-import com.purple.hello.domain.feature.model.Room
-import com.purple.hello.domain.feature.model.User
+import com.purple.core.model.PersonalOptions
+import com.purple.core.model.Room
+import com.purple.core.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 object FakeFactory {
-    fun makeUser(id: Int, name: String, profileUrl: String): User {
+    fun makeUser(id: Long, name: String, profileUrl: String): User {
         return User(id, name, profileUrl)
     }
 
-    fun makeRoom(id: Int, name: String): Room {
-        return Room(id, name, makeMembers())
+    fun makeRoom(id: Long, name: String): Room {
+        return Room(id, PersonalOptions(name, "홍홍"), makeMembers())
     }
 
     fun makeRooms(): Flow<List<Room>> {

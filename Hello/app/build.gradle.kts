@@ -2,7 +2,9 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     kotlin("android")
+    kotlin("kapt")
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -59,6 +61,8 @@ dependencies {
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
 
+    implementation(Hilt.HILT_ANDROID)
+    kapt(Hilt.HILT_ANDROID_COMPILER)
     implementation(socialLogin)
 }
 

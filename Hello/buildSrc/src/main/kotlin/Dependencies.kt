@@ -20,7 +20,11 @@ object Versions {
     const val ANDROID_JUNIT = "1.1.5"
 
     // Hilt
-    const val HILT = "1.0.0"
+    const val HILT_ANDROID = "2.44"
+    const val HILT_COMPOSE = "1.0.0"
+
+    // Kotlin
+    const val KOTLIN_COROUTINES = "1.6.4"
 
     // Calendar Library
     const val CALENDAR_LIBRARY = "1.1.1"
@@ -62,7 +66,13 @@ object Debug {
 }
 
 object Hilt {
-    const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT}"
+    const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT_COMPOSE}"
+    const val HILT_ANDROID = "com.google.dagger:hilt-android:${Versions.HILT_ANDROID}"
+    const val HILT_ANDROID_COMPILER = "com.google.dagger:hilt-android-compiler:${Versions.HILT_ANDROID}"
+}
+
+object Kotlin {
+    const val KOTLIN_COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.KOTLIN_COROUTINES}"
 }
 
 object CalendarLibrary {

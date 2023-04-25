@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,22 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
-import com.purple.hello.feature.rooms.intent.RoomsIntent
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 
 @Composable
 fun RoomsRoute(
-    roomsViewModel: RoomsViewModel = viewModel(),
+    roomsViewModel: RoomsViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(Unit) {
-        roomsViewModel.sendIntent(RoomsIntent.FetchRooms)
-    }
-
     val uiState by roomsViewModel.roomsUiState.collectAsState()
     val isRoomsLoading = uiState is RoomsUiState.Loading
     val state = rememberLazyGridState()
@@ -66,10 +60,10 @@ private fun LazyGridScope.roomsScreen(
 ) {
     when (roomsState) {
         RoomsUiState.Loading -> Unit
-        is RoomsUiState.Loaded -> {
-            items(roomsState.rooms, key = { it.id }) { room ->
+        is RoomsUiState.Success -> {
+            items(roomsState.rooms, key = { it.roomId }) { room ->
                 RoomItem(
-                    roomName = room.name,
+                    roomName = room.personalOptions.roomName,
                     members = room.members,
                     onClick = {},
                 )

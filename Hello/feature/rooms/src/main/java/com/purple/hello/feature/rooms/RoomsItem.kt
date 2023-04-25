@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.hello.domain.feature.model.User
+import com.purple.core.model.User
 import com.purple.hello.feature.rooms.fake.FakeFactory
 
 @Composable
@@ -63,7 +63,7 @@ private fun PreviewRoomItem() {
     val room = FakeFactory.makeRoom(1, "우리집")
     HiTheme {
         RoomItem(
-            roomName = room.name,
+            roomName = room.personalOptions.roomName,
             members = room.members,
             onClick = {},
         )
