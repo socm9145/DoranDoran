@@ -12,13 +12,13 @@ import java.util.List;
 public interface UserRoomDAO {
     CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
     CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
-    String updateRoomName(long userId, UpdateRoomNameInDTO updateRoomNameInDTO);
-    String updateUserName(long userId, UpdateUserNameInDTO updateUserNameInDTO);
-    BoolAlarm updateMoveAlarm(long userId, UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
-    BoolAlarm updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
+    boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO);
+    boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO);
+    boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
+    boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
     void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
     UserRoom readUserRoomByUserIdAndRoomId(long userId, long roomId);
-    void updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
+    CreateUserRoomJoinOutDTO updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
     void updateUserRoomRoleByUserRoomId(long userRoomId, UserRoomRole userRoomRole);
     UserRoom readUserRoomByUserRoomId(long userRoomId);
     List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int userRoomLimit);

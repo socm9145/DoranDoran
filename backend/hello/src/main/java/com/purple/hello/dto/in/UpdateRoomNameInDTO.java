@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomNameInDTO {
+    long userId;
     long userRoomId;
     String roomName;
 }
