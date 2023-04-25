@@ -45,4 +45,6 @@ dependencies {
     implementation(androidLibraryDependencies)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
+
+    implementation(calendarLibrary)
 }

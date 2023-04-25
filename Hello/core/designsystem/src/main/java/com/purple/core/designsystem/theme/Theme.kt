@@ -35,6 +35,7 @@ private val LightColors = lightColorScheme(
     inverseOnSurface = purple_theme_light_inverseOnSurface,
     inversePrimary = purple_theme_light_inversePrimary,
     surfaceTint = purple_theme_light_surfaceTint,
+    outlineVariant = kakao_button,
 )
 
 @Composable

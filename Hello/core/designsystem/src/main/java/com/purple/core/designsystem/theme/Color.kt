@@ -103,3 +103,4 @@ val purple_theme_dark_surfaceBright = Color(0xFF39393C)
 val purple_theme_dark_surfaceDim = Color(0xFF121316)
 
 val seed = Color(0xFFB9CBFF)
+val kakao_button = Color(0xFFFEE500)
