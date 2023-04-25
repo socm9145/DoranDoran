@@ -7,6 +7,7 @@ data class Room(
 )
 
 data class PersonalOptions(
+    val userRoomId: Long,
     val roomName: String,
     val userName: String,
 )

@@ -12,7 +12,7 @@ object FakeFactory {
     }
 
     fun makeRoom(id: Long, name: String): Room {
-        return Room(id, PersonalOptions(name, "홍홍"), makeMembers())
+        return Room(id, PersonalOptions(1, name, "홍홍"), makeMembers())
     }
 
     fun makeRooms(): Flow<List<Room>> {
