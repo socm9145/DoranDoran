@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
+    kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 java {
@@ -13,4 +14,5 @@ dependencies {
     implementation(project(":core:data"))
 
     implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation(retrofit2Dependencies)
 }
