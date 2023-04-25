@@ -1,4 +1,4 @@
-package com.purple.hello
+package com.purple.hello.login.google
 
 import android.app.Activity
 import android.content.Context
