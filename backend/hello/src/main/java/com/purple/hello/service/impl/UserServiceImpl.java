@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User insertUser(OauthUserInputDTO oauthUserInputDTO) {
         User user = new User();
-        user.setName(oauthUserInputDTO.getName());
         user.setOauthId(oauthUserInputDTO.getOauthId());
         return userDAO.insertUser(user);
     }
@@ -60,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long isValidRefreshToken(String refreshToken) {
-        return 0;
+    public User isValidRefreshToken(String refreshToken) {
+        return userDAO.isValidRefreshToken(refreshToken);
     }
 }

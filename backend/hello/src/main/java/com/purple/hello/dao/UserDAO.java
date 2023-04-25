@@ -8,4 +8,6 @@ public interface UserDAO {
     User insertUser(User user);
 
     void updateRefreshToken(long userId, String refreshToken);
+
+    User isValidRefreshToken(String refreshToken);
 }

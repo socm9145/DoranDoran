@@ -14,5 +14,5 @@ public interface UserService {
 
     void updateRefreshToken(long userId, String refreshToken);
 
-    long isValidRefreshToken(String refreshToken);
+    User isValidRefreshToken(String refreshToken);
 }

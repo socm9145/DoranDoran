@@ -28,11 +28,10 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String userId, String accessToken){
+    public String createRefreshToken(String userId){
         return Jwts.builder()
                 .setSubject(userId)
                 .claim("userId", userId)
-                .claim("accessToken", accessToken)
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
