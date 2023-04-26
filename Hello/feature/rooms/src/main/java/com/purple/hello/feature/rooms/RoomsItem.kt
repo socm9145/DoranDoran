@@ -15,13 +15,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.model.User
+import com.purple.core.model.Member
 import com.purple.hello.feature.rooms.fake.FakeFactory
 
 @Composable
 fun RoomItem(
     roomName: String,
-    members: List<User>,
+    members: List<Member>,
     onClick: () -> Unit,
 ) {
     Card(
@@ -37,7 +37,7 @@ fun RoomItem(
         )
         Text(
             modifier = Modifier.padding(horizontal = 24.dp),
-            text = members.joinToString(", ") { it.name },
+            text = members.joinToString(", ") { it.nickName },
             style = MaterialTheme.typography.bodyLarge,
         )
         Row(
@@ -50,7 +50,7 @@ fun RoomItem(
                         .data(it.profileUrl)
                         .crossfade(true)
                         .build(),
-                    contentDescription = "${it.name}의 프로필",
+                    contentDescription = "${it.nickName}의 프로필",
                 )
             }
         }

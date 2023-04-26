@@ -2,13 +2,13 @@ package com.purple.hello.feature.rooms.fake
 
 import com.purple.core.model.PersonalOptions
 import com.purple.core.model.Room
-import com.purple.core.model.User
+import com.purple.core.model.Member
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 object FakeFactory {
-    fun makeUser(id: Long, name: String, profileUrl: String): User {
-        return User(id, name, profileUrl)
+    fun makeUser(id: Long, name: String, profileUrl: String): Member {
+        return Member(id, name, profileUrl)
     }
 
     fun makeRoom(id: Long, name: String): Room {
@@ -28,7 +28,7 @@ object FakeFactory {
         }
     }
 
-    fun makeMembers(): List<User> {
+    fun makeMembers(): List<Member> {
         return listOf(
             makeUser(
                 1,
