@@ -1,4 +1,4 @@
-package com.purple.hello.dto.in;
+package com.purple.hello.dto.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateRoomPasswordInDTO {
+public class ReadRoomQuestionOutDTO {
     long roomId;
-    long userId;
     String roomQuestion;
-    String roomPassword;
 }

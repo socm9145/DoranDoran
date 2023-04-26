@@ -4,11 +4,8 @@ import com.purple.hello.dao.HistoryDAO;
 import com.purple.hello.dao.QuestionDAO;
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.*;
-import com.purple.hello.dto.out.ReadQuestionOutDTO;
+import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
-import com.purple.hello.dto.out.ReadRoomCodeOutDTO;
-import com.purple.hello.dto.out.ReadRoomOutDTO;
-import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
 import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.repo.QuestionRepo;
@@ -130,5 +127,10 @@ public class RoomServiceImpl implements RoomService {
         createQuestionInDTO.setQueryId(questionId);
         historyDAO.createHistory(createQuestionInDTO);
         return questionDAO.readQuestionByQuestionId(questionId);
+    }
+
+    @Override
+    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) {
+        return roomDAO.readRoomQuestionByRoomIdAndUserId(roomId, userId);
     }
 }

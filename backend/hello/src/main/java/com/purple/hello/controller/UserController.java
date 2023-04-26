@@ -44,7 +44,8 @@ public class UserController {
             value = "그룹방 출력 API (v) vv"
             , notes = "그룹 화면에서 사용자에게 맞는 그룹방을 출력해주는 API")
     @GetMapping("/rooms")
-    public ResponseEntity<List<ReadRoomOutDTO>> readRoomByUserId(@RequestParam("userId") long userId){
+    public ResponseEntity<List<ReadRoomOutDTO>> readRoomByUserId(HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
         List<ReadRoomOutDTO> readRoomOutDTOs = roomService.readRoomByUserId(userId);
 
         if (readRoomOutDTOs == null)
