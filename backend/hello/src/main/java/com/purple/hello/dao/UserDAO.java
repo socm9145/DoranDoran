@@ -3,7 +3,7 @@ package com.purple.hello.dao;
 import com.purple.hello.entity.User;
 
 public interface UserDAO {
-    User readUserByOauthId(long oauthId);
+    User readUserByOauthId(String oauthId);
 
     User insertUser(User user);
 
