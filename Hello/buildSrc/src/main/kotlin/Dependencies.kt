@@ -37,6 +37,9 @@ object Versions {
     // Retrofit2
     const val RETROFIT2 = "2.9.0"
     const val RETROFIT2_KOTLINX_SERIALIZATION = "1.0.0"
+
+    // Room
+    const val ROOM = "2.5.0"
 }
 
 object KTX {
@@ -92,4 +95,11 @@ object SocialLogin {
 object Retrofit2 {
     const val RETROFIT2 = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT2}"
     const val KOTLIN_CONVERTER = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.RETROFIT2_KOTLINX_SERIALIZATION}"
+}
+
+object Room {
+    const val ROOM = "androidx.room:room-runtime:${Versions.ROOM}"
+    const val ROOM_COMPILER = "androidx.room:room-compiler:${Versions.ROOM}"
+    const val ROOM_COMMON = "androidx.room:room-common:${Versions.ROOM}"
+    const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
 }
