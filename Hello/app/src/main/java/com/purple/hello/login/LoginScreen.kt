@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel,
+//    loginViewModel: LoginViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val signInRequestCode = 1
@@ -126,5 +126,7 @@ private fun SignInGoogleButton(
 @Preview
 @Composable
 private fun PreviewLoginScreen() {
-    LoginScreen(loginViewModel = LoginViewModel())
+    LoginScreen(
+//        loginViewModel = LoginViewModel()
+    )
 }

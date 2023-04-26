@@ -24,6 +24,7 @@ object Versions {
     const val HILT_COMPOSE = "1.0.0"
 
     // Kotlin
+    const val KOTLIN = "1.8.10"
     const val KOTLIN_COROUTINES = "1.6.4"
 
     // Calendar Library
@@ -32,6 +33,10 @@ object Versions {
     // Social Login
     const val GOOGLE_LOGIN = "20.5.0"
     const val KAKAO_LOGIN = "2.13.0"
+
+    // Retrofit2
+    const val RETROFIT2 = "2.9.0"
+    const val RETROFIT2_KOTLINX_SERIALIZATION = "1.0.0"
 }
 
 object KTX {
@@ -83,3 +88,9 @@ object SociaLogin {
     const val GOOGLE_LOGIN = "com.google.android.gms:play-services-auth:${Versions.GOOGLE_LOGIN}"
     const val KAKAO_LOGIN = "com.kakao.sdk:v2-user:${Versions.KAKAO_LOGIN}"
 }
+
+object Retrofit2 {
+    const val RETROFIT2 = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT2}"
+    const val KOTLIN_CONVERTER = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.RETROFIT2_KOTLINX_SERIALIZATION}"
+}
+

@@ -31,7 +31,9 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    LoginScreen(loginViewModel)
+                    LoginScreen(
+//                        loginViewModel
+                    )
                 }
 //                RoomsRoute()
             }
@@ -43,6 +45,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     HiTheme {
-        LoginScreen(LoginViewModel())
+        LoginScreen(
+//            LoginViewModel()
+        )
     }
 }
