@@ -8,13 +8,13 @@ import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
-import org.json.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -49,8 +49,9 @@ public class RoomController {
             value = "그룹방 생성 API (v) vv"
             , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API")
     @PostMapping("/create")
-    public ResponseEntity<CreateRoomOutDTO> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO){
-        // room 객체 생성
+    public ResponseEntity<CreateRoomOutDTO> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO, HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        createUserRoomInDTO.setUserId(userId);
         CreateRoomDTO createRoomDTO = this.roomService.createRoom(createUserRoomInDTO);
 
         if (createRoomDTO == null)
@@ -81,8 +82,10 @@ public class RoomController {
             value = "그룹방 정보 추가 API vv",
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
-    public ResponseEntity<CreateUserRoomJoinOutDTO> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO){
-        // TODO access-token에서 추출한 userId를 사용하도록 변경
+    public ResponseEntity<CreateUserRoomJoinOutDTO> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO,
+                                                                       HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        createUserRoomJoinInDTO.setUserId(userId);
         boolean isCorrectPassword = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
                 createUserRoomJoinInDTO.getRoomPassword());
         if (!isCorrectPassword) {
@@ -146,5 +149,19 @@ public class RoomController {
         ReadQuestionOutDTO readQuestionOutDTO = roomService.readQuestionByRoomId(questionId);
 
         return ResponseEntity.status(HttpStatus.OK).body(readQuestionOutDTO);
+    }
+
+    @ApiOperation(
+            value = "비밀번호 질문 출력 API "
+            , notes = "그룹 비밀번호 질문을 출력하는 API.")
+    @GetMapping("/room-question")
+    public ResponseEntity<ReadRoomQuestionOutDTO> readRoomQuestion(@RequestParam("roomId") long roomId, HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        ReadRoomQuestionOutDTO readRoomQuestionOutDTO = roomService.readRoomQuestionByRoomIdAndUserId(roomId, userId);
+        if(readRoomQuestionOutDTO == null){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(readRoomQuestionOutDTO);
+        }
     }
 }

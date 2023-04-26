@@ -4,11 +4,8 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
+import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
-import com.purple.hello.dto.out.CreateRoomOutDTO;
-import com.purple.hello.dto.out.ReadQuestionOutDTO;
-import com.purple.hello.dto.out.ReadRoomOutDTO;
-import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,4 +20,5 @@ public interface RoomDAO {
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
     LocalDate getCreatedAtByRoomId(long roomId);
+    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
 }

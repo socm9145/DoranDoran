@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ReadRoomDTO {
+    long userId;
     long userRoomId;
     long roomId;
     String roomName;
@@ -18,7 +19,8 @@ public class ReadRoomDTO {
     String userProfileUrl;
 
     @Builder
-    public ReadRoomDTO(long userRoomId, long roomId, String roomName, String userName, String userProfileUrl) {
+    public ReadRoomDTO(long userRoomId, long roomId, String roomName, String userName, String userProfileUrl, long userId) {
+        this.userId = userId;
         this.userRoomId = userRoomId;
         this.roomId = roomId;
         this.roomName = roomName;

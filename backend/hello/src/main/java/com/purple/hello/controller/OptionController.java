@@ -1,21 +1,13 @@
 package com.purple.hello.controller;
 
 import com.purple.hello.dto.in.*;
-import com.purple.hello.dto.out.UpdateMoveAlarmOutDTO;
-import com.purple.hello.dto.out.UpdateRoomNameOutDTO;
-import com.purple.hello.dto.out.UpdateSafeAlarmOutDTO;
-import com.purple.hello.dto.out.UpdateUserNameOutDTO;
-import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.ResultType;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -121,7 +113,9 @@ public class OptionController {
             value = "그룹 폭파 API(v) vv",
             notes = "방 생성자가 그룹방을 삭제하는 API. 관리자만 사용 가능하다.")
     @DeleteMapping("/room")
-    public ResponseEntity<String> deleteRoom(@RequestBody DeleteRoomInDTO deleteRoomInDTO) {
+    public ResponseEntity<String> deleteRoom(@RequestBody DeleteRoomInDTO deleteRoomInDTO, HttpServletRequest request) {
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        deleteRoomInDTO.setUserId(userId);
         boolean isDeleted = this.roomService.deleteRoom(deleteRoomInDTO);
         if (!isDeleted) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResultType.FAILED.name());

@@ -5,11 +5,8 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
+import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
-import com.purple.hello.dto.out.CreateRoomOutDTO;
-import com.purple.hello.dto.out.ReadQuestionOutDTO;
-import com.purple.hello.dto.out.ReadRoomOutDTO;
-import com.purple.hello.dto.out.ReadUserRoomJoinOutDTO;
 import com.purple.hello.dto.tool.MemberDTO;
 import com.purple.hello.dto.tool.ReadRoomDTO;
 import com.purple.hello.entity.*;
@@ -53,7 +50,7 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
 
-        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url " +
+        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url, U2.user_id" +
                 "        from users U " +
                 "        join user_rooms UR " +
                 "        on U.user_id = UR.user_id " +
@@ -79,7 +76,7 @@ public class RoomDAOImpl implements RoomDAO {
             Object [] result = (Object[]) o;
             long userRoomId = ((Number)result[0]).longValue();
             long roomId = ((Number)result[1]).longValue();
-
+            long rUserId = ((Number)result[5]).longValue();
             if (!map.containsKey(roomId))
                 map.put(roomId, new ArrayList<>());
             
@@ -89,6 +86,7 @@ public class RoomDAOImpl implements RoomDAO {
                             .roomName((String)result[2])
                             .userName((String)result[3])
                             .userProfileUrl((String)result[4])
+                            .userId(rUserId)
                             .build());
         }
 
@@ -102,10 +100,11 @@ public class RoomDAOImpl implements RoomDAO {
 
             List<MemberDTO> memberDTOs = new ArrayList<>();
 
-            for (ReadRoomDTO readRoomDTOs : map.get(key)){
+            for (ReadRoomDTO readRoomDTO : map.get(key)){
                 MemberDTO memberDTO = MemberDTO.builder()
-                        .name(readRoomDTOs.getUserName())
-                        .profileUrl(readRoomDTOs.getUserProfileUrl())
+                        .userId(readRoomDTO.getUserId())
+                        .name(readRoomDTO.getUserName())
+                        .profileUrl(readRoomDTO.getUserProfileUrl())
                         .build();
 
                 memberDTOs.add(memberDTO);
@@ -184,12 +183,18 @@ public class RoomDAOImpl implements RoomDAO {
                         .and(qUserRoom.user.userId.eq(updateRoomPasswordInDTO.getUserId())))
                 .fetchOne();
 
-        if (userRoomRole == null)
+        if(userRoomRole == null) {
             return false;
+        }
+
+        if(updateRoomPasswordInDTO.getRoomQuestion() == null) {
+            updateRoomPasswordInDTO.setRoomQuestion("비밀번호를 입력하세요.");
+        }
 
         if(userRoomRole == UserRoomRole.ROLE1){
             JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qRoom);
-            jpaUpdateClause.set(qRoom.roomPassword, updateRoomPasswordInDTO.getRoomPassword())
+            jpaUpdateClause.set(qRoom.roomQuestion, updateRoomPasswordInDTO.getRoomQuestion())
+                    .set(qRoom.roomPassword, updateRoomPasswordInDTO.getRoomPassword())
                     .where(qRoom.roomId.eq(updateRoomPasswordInDTO.getRoomId()))
                     .execute();
         }
@@ -244,5 +249,19 @@ public class RoomDAOImpl implements RoomDAO {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
         return localDate;
+    }
+
+    @Override
+    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) {
+        ReadRoomQuestionOutDTO readRoomQuestionOutDTO = new JPAQuery<>(em)
+                .select(Projections.constructor(ReadRoomQuestionOutDTO.class, qRoom.roomId, qRoom.roomQuestion))
+                .from(qRoom)
+                .join(qUserRoom)
+                .on(qRoom.roomId.eq(qUserRoom.room.roomId))
+                .join(qUser)
+                .on(qUserRoom.user.userId.eq(qUser.userId))
+                .where(qRoom.roomId.eq(roomId).and(qUser.userId.eq(userId)))
+                .fetchOne();
+        return readRoomQuestionOutDTO;
     }
 }
