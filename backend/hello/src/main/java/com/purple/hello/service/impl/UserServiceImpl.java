@@ -1,10 +1,15 @@
 package com.purple.hello.service.impl;
 
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.purple.hello.dao.UserDAO;
 import com.purple.hello.dto.in.OauthUserInputDTO;
 import com.purple.hello.entity.User;
 import com.purple.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,10 +19,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
+    @Value("${google.CLIENT_ID}")
+    private String CLIENT_ID;
 
     @Autowired
     public UserServiceImpl(UserDAO userDAO){
@@ -42,7 +56,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User readUserByOauthId(long oauthId) {
+    public Payload googleIdTokenVerify(String idTokenString) throws GeneralSecurityException, IOException {
+        HttpTransport transport = new NetHttpTransport();
+        JsonFactory jsonFactory = new JacksonFactory();
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(CLIENT_ID))
+                .build();
+        GoogleIdToken idToken = verifier.verify(idTokenString);
+        if(idToken != null){
+            return idToken.getPayload();
+        }
+        return null;
+    }
+
+    @Override
+    public User readUserByOauthId(String oauthId) {
         return userDAO.readUserByOauthId(oauthId);
     }
 

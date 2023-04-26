@@ -21,7 +21,7 @@ public class UserDAOImpl implements UserDAO {
         this.userRepo = userRepo;
     }
     @Override
-    public User readUserByOauthId(long oauthId) {
+    public User readUserByOauthId(String oauthId) {
         Optional<User> isUser = userRepo.findByOauthId(oauthId);
         return isUser.orElse(null);
     }

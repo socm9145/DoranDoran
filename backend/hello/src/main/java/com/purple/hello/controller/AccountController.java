@@ -1,5 +1,6 @@
 package com.purple.hello.controller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.purple.hello.dto.in.OauthUserInputDTO;
 import com.purple.hello.entity.User;
 import com.purple.hello.jwt.JwtTokenProvider;
@@ -14,12 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.json.JSONObject;
 
 import com.purple.hello.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Date;
 
 @RestController
@@ -28,26 +29,11 @@ public class AccountController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
-    private final AlarmService alarmService;
-    @Autowired
-    private final FeedService feedService;
-    @Autowired
-    private final QuestionService questionService;
-    @Autowired
-    private final RoomService roomService;
-    @Autowired
-    private final UserRoomService userRoomService;
-    @Autowired
     private final UserService userService;
     @Value("${jwt.secret}")
     private String secret;
-    AccountController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
-                   UserRoomService userRoomService, UserService userService){
-        this.alarmService = alarmService;
-        this.feedService = feedService;
-        this.questionService = questionService;
-        this.roomService = roomService;
-        this.userRoomService = userRoomService;
+
+    AccountController(UserService userService){
         this.userService = userService;
     }
 
@@ -55,24 +41,28 @@ public class AccountController {
     public ResponseEntity<String> loginKakao(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse){
         ResponseEntity<String> response = userService.getKakaoUserInfoWithAccessToken(token);
         JSONObject jsonObject = new JSONObject(response.getBody());
-        long oauthId = (long) jsonObject.get("id");
+        String oauthId = jsonObject.get("id").toString();
 
-        User user = userService.readUserByOauthId(oauthId);
-
-        if(user == null){
-            OauthUserInputDTO oauthUserInputDTO = new OauthUserInputDTO(oauthId);
-            user = userService.insertUser(oauthUserInputDTO);
-        }
-
-        final String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserId()));
-        final String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getUserId()));
-
-        userService.updateRefreshToken(user.getUserId(), refreshToken);
-
-        httpServletResponse.addHeader("Access-Token", accessToken);
-        httpServletResponse.addHeader("Refresh-Token", refreshToken);
+        String[] tokens = loginLogic(oauthId);
+        httpServletResponse.addHeader("Access-Token", tokens[0]);
+        httpServletResponse.addHeader("Refresh-Token", tokens[1]);
 
         return ResponseEntity.status(HttpStatus.OK).body("LOGIN SUCCESS");
+    }
+
+    @GetMapping("/login/google")
+    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse) throws GeneralSecurityException, IOException {
+        Payload payload = userService.googleIdTokenVerify(token);
+        if(payload != null){
+            String oauthId = payload.getSubject();
+
+            String[] tokens = loginLogic(oauthId);
+            httpServletResponse.addHeader("Access-Token", tokens[0]);
+            httpServletResponse.addHeader("Refresh-Token", tokens[1]);
+
+            return ResponseEntity.status(HttpStatus.OK).body("LOGIN SUCCESS");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("LOGIN FAIL");
     }
 
     @GetMapping("/reissue")
@@ -117,5 +107,24 @@ public class AccountController {
 
         return ResponseEntity.status(HttpStatus.OK).body("LOGOUT SUCCESS");
     }
-    
+
+    private String[] loginLogic(String oauthId){
+        String[] answer = new String[2];
+        User user = userService.readUserByOauthId(oauthId);
+
+        if(user == null){
+            OauthUserInputDTO oauthUserInputDTO = new OauthUserInputDTO(oauthId);
+            user = userService.insertUser(oauthUserInputDTO);
+        }
+
+        final String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserId()));
+        final String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getUserId()));
+
+        userService.updateRefreshToken(user.getUserId(), refreshToken);
+
+        answer[0] = accessToken;
+        answer[1] = refreshToken;
+
+        return answer;
+    }
 }

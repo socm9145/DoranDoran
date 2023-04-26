@@ -50,6 +50,15 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     //json
     implementation 'org.json:json:20200518'
+
+    // https://mvnrepository.com/artifact/com.google.api-client/google-api-client
+    implementation group: 'com.google.api-client', name: 'google-api-client', version: '2.2.0'
+
+    // https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http
+    implementation 'com.google.auth:google-auth-library-oauth2-http:0.25.0'
+    implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
+
+
 }
 
 // querydsl 세팅
