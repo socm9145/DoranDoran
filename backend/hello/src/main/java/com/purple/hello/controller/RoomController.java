@@ -67,7 +67,7 @@ public class RoomController {
     @ApiOperation(
             value = "그룹방 입장 정보 출력 API (v) vv",
             notes = "그룹방 코드를 입력할 경우 다이얼로그에 사용할 정보를 출력해주는 API")
-    @GetMapping("/join")
+    @GetMapping("/join-info")
     public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam("code") String roomCode){
         ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomCode(roomCode);
 
@@ -97,7 +97,7 @@ public class RoomController {
 
     @ApiOperation(value = "사진 제출 여부 확인 API (v) vv",
             notes = "이용자별 사진 제출 여부를 확인해주는 API")
-    @GetMapping("/photo")
+    @GetMapping("/feed-status")
     public ResponseEntity<List<CompareFeedByRoomIdOutDTO>> compareFeedByUserIdAndRoomId(@RequestParam("roomId") long roomId,
                                                                                         @DateTimeFormat(pattern="yyyy-MM-dd") Date date){
         List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdOutDTOs = this.feedService.compareFeedByRoomIdAndDate(roomId, date);
@@ -132,7 +132,7 @@ public class RoomController {
 
     @ApiOperation(value = "날짜 기반 피드 출력 API (x)",
             notes = "해당 날짜에 기재한 피드 전체를 출력해주는 API / timezone 차이로 날짜 인식을 못하는 오류")
-    @GetMapping("/date-feed")
+    @GetMapping("/date-question")
     public ResponseEntity<List<ReadFeedOutDTO>> readFeedByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         List<ReadFeedOutDTO> readFeedOutDTOs = this.feedService.readFeedByRoomIdAndDate(roomId, date);
 
