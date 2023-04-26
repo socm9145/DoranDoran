@@ -37,6 +37,9 @@ object Versions {
     // Retrofit2
     const val RETROFIT2 = "2.9.0"
     const val RETROFIT2_KOTLINX_SERIALIZATION = "1.0.0"
+
+    // Kotlinx Serialization Json
+    const val KOTLIN_SELIAIZATION_JSON = "1.5.0"
 }
 
 object KTX {
@@ -94,3 +97,6 @@ object Retrofit2 {
     const val KOTLIN_CONVERTER = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.RETROFIT2_KOTLINX_SERIALIZATION}"
 }
 
+object KotlinxSerializationJson {
+    const val KOTLIN_SELIAIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLIN_SELIAIZATION_JSON}"
+}

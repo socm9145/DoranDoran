@@ -5,8 +5,8 @@ import retrofit2.http.Query
 
 interface AccountService {
     @POST("account/login/google")
-    suspend fun loginWithGoogle(@Query("id_token") idToken: String)
+    suspend fun loginWithGoogle(@Query("id_token") idToken: String): AccountTokenResponse
 
     @POST("account/login/kakao")
-    suspend fun loginWithKakao(@Query("access_token") accessToken: String)
+    suspend fun loginWithKakao(@Query("access_token") accessToken: String): AccountTokenResponse
 }

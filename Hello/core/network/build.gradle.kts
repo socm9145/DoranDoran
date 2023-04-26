@@ -11,4 +11,5 @@ java {
 
 dependencies {
     implementation(retrofit2Dependencies)
+    implementation(KotlinxSerializationJson.KOTLIN_SELIAIZATION_JSON)
 }
