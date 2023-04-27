@@ -53,6 +53,7 @@ android {
 dependencies {
     implementation(project(":feature:rooms"))
     implementation(project(":core:designsystem"))
+    implementation(project(":domain:account"))
 
     implementation(composeDependencies)
     implementation(appDependencies)

@@ -1,6 +1,6 @@
 package com.purple.hello.feature.rooms.state
 
-import com.purple.hello.domain.rooms.model.Feed
+import com.purple.core.model.Feed
 import java.util.*
 
 sealed interface FeedUiState {

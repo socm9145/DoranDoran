@@ -45,3 +45,8 @@ val socialLogin = listOf(
     SociaLogin.GOOGLE_LOGIN,
     SociaLogin.KAKAO_LOGIN,
 )
+
+val retrofit2Dependencies = listOf(
+    Retrofit2.RETROFIT2,
+    Retrofit2.KOTLIN_CONVERTER
+)
