@@ -3,14 +3,16 @@ package com.purple.core.database.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.Index
 
 @Entity(
-    tableName = "user_room_nickname",
+    tableName = "user_room_cross",
     primaryKeys = ["userId", "roomId"],
+    indices = [Index("roomId")],
     foreignKeys = [
         ForeignKey(
             entity = MemberEntity::class,
-            parentColumns = ["id"],
+            parentColumns = ["userId"],
             childColumns = ["userId"],
             onDelete = CASCADE,
         ),

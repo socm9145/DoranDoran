@@ -2,8 +2,11 @@ package com.purple.core.database.entity
 
 import androidx.room.Entity
 
-@Entity(tableName = "members")
+@Entity(
+    tableName = "members",
+    primaryKeys = ["userId"],
+)
 data class MemberEntity(
-    val id: Long,
+    val userId: Long,
     val profileUrl: String,
 )
