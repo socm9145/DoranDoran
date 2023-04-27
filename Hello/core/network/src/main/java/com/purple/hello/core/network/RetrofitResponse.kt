@@ -1,4 +1,4 @@
-package com.purple.hello.core.network.retrofit
+package com.purple.hello.core.network
 
 import kotlinx.serialization.Serializable
 

@@ -4,7 +4,7 @@ import com.purple.hello.data.account.datasource.RemoteAccountDataSource
 import javax.inject.Inject
 
 class AccountRepository @Inject constructor(
-    private val remoteAccountDataSource: RemoteAccountDataSource
+    private val remoteAccountDataSource: RemoteAccountDataSource,
 ) {
     suspend fun loginWithGoogle(idToken: String) {
         remoteAccountDataSource.loginWithGoogle(idToken)

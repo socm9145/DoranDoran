@@ -40,6 +40,9 @@ object Versions {
 
     // Kotlinx Serialization Json
     const val KOTLIN_SELIAIZATION_JSON = "1.5.0"
+
+    // Okhttp3 Logging Interceptor
+    const val OKHTTP3_LOGGING_INTERCEPTOR = "4.10.0"
 }
 
 object KTX {
@@ -99,4 +102,8 @@ object Retrofit2 {
 
 object KotlinxSerializationJson {
     const val KOTLIN_SELIAIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLIN_SELIAIZATION_JSON}"
+}
+
+object Okhttp3LoggingInterceptor {
+    const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP3_LOGGING_INTERCEPTOR}"
 }
