@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 
 object RetrofitClient {
+    /* TODO : BASE_URL 수정 필요 */
     private const val BASE_URL = "http://example.com/"
 
     private val json = Json {
