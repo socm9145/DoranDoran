@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                dir('backend/hello'){
+                    sh "chmod +x ./gradlew && ./gradlew bootJar"
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Test"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('backend'){
+                    sh "docker compose down"
+                    sh "docker compose up --build -d"
+                }
+            }
+        }
+    }
+}
