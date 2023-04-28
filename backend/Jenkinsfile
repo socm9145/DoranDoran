@@ -2,6 +2,11 @@ pipeline {
     agent any
 
     stages {
+        stage('Start') {
+            steps {
+                slackSend (channel: '#bot', color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
+        }
         stage('Build') {
             steps {
                 dir('backend/hello'){
@@ -21,6 +26,14 @@ pipeline {
                     sh "docker compose up --build -d"
                 }
             }
+        }
+    }
+    post {
+        success {
+            slackSend (channel: '#bot', color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        failure {
+            slackSend (channel: '#bot', color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
         }
     }
 }
