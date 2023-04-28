@@ -18,6 +18,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:model"))
+
     implementation(Room.ROOM)
     implementation(Room.ROOM_KTX)
     implementation(Room.ROOM_COMMON)

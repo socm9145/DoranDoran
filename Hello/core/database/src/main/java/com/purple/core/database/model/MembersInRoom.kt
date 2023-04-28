@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.purple.core.database.entity.MemberEntity
 import com.purple.core.database.entity.MemberRoomEntity
+import com.purple.core.model.Member
 
 data class MemberInRoom(
     @Embedded val memberRoom: MemberRoomEntity,
@@ -14,3 +15,8 @@ data class MemberInRoom(
     val member: MemberEntity
 )
 
+fun MemberInRoom.asExternalModel() = Member(
+    id = memberRoom.userId,
+    nickName = memberRoom.nickName,
+    profileUrl = member.profileUrl
+)
