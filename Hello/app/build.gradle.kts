@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":feature:rooms"))
     implementation(project(":core:designsystem"))
     implementation(project(":domain:account"))
+    implementation(project(":core:datastore"))
 
     implementation(composeDependencies)
     implementation(appDependencies)
@@ -65,6 +66,9 @@ dependencies {
 
     implementation(Hilt.HILT_ANDROID)
     kapt(Hilt.HILT_ANDROID_COMPILER)
+
+    implementation(Datastore.DATASTORE)
+
     implementation(socialLogin)
 }
 

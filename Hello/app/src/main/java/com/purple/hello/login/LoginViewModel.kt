@@ -8,16 +8,26 @@ import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+//    private val context: Context,
 ) : ViewModel() {
+
+//    private val accountDataStore: DataStore<AccountData> by lazy {
+//        context.accountDataStore
+//    }
+
     fun kakaoLogin(accessToken: String) {
         viewModelScope.launch {
-            loginUseCase.loginWithKakao(accessToken)
+//            val accountTokenResponse = loginUseCase.loginWithKakao(accessToken)
+//            val accountData = AccountDataSerializer.toAccountData(accountTokenResponse)
+//            accountDataStore.updateData { accountData }
+////            loginUseCase.loginWithKakao(accessToken)
+//        }
         }
-    }
 
-    fun googleLogin(idToken: String) {
-        viewModelScope.launch {
-            loginUseCase.loginWithGoogle(idToken)
+        fun googleLogin(idToken: String) {
+            viewModelScope.launch {
+                loginUseCase.loginWithGoogle(idToken)
+            }
         }
     }
 }

@@ -43,6 +43,12 @@ object Versions {
 
     // Okhttp3 Logging Interceptor
     const val OKHTTP3_LOGGING_INTERCEPTOR = "4.10.0"
+
+    // Datastore
+    const val DATASTORE = "1.0.0"
+
+    // Protobuf
+    const val PROTOBUF = "3.21.12"
 }
 
 object KTX {
@@ -106,4 +112,14 @@ object KotlinxSerializationJson {
 
 object Okhttp3LoggingInterceptor {
     const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP3_LOGGING_INTERCEPTOR}"
+}
+
+object Datastore {
+    const val DATASTORE = "androidx.datastore:datastore:${Versions.DATASTORE}"
+}
+
+object Protobuf {
+    const val PROTOBUF_JAVALITE = "com.google.protobuf:protobuf-javalite:${Versions.PROTOBUF}"
+    const val PROTOBUF_KOTLINLITE = "com.google.protobuf:protobuf-kotlin-lite:${Versions.PROTOBUF}"
+    const val PROTOC = "com.google.protobuf:protoc:${Versions.PROTOBUF}"
 }

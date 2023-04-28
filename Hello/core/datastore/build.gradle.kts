@@ -36,7 +36,7 @@ android {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.21.7"
+        artifact = Protobuf.PROTOC
     }
     generateProtoTasks {
         all().forEach { task ->
@@ -54,11 +54,15 @@ protobuf {
 
 dependencies {
 
+    implementation(project(":core:network"))
+
     implementation(appDependencies)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
 
-    implementation("androidx.datastore:datastore:1.0.0")
-    implementation("com.google.protobuf:protobuf-javalite:3.21.12")
-    implementation("com.google.protobuf:protobuf-kotlin-lite:3.21.7")
+    implementation(Datastore.DATASTORE)
+    implementation(protobufDependencies)
+
+    implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation("javax.inject:javax.inject:1")
 }
