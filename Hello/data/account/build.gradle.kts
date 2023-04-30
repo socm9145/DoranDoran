@@ -35,10 +35,13 @@ android {
 
 dependencies {
     implementation(project(":core:network"))
+    implementation(project(":core:datastore"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
     implementation(Kotlin.KOTLIN_COROUTINES)
     implementation("javax.inject:javax.inject:1")
+
+    implementation(Datastore.DATASTORE)
 }

@@ -36,7 +36,7 @@ class AccountDataSerializer @Inject constructor() : Serializer<AccountData> {
     }
 }
 
-private val Context.accountDataStore: DataStore<AccountData> by dataStore(
-    fileName = "account_data.pb",
-    serializer = AccountDataSerializer()
-)
+//private val Context.accountDataStore: DataStore<AccountData> by dataStore(
+//    fileName = "account_data.pb",
+//    serializer = AccountDataSerializer(),
+//)

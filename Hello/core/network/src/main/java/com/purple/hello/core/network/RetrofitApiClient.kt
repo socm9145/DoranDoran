@@ -37,15 +37,23 @@ object RetrofitApiClient {
             .build()
     }
 
-    class AppInterceptor : Interceptor {
+    /* TODO : Header Key 수정 필요 */
+    class AppInterceptor: Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
             val newRequest = request().newBuilder()
                 .addHeader("(header Key)", "(header Value)")
                 .build()
-            proceed(newRequest)
+            return proceed(newRequest)
         }
     }
 
-    val accountService: AccountService = getApiClient().create(AccountService::class.java)
+    private fun loginClient(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    val accountService: AccountService = loginClient().create(AccountService::class.java)
 }
