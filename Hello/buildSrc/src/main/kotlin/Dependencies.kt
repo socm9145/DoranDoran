@@ -114,6 +114,7 @@ object Room {
     const val ROOM_COMPILER = "androidx.room:room-compiler:${Versions.ROOM}"
     const val ROOM_COMMON = "androidx.room:room-common:${Versions.ROOM}"
     const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
+}
 
 object KotlinxSerializationJson {
     const val KOTLIN_SELIAIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLIN_SELIAIZATION_JSON}"
