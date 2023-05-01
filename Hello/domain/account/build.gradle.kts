@@ -10,7 +10,6 @@ java {
 
 dependencies {
     implementation(project(":domain:model"))
-    implementation(project(":domain:repo"))
 
     implementation("javax.inject:javax.inject:1")
     implementation(Kotlin.KOTLIN_COROUTINES)
