@@ -6,7 +6,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import com.google.protobuf.InvalidProtocolBufferException
-import com.purple.hello.core.network.AccountTokenResponse
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
@@ -27,16 +28,32 @@ class AccountDataSerializer @Inject constructor() : Serializer<AccountData> {
     }
 
     companion object {
-        fun toAccountData(tokenResponse: AccountTokenResponse): AccountData {
+        fun toAccountData(accessToken: String, refreshToken: String): AccountData {
             return AccountData.newBuilder()
-                .setAccessToken(tokenResponse.accessToken)
-                .setRefreshToken(tokenResponse.refreshToken)
+                .setAccessToken(accessToken)
+                .setRefreshToken(refreshToken)
                 .build()
+        }
+
+        fun getAccessToken(context: Context): String {
+            val accountDataStore = context.accountDataStore
+            val accountData = runBlocking {
+                accountDataStore.data.first()
+            }
+            return accountData.accessToken
+        }
+
+        fun getRefreshToken(context: Context): String {
+            val accountDataStore = context.accountDataStore
+            val accountData = runBlocking {
+                accountDataStore.data.first()
+            }
+            return accountData.refreshToken
         }
     }
 }
 
-//private val Context.accountDataStore: DataStore<AccountData> by dataStore(
-//    fileName = "account_data.pb",
-//    serializer = AccountDataSerializer(),
-//)
+private val Context.accountDataStore: DataStore<AccountData> by dataStore(
+    fileName = "account_data.pb",
+    serializer = AccountDataSerializer(),
+)

@@ -1,4 +1,4 @@
-package com.purple.hello.domain.repo
+package com.purple.hello.data.account.repository
 
 import com.purple.hello.data.account.datasource.RemoteAccountDataSource
 import javax.inject.Inject

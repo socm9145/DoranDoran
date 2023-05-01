@@ -11,11 +11,6 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class HiApplication : Application() {
 
-    val accountDataStore: DataStore<AccountData> by dataStore(
-        fileName = "account_data.pb",
-        serializer = AccountDataSerializer(),
-    )
-
     override fun onCreate() {
         super.onCreate()
 

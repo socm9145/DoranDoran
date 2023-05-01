@@ -53,9 +53,6 @@ protobuf {
 }
 
 dependencies {
-
-    implementation(project(":core:network"))
-
     implementation(appDependencies)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)

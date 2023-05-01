@@ -1,4 +1,4 @@
-package com.purple.hello.domain.repo
+package com.purple.hello.domain.model
 
 import org.junit.Test
 

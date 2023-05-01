@@ -1,6 +1,11 @@
 package com.purple.hello.core.network
 
+import android.app.Application
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -9,16 +14,25 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
+import javax.inject.Singleton
+import com.purple.hello.core.datastore.AccountDataSerializer.Companion.getAccessToken
+import com.purple.hello.core.datastore.AccountDataSerializer.Companion.getRefreshToken
+import com.purple.hello.core.datastore.AccountDataSerializer.Companion.toAccountData
+import javax.inject.Inject
 
+@Module
+@InstallIn(SingletonComponent::class)
 object RetrofitApiClient {
-    /* TODO : BASE_URL 수정 필요 */
-    private const val BASE_URL = "http://example.com/"
+    /* TODO : BASE_URL 체크 필요 */
+    private const val BASE_URL = "https://doeran.com/"
     private val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
     }
     private val contentType = "application/json".toMediaType()
 
+    @Provides
+    @Singleton
     private fun okHttpClient(interceptor: AppInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
@@ -29,25 +43,58 @@ object RetrofitApiClient {
             ).build()
     }
 
-    private fun getApiClient(): Retrofit {
+    @Provides
+    @Singleton
+    private fun getApiClient(application: Application): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(okHttpClient(AppInterceptor()))
+            .client(okHttpClient(AppInterceptor(application)))
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
-    /* TODO : Header Key 수정 필요 */
-    class AppInterceptor: Interceptor {
+    class AppInterceptor @Inject constructor(
+        private val context: Application,
+    ) : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
-            val newRequest = request().newBuilder()
-                .addHeader("(header Key)", "(header Value)")
+            val accessToken = getAccessToken(context)
+
+            val tokenAddedRequest = request().newBuilder()
+                .addHeader("Authorization", "Bearer $accessToken")
                 .build()
-            return proceed(newRequest)
+            val response = proceed(tokenAddedRequest)
+
+            when (response.code) {
+                401 -> handleUnauthorizedRequest(chain)
+                else -> response
+            }
+        }
+
+        private fun handleUnauthorizedRequest(
+            chain: Interceptor.Chain,
+        ): Response = with(chain) {
+            val accessToken = getAccessToken(context)
+            val refreshToken = getRefreshToken(context)
+            val reIssueResponse = accountService.reIssue(accessToken, refreshToken)
+            when {
+                reIssueResponse != null -> {
+                    toAccountData(reIssueResponse.accessToken, reIssueResponse.refreshToken)
+                    val newRequest = request().newBuilder()
+                        .addHeader("Authorization", "Bearer ${reIssueResponse.accessToken}")
+                        .build()
+                    proceed(newRequest)
+                }
+                else -> {
+                    accountService.logout()
+                    proceed(request())
+                }
+            }
         }
     }
 
+    @Provides
+    @Singleton
     private fun loginClient(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -55,5 +102,5 @@ object RetrofitApiClient {
             .build()
     }
 
-    val accountService: AccountService = loginClient().create(AccountService::class.java)
+    private val accountService: AccountService = loginClient().create(AccountService::class.java)
 }

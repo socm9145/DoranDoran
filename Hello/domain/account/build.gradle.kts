@@ -35,7 +35,6 @@ android {
 
 dependencies {
     implementation(project(":domain:model"))
-    implementation(project(":domain:repo"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)

@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain:model"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)

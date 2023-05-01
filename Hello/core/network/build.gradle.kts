@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization")
+    kotlin("kapt")
 }
 
 android {
@@ -35,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:datastore"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)
@@ -43,4 +45,7 @@ dependencies {
     implementation(retrofit2Dependencies)
     implementation(KotlinxSerializationJson.KOTLIN_SELIAIZATION_JSON)
     implementation(Okhttp3LoggingInterceptor.OKHTTP3_LOGGING_INTERCEPTOR)
+
+    implementation(Hilt.HILT_ANDROID)
+    kapt(Hilt.HILT_ANDROID_COMPILER)
 }

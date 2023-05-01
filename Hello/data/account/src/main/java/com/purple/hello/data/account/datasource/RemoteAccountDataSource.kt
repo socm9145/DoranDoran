@@ -13,13 +13,13 @@ class RemoteAccountDataSource @Inject constructor(
 
     suspend fun loginWithGoogle(idToken: String) {
         val accountTokenResponse = accountService.loginWithGoogle(idToken)
-        val accountData = toAccountData(accountTokenResponse)
+        val accountData = toAccountData(accountTokenResponse.accessToken, accountTokenResponse.refreshToken)
         accountDataStore.updateData { accountData }
     }
 
     suspend fun loginWithKakao(accessToken: String) {
         val accountTokenResponse = accountService.loginWithKakao(accessToken)
-        val accountData = toAccountData(accountTokenResponse)
+        val accountData = toAccountData(accountTokenResponse.accessToken, accountTokenResponse.refreshToken)
         accountDataStore.updateData { accountData }
     }
 }

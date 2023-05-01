@@ -1,4 +1,4 @@
-package com.purple.hello.domain.repo
+package com.purple.hello.data.user.repository
 
 import com.purple.hello.domain.model.UserInfo
 import kotlinx.coroutines.flow.Flow
