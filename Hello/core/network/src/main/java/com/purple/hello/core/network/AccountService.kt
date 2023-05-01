@@ -18,7 +18,7 @@ interface AccountService {
     fun reIssue(
         @Header("Access_Token") accessToken: String,
         @Header("Refresh_Token") refreshToken: String,
-    ): AccountTokenResponse
+    ): Result<AccountTokenResponse>
 
     @GET("account/logout")
     fun logout()

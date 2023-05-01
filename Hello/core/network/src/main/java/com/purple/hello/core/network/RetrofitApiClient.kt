@@ -3,7 +3,6 @@ package com.purple.hello.core.network
 import android.app.Application
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
@@ -14,7 +13,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
-import javax.inject.Singleton
 import com.purple.hello.core.datastore.AccountDataSerializer.Companion.getAccessToken
 import com.purple.hello.core.datastore.AccountDataSerializer.Companion.getRefreshToken
 import com.purple.hello.core.datastore.AccountDataSerializer.Companion.toAccountData
@@ -31,8 +29,6 @@ object RetrofitApiClient {
     }
     private val contentType = "application/json".toMediaType()
 
-    @Provides
-    @Singleton
     private fun okHttpClient(interceptor: AppInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
@@ -43,8 +39,6 @@ object RetrofitApiClient {
             ).build()
     }
 
-    @Provides
-    @Singleton
     private fun getApiClient(application: Application): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -78,12 +72,22 @@ object RetrofitApiClient {
             val refreshToken = getRefreshToken(context)
             val reIssueResponse = accountService.reIssue(accessToken, refreshToken)
             when {
-                reIssueResponse != null -> {
-                    toAccountData(reIssueResponse.accessToken, reIssueResponse.refreshToken)
-                    val newRequest = request().newBuilder()
-                        .addHeader("Authorization", "Bearer ${reIssueResponse.accessToken}")
-                        .build()
-                    proceed(newRequest)
+                reIssueResponse.isSuccess -> {
+                    reIssueResponse.getOrNull().let {
+                        when(it) {
+                            null -> {
+                                accountService.logout()
+                                proceed(request())
+                            }
+                            else -> {
+                                toAccountData(it.accessToken, it.refreshToken)
+                                val newRequest = request().newBuilder()
+                                    .addHeader("Authorization", "Bearer ${it.accessToken}")
+                                    .build()
+                                proceed(newRequest)
+                            }
+                        }
+                    }
                 }
                 else -> {
                     accountService.logout()
@@ -93,8 +97,6 @@ object RetrofitApiClient {
         }
     }
 
-    @Provides
-    @Singleton
     private fun loginClient(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

@@ -4,7 +4,7 @@ import com.purple.hello.data.account.repository.AccountRepository
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
-    private val accountRepository: com.purple.hello.data.account.repository.AccountRepository,
+    private val accountRepository: AccountRepository,
 ) {
     suspend fun loginWithGoogle(idToken: String) {
         accountRepository.loginWithGoogle(idToken)
