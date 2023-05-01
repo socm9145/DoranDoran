@@ -36,7 +36,7 @@ public class JwtFilter implements Filter {
                 // 토큰 만료일 검사
                 Date expiration = claims.getExpiration();
                 if(expiration.before(new Date(System.currentTimeMillis()))){
-                    throw new JwtException("Expired JWT token");
+                    throw new JwtException("Access Token Expired");
                 }
 
                 // 유효한 토큰인 경우, request 에 userId 저장
