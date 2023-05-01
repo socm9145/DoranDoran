@@ -5,16 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -24,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
+import com.purple.core.designsystem.dialog.*
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
@@ -36,8 +33,42 @@ internal fun RoomsRoute(
 ) {
     val uiState by roomsViewModel.roomsUiState.collectAsState()
     val isRoomsLoading = uiState is RoomsUiState.Loading
+    var shouldShowAddDialog by remember { mutableStateOf(false) }
     val state = rememberLazyGridState()
 
+    Column {
+        RoomsAppBar()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            LazyVerticalGrid(
+                columns = Adaptive(300.dp),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier.fillMaxWidth(),
+                state = state,
+            ) {
+                roomsScreen(roomsState = uiState)
+            }
+            OpenAddRoomDialogButton(
+                onClick = {
+                    shouldShowAddDialog = true
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(12.dp),
+            )
+        }
+    }
+    if (shouldShowAddDialog) {
+        AddRoomDialog(
+            onDismiss = {
+                shouldShowAddDialog = false
+            },
+            onConfirm = roomsViewModel::createRoom,
+        )
+    }
     AnimatedVisibility(
         visible = isRoomsLoading,
         enter = slideInVertically(
@@ -56,37 +87,6 @@ internal fun RoomsRoute(
                 contentDesc = "loading",
                 modifier = Modifier.align(Alignment.Center),
             )
-        }
-    }
-    Column {
-        RoomsAppBar()
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            LazyVerticalGrid(
-                columns = Adaptive(300.dp),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                modifier = Modifier.fillMaxWidth(),
-                state = state,
-            ) {
-                roomsScreen(roomsState = uiState)
-            }
-            FloatingActionButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(12.dp),
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                shape = CircleShape,
-            ) {
-                Icon(
-                    imageVector = HiIcons.AddRoom,
-                    contentDescription = "addRoom",
-                )
-            }
         }
     }
 }
@@ -120,6 +120,25 @@ private fun RoomsAppBar() {
     )
 }
 
+@Composable
+private fun OpenAddRoomDialogButton(
+    onClick: () -> Unit,
+    modifier: Modifier,
+) {
+    FloatingActionButton(
+        onClick = { onClick() },
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        shape = CircleShape,
+    ) {
+        Icon(
+            imageVector = HiIcons.AddRoom,
+            contentDescription = "addRoom",
+        )
+    }
+}
+
 private fun LazyGridScope.roomsScreen(
     roomsState: RoomsUiState,
 ) {
@@ -142,9 +161,30 @@ private fun LazyGridScope.roomsScreen(
 private fun ErrorScreen() {
 }
 
+@Composable
+private fun AddRoomDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (List<InputData>) -> Unit,
+) {
+    val inputList = listOf(
+        createInputDataByInputType(type = InputType.ROOM_NAME, answer = ""),
+        createInputDataByInputType(type = InputType.NAME, answer = ""),
+        createInputDataByInputType(type = InputType.QUESTION_PASSWORD, answer = ""),
+        createInputDataByInputType(type = InputType.CREATE_PASSWORD, answer = ""),
+    )
+
+    HiInputDialog(
+        questionContent = inputList,
+        onDismiss = { onDismiss() },
+        onConfirm = { onConfirm(inputList) },
+        confirmButtonText = "생성하기",
+        dismissButtonText = "취소",
+    )
+}
+
 @Preview
 @Composable
-private fun PreviewRoomScreen() {
+private fun PeviewRoomScreen() {
     HiTheme {
         Box(
             Modifier

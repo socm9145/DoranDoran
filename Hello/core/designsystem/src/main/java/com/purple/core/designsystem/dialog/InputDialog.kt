@@ -73,7 +73,7 @@ fun HiInputDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HiDialogContent(
+fun HiDialogContent(
     questionContent: List<InputData>,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
@@ -117,6 +117,7 @@ private fun HiDialogContent(
                             value = inputText.value,
                             onValueChange = { newInputText ->
                                 inputText.value = newInputText
+                                questionContent[index].answer = newInputText
                             },
                             placeholder = { Text(text = input.placeHolder) },
                             supportingText = { Text(text = input.supportingText) },
