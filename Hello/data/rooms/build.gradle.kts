@@ -3,19 +3,26 @@ plugins {
     id("com.google.dagger.hilt.android")
     kotlin("android")
     kotlin("kapt")
+    kotlin("plugin.serialization")
 }
 
 android {
-    namespace = "com.purple.hello.domain.rooms"
+    namespace = "com.purple.data.rooms"
     compileSdk = AppConfig.compileSdk
+
+    defaultConfig {
+        minSdk = AppConfig.minSdk
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
 }
 
 dependencies {
     implementation(project(":core:model"))
-    implementation(project(":data:rooms"))
-
-    implementation("javax.inject:javax.inject:1")
+    implementation(project(":core:database"))
     implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation(retrofit2Dependencies)
 
     implementation(Hilt.HILT_ANDROID)
     kapt(Hilt.HILT_ANDROID_COMPILER)

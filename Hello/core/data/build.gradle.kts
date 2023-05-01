@@ -12,4 +12,3 @@ dependencies {
     implementation(Kotlin.KOTLIN_COROUTINES)
     implementation(project(":core:model"))
 }
-

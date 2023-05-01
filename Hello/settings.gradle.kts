@@ -16,17 +16,20 @@ dependencyResolutionManagement {
 
 rootProject.name = "Hello"
 include(":app")
+// core
 include(":core:designsystem")
 include(":core:ui")
-include(":core:data")
-include(":feature:rooms")
-include(":domain:rooms")
-
 include(":core:model")
-include(":data:user")
+include(":core:database")
+include(":core:network")
+// feature
+include(":feature:rooms")
+// domain
+include(":domain:rooms")
 include(":domain:account")
 include(":domain:model")
-include(":domain:model")
-include(":domain:repo")
+// data
+include(":data:rooms")
+include(":data:user")
 include(":data:account")
-include(":core:network")
+
