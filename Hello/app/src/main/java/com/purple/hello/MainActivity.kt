@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.purple.hello.feature.rooms.RoomsRoute
-import com.purple.hello.ui.theme.HelloTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.hello.login.LoginScreen
