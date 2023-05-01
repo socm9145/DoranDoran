@@ -21,9 +21,15 @@ include(":core:designsystem")
 include(":core:ui")
 include(":core:model")
 include(":core:database")
+include(":core:network")
 // feature
 include(":feature:rooms")
 // domain
 include(":domain:rooms")
+include(":domain:account")
+include(":domain:model")
 // data
 include(":data:rooms")
+include(":data:user")
+include(":data:account")
+
