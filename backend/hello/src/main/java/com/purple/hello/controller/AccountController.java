@@ -70,7 +70,7 @@ public class AccountController {
                                      @RequestHeader("Refresh-Token") String refreshToken,
                                      HttpServletResponse response){
         if(accessToken == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효한 AccessToken이 아닙니다");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access Token Expired");
         }
 
         User user = userService.isValidRefreshToken(refreshToken);
@@ -94,7 +94,7 @@ public class AccountController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token Expired");
             }
         }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 Refresh Token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token Expired");
         }
     }
 
