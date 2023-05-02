@@ -2,17 +2,22 @@ package com.purple.hello.feature.rooms.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.purple.core.designsystem.dialog.InputData
-import com.purple.core.model.*
+import com.purple.core.model.Result
+import com.purple.core.model.Room
+import com.purple.core.model.asResult
+import com.purple.hello.domain.rooms.CreateRoomUseCase
 import com.purple.hello.domain.rooms.GetRoomListUseCase
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RoomsViewModel @Inject constructor(
     getRoomListFlow: GetRoomListUseCase,
+    private val createRoomUseCase: CreateRoomUseCase,
 ) : ViewModel() {
 
     private val rooms: Flow<Result<List<Room>>> = getRoomListFlow().asResult()
@@ -30,7 +35,9 @@ class RoomsViewModel @Inject constructor(
             initialValue = RoomsUiState.Loading,
         )
 
-    fun createRoom(inputList: List<InputData>) {
-        /*TODO*/
+    fun createRoom(roomName: String, userName: String, question: String, password: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            createRoomUseCase(roomName, userName, question, password)
+        }
     }
 }

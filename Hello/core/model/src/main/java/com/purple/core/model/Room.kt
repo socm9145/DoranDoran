@@ -2,7 +2,7 @@ package com.purple.core.model
 
 data class Room(
     val roomId: Long,
-    val personalOptions: PersonalOptions,
+    val roomName: String,
     val members: List<Member>,
 )
 

@@ -21,6 +21,8 @@ android {
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:database"))
+    implementation(project(":core:network"))
+
     implementation(Kotlin.KOTLIN_COROUTINES)
     implementation(retrofit2Dependencies)
 

@@ -1,4 +1,4 @@
-package com.purple.core.database.model // ktlint-disable filename
+package com.purple.core.database.model
 
 import androidx.room.Embedded
 import androidx.room.Relation

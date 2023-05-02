@@ -3,13 +3,15 @@ package com.purple.hello.feature.rooms
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
-import com.purple.core.designsystem.dialog.*
+import com.purple.core.designsystem.dialog.HiInputDialog
+import com.purple.core.designsystem.dialog.InputType
+import com.purple.core.designsystem.dialog.createInputDataByInputType
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
@@ -147,7 +151,7 @@ private fun LazyGridScope.roomsScreen(
         is RoomsUiState.Success -> {
             items(roomsState.rooms, key = { it.roomId }) { room ->
                 RoomItem(
-                    roomName = room.personalOptions.roomName,
+                    roomName = room.roomName,
                     members = room.members,
                     onClick = {},
                 )
@@ -164,19 +168,17 @@ private fun ErrorScreen() {
 @Composable
 private fun AddRoomDialog(
     onDismiss: () -> Unit,
-    onConfirm: (List<InputData>) -> Unit,
+    onConfirm: (roomName: String, userName: String, question: String, password: String) -> Unit,
 ) {
-    val inputList = listOf(
-        createInputDataByInputType(type = InputType.ROOM_NAME, answer = ""),
-        createInputDataByInputType(type = InputType.NAME, answer = ""),
-        createInputDataByInputType(type = InputType.QUESTION_PASSWORD, answer = ""),
-        createInputDataByInputType(type = InputType.CREATE_PASSWORD, answer = ""),
-    )
+    val roomName = createInputDataByInputType(type = InputType.ROOM_NAME, answer = "")
+    val userName = createInputDataByInputType(type = InputType.NAME, answer = "")
+    val question = createInputDataByInputType(type = InputType.QUESTION_PASSWORD, answer = "")
+    val password = createInputDataByInputType(type = InputType.CREATE_PASSWORD, answer = "")
 
     HiInputDialog(
-        questionContent = inputList,
+        questionContent = listOf(roomName, userName, question, password),
         onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(inputList) },
+        onConfirm = { onConfirm(roomName.answer, userName.answer, question.answer, password.answer) },
         confirmButtonText = "생성하기",
         dismissButtonText = "취소",
     )
@@ -184,7 +186,7 @@ private fun AddRoomDialog(
 
 @Preview
 @Composable
-private fun PeviewRoomScreen() {
+private fun PreviewRoomScreen() {
     HiTheme {
         Box(
             Modifier
