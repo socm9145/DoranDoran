@@ -1,5 +1,9 @@
 object Versions {
 
+    // Androidx
+    const val WINDOW_MANAGER = "1.0.0"
+    const val NAVIGATION_COMPOSE = "2.5.3"
+
     // Ktx
     const val CORE = "1.9.0"
     const val LIFECYCLE_RUNTIME = "2.6.1"
@@ -63,6 +67,7 @@ object Compose {
     const val UI = "androidx.compose.ui:ui:${Versions.COMPOSE}"
     const val PREVIEW = "androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE}"
     const val MATERIAL3 = "androidx.compose.material3:material3:${Versions.MATERIAL3}"
+    const val MATERIAL3_WINDOW_SIZE = "androidx.compose.material3:material3-window-size-class:${Versions.MATERIAL3}"
     const val ACTIVITY = "androidx.activity:activity-compose:${Versions.ACTIVITY}"
 }
 
@@ -114,10 +119,15 @@ object Room {
     const val ROOM_COMPILER = "androidx.room:room-compiler:${Versions.ROOM}"
     const val ROOM_COMMON = "androidx.room:room-common:${Versions.ROOM}"
     const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
+}
 
 object KotlinxSerializationJson {
     const val KOTLIN_SELIAIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLIN_SELIAIZATION_JSON}"
 }
+
+object Androidx {
+    const val WINDOW = "androidx.window:window:${Versions.WINDOW_MANAGER}"
+    const val NAVIGATION_COMPOSE = "androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}"
 
 object Okhttp3LoggingInterceptor {
     const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP3_LOGGING_INTERCEPTOR}"
