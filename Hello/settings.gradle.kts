@@ -22,6 +22,7 @@ include(":core:ui")
 include(":core:model")
 include(":core:database")
 include(":core:network")
+include(":core:datastore")
 // feature
 include(":feature:rooms")
 // domain
@@ -32,4 +33,3 @@ include(":domain:model")
 include(":data:rooms")
 include(":data:user")
 include(":data:account")
-

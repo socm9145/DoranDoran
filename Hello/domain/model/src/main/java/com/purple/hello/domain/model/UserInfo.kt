@@ -7,3 +7,4 @@ data class UserInfo(
     val profileImage: String,
     val birth: Date,
 )
+

@@ -8,6 +8,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.purple.hello.feature.rooms.RoomsRoute
 import dagger.hilt.android.AndroidEntryPoint
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.hello.login.LoginScreen
