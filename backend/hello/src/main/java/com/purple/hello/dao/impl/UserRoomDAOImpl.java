@@ -66,6 +66,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
 
         CreateRoomOutDTO createRoomOutDTO = CreateRoomOutDTO.builder()
                 .userRoomId(rUserRoom.getUserRoomId())
+                .roomId(room.get().getRoomId())
                 .userRoomRole(rUserRoom.getUserRoomRole())
                 .userName(rUserRoom.getUserName())
                 .roomName(rUserRoom.getRoomName())
