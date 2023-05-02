@@ -1,6 +1,6 @@
 package com.purple.core.model
 
-enum class SettingItemTextType(
+enum class SettingItemType(
     val mainText: String,
     val subText: String,
     val isWarning: Boolean,

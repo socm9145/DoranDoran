@@ -1,6 +1,6 @@
 package com.purple.core.model
 
-enum class DeleteDialogTextType(
+enum class DeleteDialogType(
     val questionText: String,
     val confirmText: String,
 ) {

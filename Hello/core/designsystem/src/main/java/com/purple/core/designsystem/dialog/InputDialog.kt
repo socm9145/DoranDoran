@@ -13,7 +13,7 @@ import com.purple.core.designsystem.component.HiFilledButton
 import com.purple.core.designsystem.component.HiOutlinedButton
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.HiTypography
-import com.purple.core.model.InputDialogTextType
+import com.purple.core.model.InputDialogType
 
 data class InputData(
     val question: String,
@@ -29,7 +29,7 @@ data class InputData(
     )
 }
 
-fun createInputDataByInputType(type: InputDialogTextType, answer: String): InputData {
+fun createInputDataByInputType(type: InputDialogType, answer: String): InputData {
     return InputData(
         question = type.question,
         placeHolder = type.placeHolder,
@@ -153,8 +153,8 @@ private val MaxWidth = 560.dp
 private fun PreviewHiInputDialog() {
     HiInputDialog(
         questionContent = listOf(
-            createInputDataByInputType(InputDialogTextType.ROOM_NAME, answer = "기존 데이터"),
-            createInputDataByInputType(InputDialogTextType.NAME, answer = "기존 데이터"),
+            createInputDataByInputType(InputDialogType.ROOM_NAME, answer = "기존 데이터"),
+            createInputDataByInputType(InputDialogType.NAME, answer = "기존 데이터"),
             InputData(
                 question = "비밀번호 질문",
                 placeHolder = "비밀번호 입력",

@@ -16,12 +16,12 @@ import androidx.compose.ui.unit.dp
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.HiTypography
-import com.purple.core.model.SettingItemTextType
+import com.purple.core.model.SettingItemType
 
 @Composable
 fun SettingItem(
     onClick: () -> Unit,
-    content: SettingItemTextType,
+    content: SettingItemType,
 ) {
     HiTheme {
         Box(
@@ -52,7 +52,7 @@ fun SettingItem(
 
 @Composable
 private fun SettingItemContent(
-    content: SettingItemTextType,
+    content: SettingItemType,
 ) {
     if (content.subText != "") {
         Column(
@@ -97,7 +97,7 @@ private fun PreviewSettingItem() {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingItem(
                 onClick = {},
-                SettingItemTextType.CHANGE_ROOM_NAME,
+                SettingItemType.CHANGE_ROOM_NAME,
             )
         }
     }

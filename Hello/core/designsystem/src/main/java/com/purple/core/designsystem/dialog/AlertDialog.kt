@@ -11,14 +11,14 @@ import androidx.compose.ui.window.DialogProperties
 import com.purple.core.designsystem.component.HiFilledButton
 import com.purple.core.designsystem.component.HiOutlinedButton
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.model.DeleteDialogTextType
+import com.purple.core.model.DeleteDialogType
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DeleteDialog(
+fun HiAlertDialog(
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
-    content: DeleteDialogTextType,
+    content: DeleteDialogType,
 ) {
     HiTheme() {
         AlertDialog(
@@ -62,10 +62,10 @@ fun DeleteDialog(
 
 @Preview
 @Composable
-private fun PreviewDeleteDialog() {
-    DeleteDialog(
+private fun PreviewHiAlertDialog() {
+    HiAlertDialog(
         onDismiss = {},
         onDelete = {},
-        DeleteDialogTextType.DELETE_GROUP,
+        DeleteDialogType.DELETE_GROUP,
     )
 }

@@ -1,6 +1,6 @@
 package com.purple.core.model
 
-enum class InputDialogTextType(
+enum class InputDialogType(
     val question: String,
     val placeHolder: String,
     val supportingText: String,
