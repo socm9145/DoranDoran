@@ -19,22 +19,22 @@ data class InputData(
     val question: String,
     val placeHolder: String,
     val supportingText: String,
-    var answer: String,
+    var inputValue: String,
 ) {
     constructor(question: String, placeHolder: String, supportingText: String) : this(
         question = question,
         placeHolder = placeHolder,
         supportingText = supportingText,
-        answer = "",
+        inputValue = "",
     )
 }
 
-fun createInputDataByInputType(type: InputDialogType, answer: String): InputData {
+fun createInputDataByInputType(type: InputDialogType, inputValue: String): InputData {
     return InputData(
         question = type.question,
         placeHolder = type.placeHolder,
         supportingText = type.supportingText,
-        answer = answer,
+        inputValue = inputValue,
     )
 }
 
@@ -71,7 +71,7 @@ fun HiDialogContent(
     dismissButtonText: String,
 ) {
     val questionContentList = remember {
-        questionContent.map { input -> mutableStateOf(input.answer.orEmpty()) }
+        questionContent.map { input -> mutableStateOf(input.inputValue.orEmpty()) }
     }
     val isConfirmEnabled = questionContentList.all { it.value.isNotEmpty() }
 
@@ -107,7 +107,7 @@ fun HiDialogContent(
                             value = inputText.value,
                             onValueChange = { newInputText ->
                                 inputText.value = newInputText
-                                questionContent[index].answer = newInputText
+                                questionContent[index].inputValue = newInputText
                             },
                             placeholder = { Text(text = input.placeHolder) },
                             supportingText = { Text(text = input.supportingText) },
@@ -154,13 +154,13 @@ private val MaxWidth = 560.dp
 private fun PreviewHiInputDialog() {
     HiInputDialog(
         questionContent = listOf(
-            createInputDataByInputType(InputDialogType.ROOM_NAME, answer = "기존 데이터"),
-            createInputDataByInputType(InputDialogType.NAME, answer = "기존 데이터"),
+            createInputDataByInputType(InputDialogType.ROOM_NAME, inputValue = "기존 데이터"),
+            createInputDataByInputType(InputDialogType.NAME, inputValue = "기존 데이터"),
             InputData(
                 question = "비밀번호 질문",
                 placeHolder = "비밀번호 입력",
                 supportingText = "질문에 맞는 비밀번호를 입력해주세요",
-                answer = "",
+                inputValue = "",
             ),
         ),
         onDismiss = {},
