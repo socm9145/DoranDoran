@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class CreateRoomOutDTO {
     long userRoomId;
+    long roomId;
     UserRoomRole userRoomRole;
     String userName;
     String roomName;
@@ -23,8 +24,10 @@ public class CreateRoomOutDTO {
     Date createAt;
 
     @Builder
-    public CreateRoomOutDTO(long userRoomId, UserRoomRole userRoomRole, String userName, String roomName, BoolAlarm safeAlarm, BoolAlarm moveAlarm, BoolAlarm dayAlarm, Date createAt) {
+    public CreateRoomOutDTO(long userRoomId, long roomId, UserRoomRole userRoomRole, String userName, String roomName, BoolAlarm safeAlarm,
+                            BoolAlarm moveAlarm, BoolAlarm dayAlarm, Date createAt) {
         this.userRoomId = userRoomId;
+        this.roomId = roomId;
         this.userRoomRole = userRoomRole;
         this.userName = userName;
         this.roomName = roomName;
