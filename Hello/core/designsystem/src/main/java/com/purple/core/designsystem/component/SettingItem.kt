@@ -81,23 +81,37 @@ fun SettingItem(
 private fun SettingItemContent(
     content: TextData,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight(),
-        Arrangement.SpaceBetween,
-    ) {
-        Box(contentAlignment = Alignment.CenterStart) {
+    if (content.subText != "") {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(),
+            Arrangement.SpaceBetween,
+        ) {
+            Box(contentAlignment = Alignment.CenterStart) {
+                Text(
+                    text = content.mainText,
+                    color = if (content.isWarning) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline, // ktlint-disable max-line-length
+                    style = HiTypography.headlineSmall,
+                )
+            }
+            Box(contentAlignment = Alignment.CenterStart) {
+                Text(
+                    text = content.subText,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = HiTypography.bodyLarge,
+                )
+            }
+        }
+    } else {
+        Box(
+            contentAlignment = Alignment.CenterStart,
+            modifier = Modifier
+                .fillMaxHeight(),
+        ) {
             Text(
                 text = content.mainText,
-                color = if (content.isWarning) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline,
+                color = if (content.isWarning) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline, // ktlint-disable max-line-length
                 style = HiTypography.headlineSmall,
-            )
-        }
-        Box(contentAlignment = Alignment.CenterStart) {
-            Text(
-                text = content.subText,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = HiTypography.bodyLarge,
             )
         }
     }
@@ -110,7 +124,7 @@ private fun PreviewSettingItem() {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingItem(
                 onClick = {},
-                createTextType(TextType.CHANGE_ROOM_NAME),
+                createTextType(TextType.POLICY),
             )
         }
     }
