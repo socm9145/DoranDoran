@@ -51,13 +51,13 @@ private fun PreviewHiTopAppBar() {
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로가기",
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {}) {
                 Icon(imageVector = HiIcons.PersonAdd, contentDescription = "초대하기")
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {}) {
                 Icon(imageVector = HiIcons.Calendar, contentDescription = "달력")
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {}) {
                 Icon(imageVector = HiIcons.Settings, contentDescription = "설정")
             }
         },

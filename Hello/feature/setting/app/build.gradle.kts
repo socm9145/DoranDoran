@@ -1,14 +1,17 @@
 plugins {
     kotlin("android")
+    kotlin("kapt")
     id("com.android.library")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
-    namespace = "com.purple.core.designsystem"
+    namespace = "com.purple.hello.feature.setting.app"
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
         minSdk = AppConfig.minSdk
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -39,14 +42,17 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
+    implementation(project(":core:designsystem"))
 
     implementation(composeDependencies)
-    debugImplementation(composeDebug)
+    implementation(imageLoadDependencies)
+    implementation(appDependencies)
+    implementation(hiltDependencies)
 
-    implementation(androidLibraryDependencies)
+    implementation(Hilt.HILT_ANDROID)
+    kapt(Hilt.HILT_ANDROID_COMPILER)
+
+    debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
-
-    implementation(calendarLibrary)
 }
