@@ -2,6 +2,7 @@ package com.purple.hello.feature.rooms.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.purple.core.designsystem.dialog.InputData
 import com.purple.core.model.*
 import com.purple.hello.domain.rooms.GetRoomListUseCase
 import com.purple.hello.feature.rooms.state.RoomsUiState
@@ -28,4 +29,8 @@ class RoomsViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = RoomsUiState.Loading,
         )
+
+    fun createRoom(inputList: List<InputData>) {
+        /*TODO*/
+    }
 }

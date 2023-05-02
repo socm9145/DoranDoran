@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 object HiIcons {
 
+    val AddRoom = Icons.Rounded.Add
     val ArrowBack = Icons.Rounded.ArrowBack
     val Notifications = Icons.Rounded.Notifications
     val MoreVert = Icons.Rounded.MoreVert

@@ -48,7 +48,7 @@ dependencies {
     implementation(composeDependencies)
     implementation(imageLoadDependencies)
     implementation(appDependencies)
-    implementation(hiltDependencies)
+    implementation(navDependencies)
 
     implementation(Hilt.HILT_ANDROID)
     kapt(Hilt.HILT_ANDROID_COMPILER)

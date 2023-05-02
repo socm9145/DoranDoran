@@ -58,7 +58,7 @@ dependencies {
 
     implementation(composeDependencies)
     implementation(appDependencies)
-    implementation(hiltDependencies)
+    implementation(navDependencies)
 
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
