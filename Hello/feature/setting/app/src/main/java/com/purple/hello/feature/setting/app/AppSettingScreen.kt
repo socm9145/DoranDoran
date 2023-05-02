@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.component.SettingItem
 import com.purple.core.designsystem.dialog.HiAlertDialog
@@ -24,6 +26,23 @@ import com.purple.core.model.SettingItemType
 fun AppSettingRoute(
     isHost: Boolean,
 ) {
+//    var dialogsStates by remember {
+//        mutableStateOf(
+//            mapOf(
+//                "shouldShowChangeRoomNameDialog" to false,
+//                "shouldShowChangeUserNameDialog" to false,
+//                "shouldShowChangePasswordDialog" to false,
+//                "shouldShowExitRoomDialog" to false,
+//                "shouldShowDeleteRoomDialog" to false,
+//            ).toMutableMap(),
+//        )
+//    }
+    var shouldShowChangeRoomNameDialog by remember { mutableStateOf(false) }
+    var shouldShowChangeUserNameDialog by remember { mutableStateOf(false) }
+    var shouldShowChangePasswordDialog by remember { mutableStateOf(false) }
+    var shouldShowExitRoomDialog by remember { mutableStateOf(false) }
+    var shouldShowDeleteRoomDialog by remember { mutableStateOf(false) }
+
     HiTheme {
         Column(
             modifier = Modifier
@@ -35,24 +54,81 @@ fun AppSettingRoute(
                 onClick = { itemType ->
                     when (itemType) {
                         SettingItemType.CHANGE_ROOM_NAME -> {
-                            // CHANGE_ROOM_NAME 항목을 클릭했을 때 동작 구현
+                            shouldShowChangeRoomNameDialog = true
+//                            dialogsStates["shouldShowChangeRoomNameDialog"] = true
                         }
                         SettingItemType.CHANGE_NAME -> {
-                            // CHANGE_NAME 항목을 클릭했을 때 동작 구현
+                            shouldShowChangeUserNameDialog = true
+//                            dialogsStates["shouldShowChangeUserNameDialog"] = true
                         }
                         SettingItemType.CHANGE_PASSWORD -> {
-                            // CHANGE_PASSWORD 항목을 클릭했을 때 동작 구현
+                            shouldShowChangePasswordDialog = true
+//                            dialogsStates["shouldShowChangePasswordDialog"] = true
                         }
                         SettingItemType.EXIT_GROUP -> {
-                            // EXIT_GROUP 항목을 클릭했을 때 동작 구현
+                            shouldShowExitRoomDialog = true
+//                            dialogsStates["shouldShowExitRoomDialog"] = true
                         }
                         SettingItemType.DELETE_GROUP -> {
-                            // DELETE_GROUP 항목을 클릭했을 때 동작 구현
+                            shouldShowDeleteRoomDialog = true
+//                            dialogsStates["shouldShowDeleteRoomDialog"] = true
                         }
                         else -> {}
                     }
                 },
             )
+        }
+        when {
+            shouldShowChangeRoomNameDialog -> {
+//            dialogsStates["shouldShowChangeRoomNameDialog"] == true -> {
+                ChangeRoomNameDialog(
+                    onDismiss = {
+                        shouldShowChangeRoomNameDialog = false
+//                        dialogsStates["shouldShowChangeRoomNameDialog"] = false
+                    },
+                    onConfirm = { /* TODO */ },
+                )
+            }
+            shouldShowChangeUserNameDialog -> {
+//            dialogsStates["shouldShowChangeUserNameDialog"] == true -> {
+                ChangeUserNameDialog(
+                    onDismiss = {
+                        shouldShowChangeUserNameDialog = false
+//                        dialogsStates["shouldShowChangeUserNameDialog"] = false
+                    },
+                    onConfirm = { /* TODO */ },
+                )
+            }
+            shouldShowChangePasswordDialog -> {
+//            dialogsStates["shouldShowChangePasswordDialog"] == true -> {
+                ChangePasswordDialog(
+                    onDismiss = {
+                        shouldShowChangePasswordDialog = false
+//                        dialogsStates["shouldShowChangePasswordDialog"] = false
+                    },
+                    onConfirm = { /* TODO */ },
+                )
+            }
+            shouldShowExitRoomDialog -> {
+//            dialogsStates["shouldShowExitRoomDialog"] == true -> {
+                ExitRoomDialog(
+                    onDismiss = {
+                        shouldShowExitRoomDialog = false
+//                        dialogsStates["shouldShowExitRoomDialog"] = false
+                    },
+                    onDelete = { /* TODO */ },
+                )
+            }
+            shouldShowDeleteRoomDialog -> {
+//            dialogsStates["shouldShowDeleteRoomDialog"] == true -> {
+                DeleteRoomDialog(
+                    onDismiss = {
+                        shouldShowDeleteRoomDialog = false
+//                        dialogsStates["shouldShowDeleteRoomDialog"] = false
+                    },
+                    onDelete = { /* TODO */ },
+                )
+            }
         }
     }
 }
@@ -78,20 +154,32 @@ private fun AppSettingScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        Column() {
+        Column {
             if (isHost) {
-                hostSettingItems.forEach {
+                hostSettingItems.forEachIndexed { index, it ->
                     SettingItem(
                         onClick = { onClick(it) },
                         content = it,
                     )
+                    if (index < hostSettingItems.lastIndex) {
+                        Divider(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                            thickness = 1.dp,
+                        )
+                    }
                 }
             } else {
-                userSettingItems.forEach {
+                userSettingItems.forEachIndexed { index, it ->
                     SettingItem(
                         onClick = { onClick(it) },
                         content = it,
                     )
+                    if (index < userSettingItems.lastIndex) {
+                        Divider(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                            thickness = 1.dp,
+                        )
+                    }
                 }
             }
         }
@@ -191,5 +279,5 @@ private fun AppSettingAppBar() {
 @Preview
 @Composable
 private fun PreviewAppSettingScreen() {
-//    AppSettingScreen()
+    AppSettingRoute(isHost = true)
 }
