@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -112,14 +113,17 @@ public class RoomController {
     }
     @ApiOperation(value = "피드 생성 API (v) vv",
                   notes = "이용자가 피드를 올릴 경우 피드 정보를 저장해주는 API")
-    @PostMapping("/feed")
+    @PostMapping(value ="/feed", consumes = "multipart/form-data")
     public ResponseEntity<CreateFeedOutDTO> createFeed(CreateFeedInDTO createFeedInDTO){
-        CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
-
-        if (result == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        try{
+            CreateFeedOutDTO result = this.feedService.createFeed(createFeedInDTO);
+            if (result == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }catch (IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
     @ApiOperation(value = "초대 링크 생성 API (v) vv",
                     notes = "해당 그룹방 초대 링크를 출력")

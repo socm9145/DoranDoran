@@ -31,7 +31,6 @@ public class FeedDAOImpl implements FeedDAO {
     private final QUser qUser = QUser.user;
     private final QUserRoom qUserRoom = QUserRoom.userRoom;
     private final QRoom qRoom = QRoom.room;
-    @Autowired
     private final FeedRepo feedRepo;
     private final UserRoomRepo userRoomRepo;
     public FeedDAOImpl(FeedRepo feedRepo, UserRoomRepo userRoomRepo){

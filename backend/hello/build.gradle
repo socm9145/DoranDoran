@@ -58,7 +58,8 @@ dependencies {
     implementation 'com.google.auth:google-auth-library-oauth2-http:0.25.0'
     implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
 
-
+    //aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 // querydsl 세팅
