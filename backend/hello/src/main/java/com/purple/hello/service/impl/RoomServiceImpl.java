@@ -6,6 +6,7 @@ import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
+import com.purple.hello.dto.tool.MemberDTO;
 import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.repo.QuestionRepo;
@@ -132,5 +133,16 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) {
         return roomDAO.readRoomQuestionByRoomIdAndUserId(roomId, userId);
+    }
+
+    @Override
+    public ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId) {
+        List<MemberDTO> memberDTOS = roomDAO.readMemberListByRoomId(roomId, userId);
+        if(memberDTOS == null) {
+            return null;
+        }else {
+            ReadMemberListOutDTO readMemberListOutDTO = new ReadMemberListOutDTO(roomId, memberDTOS);
+            return readMemberListOutDTO;
+        }
     }
 }

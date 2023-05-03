@@ -60,9 +60,12 @@ public class RoomDAOImpl implements RoomDAO {
                 "        on UR2.room_id = R.room_id " +
                 "        join users U2 " +
                 "        on U2.user_id = UR2.user_id " +
-                "        where U.user_id = :userId";
+                "        where U.user_id = :userId " +
+                "        and UR.user_room_role != :userRoomRole " +
+                "        and UR2.user_room_role != :userRoomRole";
         Query query = em.createNativeQuery(sql);
         query.setParameter("userId", userId);
+        query.setParameter("userRoomRole", UserRoomRole.ROLE3.name());
 
         List resultList = query.getResultList();
 
@@ -263,5 +266,31 @@ public class RoomDAOImpl implements RoomDAO {
                 .where(qRoom.roomId.eq(roomId).and(qUser.userId.eq(userId)))
                 .fetchOne();
         return readRoomQuestionOutDTO;
+    }
+
+    @Override
+    public List<MemberDTO> readMemberListByRoomId(long roomId, long userId) {
+        Long rRoomId = new JPAQuery<>(em)
+                .select(Projections.constructor(Long.class, qRoom.roomId))
+                .from(qRoom)
+                .join(qUserRoom)
+                .on(qRoom.roomId.eq(qUserRoom.room.roomId))
+                .join(qUser)
+                .on(qUserRoom.user.userId.eq(qUser.userId))
+                .where(qRoom.roomId.eq(roomId).and(qUser.userId.eq(userId)).and(qUserRoom.userRoomRole.ne(UserRoomRole.ROLE3)))
+                .fetchOne();
+        if(rRoomId == null){
+            return null;
+        }
+        List<MemberDTO> memberDTOs = new JPAQuery<>(em)
+                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUser.userProfileUrl, qUserRoom.roomName))
+                .from(qUser)
+                .join(qUserRoom)
+                .on(qUser.userId.eq(qUserRoom.user.userId))
+                .join(qRoom)
+                .on(qUserRoom.room.roomId.eq(qRoom.roomId))
+                .where(qRoom.roomId.eq(roomId).and(qUserRoom.userRoomRole.ne(UserRoomRole.ROLE3)))
+                .fetch();
+        return memberDTOs;
     }
 }

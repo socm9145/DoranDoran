@@ -168,4 +168,17 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.OK).body(readRoomQuestionOutDTO);
         }
     }
+
+    @ApiOperation(value = "그룹 유저 리스트 출력 API (v) vv",
+            notes = "해당 그룹방 유저리스트를 출력")
+    @GetMapping("/user-list")
+    public ResponseEntity<ReadMemberListOutDTO> readMemberListByRoomId(@RequestParam long roomId, HttpServletRequest request){
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        ReadMemberListOutDTO result = roomService.readMemberListByRoomId(roomId, userId);
+        if (result == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
+    }
 }
