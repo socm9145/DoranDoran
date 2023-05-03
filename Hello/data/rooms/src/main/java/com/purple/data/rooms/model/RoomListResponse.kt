@@ -1,10 +1,10 @@
-package com.purple.data.rooms.remote
+package com.purple.data.rooms.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserRoomDTO(
+data class RoomListResponse(
     @SerialName("members")
     val members: List<Member>,
     @SerialName("roomId")

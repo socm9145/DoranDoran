@@ -1,6 +1,5 @@
 package com.purple.hello.domain.account
 
-import javax.inject.Inject
 import com.purple.hello.data.account.repository.AccountRepository
 import javax.inject.Inject
 
