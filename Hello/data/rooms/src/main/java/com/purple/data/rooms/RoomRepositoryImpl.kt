@@ -23,23 +23,19 @@ class RoomRepositoryImpl @Inject constructor(
             roomQuestion,
             roomPassword,
         ).let {
-            roomDao.insertRoom(
-                RoomEntity(
-                    userRoomId = it.userRoomId,
-                    roomId = it.roomId,
-                    roomName = it.roomName,
-                    recentVisitedTime = System.currentTimeMillis(),
-                )
-            )
+            if (it.isSuccessful) {
+                it.body()?.let { response ->
+                    roomDao.insertRoom(
+                        RoomEntity(
+                            userRoomId = response.userRoomId,
+                            roomId = response.roomId,
+                            roomName = response.roomName,
+                            recentVisitedTime = System.currentTimeMillis(),
+                        ),
+                    )
+                }
+            }
         }
-//        roomDao.insertRoom(
-//            RoomEntity(
-//                roomId = 0,
-//                userRoomId = 0,
-//                roomName = roomName,
-//                recentVisitedTime = System.currentTimeMillis(),
-//            ),
-//        )
     }
 
     override fun joinRoom(roomCode: Int) {

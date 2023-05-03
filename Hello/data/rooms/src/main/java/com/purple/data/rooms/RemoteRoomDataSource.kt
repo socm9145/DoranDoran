@@ -1,5 +1,6 @@
 package com.purple.data.rooms
 
+import com.purple.data.rooms.model.request.RoomCreationRequest
 import com.purple.data.rooms.service.RoomService
 import javax.inject.Inject
 
@@ -8,5 +9,7 @@ class RemoteRoomDataSource @Inject constructor(
 ) : RoomDataSource {
 
     override suspend fun createRoom(roomName: String, userName: String, roomQuestion: String, roomPassword: String) =
-        roomService.createRoom(roomName, userName, roomQuestion, roomPassword)
+        roomService.createRoom(
+            RoomCreationRequest(roomName, userName, roomQuestion, roomPassword),
+        )
 }

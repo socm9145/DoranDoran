@@ -1,6 +1,7 @@
 package com.purple.data.rooms
 
 import com.purple.data.rooms.model.RoomCreationResponse
+import retrofit2.Response
 
 interface RoomDataSource {
 
@@ -9,5 +10,5 @@ interface RoomDataSource {
         userName: String,
         roomQuestion: String,
         roomPassword: String,
-    ): RoomCreationResponse
+    ): Response<RoomCreationResponse>
 }

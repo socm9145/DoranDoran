@@ -24,6 +24,7 @@ dependencies {
     implementation(project(":core:network"))
 
     implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation(KotlinxSerializationJson.KOTLIN_SELIAIZATION_JSON)
     implementation(retrofit2Dependencies)
 
     implementation(Hilt.HILT_ANDROID)

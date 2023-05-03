@@ -1,6 +1,6 @@
 package com.purple.hello.data.account.datasource
 
-import com.purple.hello.core.network.retrofit.service.AccountService
+import com.purple.hello.core.network.retrofit.AccountService
 import javax.inject.Inject
 
 class RemoteAccountDataSource @Inject constructor(
