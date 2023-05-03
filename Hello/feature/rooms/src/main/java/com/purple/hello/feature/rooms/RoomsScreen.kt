@@ -24,6 +24,7 @@ import com.purple.core.designsystem.dialog.*
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
+import com.purple.core.model.InputDialogType
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 
@@ -167,10 +168,10 @@ private fun AddRoomDialog(
     onConfirm: (List<InputData>) -> Unit,
 ) {
     val inputList = listOf(
-        createInputDataByInputType(type = InputType.ROOM_NAME, answer = ""),
-        createInputDataByInputType(type = InputType.NAME, answer = ""),
-        createInputDataByInputType(type = InputType.QUESTION_PASSWORD, answer = ""),
-        createInputDataByInputType(type = InputType.CREATE_PASSWORD, answer = ""),
+        createInputDataByInputType(type = InputDialogType.ROOM_NAME, inputValue = ""),
+        createInputDataByInputType(type = InputDialogType.NAME, inputValue = ""),
+        createInputDataByInputType(type = InputDialogType.QUESTION_PASSWORD, inputValue = ""),
+        createInputDataByInputType(type = InputDialogType.CREATE_PASSWORD, inputValue = ""),
     )
 
     HiInputDialog(
@@ -184,7 +185,7 @@ private fun AddRoomDialog(
 
 @Preview
 @Composable
-private fun PeviewRoomScreen() {
+private fun PreviewRoomScreen() {
     HiTheme {
         Box(
             Modifier

@@ -128,6 +128,7 @@ object KotlinxSerializationJson {
 object Androidx {
     const val WINDOW = "androidx.window:window:${Versions.WINDOW_MANAGER}"
     const val NAVIGATION_COMPOSE = "androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}"
+}
 
 object Okhttp3LoggingInterceptor {
     const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP3_LOGGING_INTERCEPTOR}"
