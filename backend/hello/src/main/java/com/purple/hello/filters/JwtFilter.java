@@ -46,7 +46,7 @@ public class JwtFilter implements Filter {
                 ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                 return;
             }
-        }else if(authorizationHeader == null){
+        }else if(authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)){
             String message = "Authorization Expired";
             ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
             return;
