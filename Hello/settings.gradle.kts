@@ -25,7 +25,7 @@ include(":core:network")
 include(":core:datastore")
 // feature
 include(":feature:rooms")
-include(":feature:setting:app")
+include(":feature:setting:room")
 // domain
 include(":domain:rooms")
 include(":domain:account")
@@ -34,3 +34,4 @@ include(":domain:model")
 include(":data:rooms")
 include(":data:user")
 include(":data:account")
+include(":domain:setting:room")

@@ -12,9 +12,9 @@ interface RoomRepository {
         roomPassword: String,
     )
     fun joinRoom(roomCode: Int)
-    fun updateUserName(userName: String)
-    fun updateRoomName(roomName: String)
-    fun updatePassword(passwordQuestion: String, password: String)
+    fun updateUserName(userRoomId: Long, userName: String)
+    fun updateRoomName(userRoomId: Long, roomName: String)
+    fun updatePassword(roomId: Int, passwordQuestion: String, password: String)
     fun leaveRoom(roomId: Int)
     fun deleteRoom(roomId: Int)
 }

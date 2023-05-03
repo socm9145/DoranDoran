@@ -28,10 +28,9 @@ fun rememberAppState(
 @Stable
 class AppState(
     val navController: NavHostController,
-    val windowSizeClass: WindowSizeClass
+    val windowSizeClass: WindowSizeClass,
 ) {
     val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
-
 }

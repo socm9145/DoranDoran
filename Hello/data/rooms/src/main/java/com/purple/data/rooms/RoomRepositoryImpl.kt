@@ -42,15 +42,15 @@ class RoomRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun updateUserName(userName: String) {
+    override fun updateUserName(userRoomId: Long, userName: String) {
         TODO("Not yet implemented")
     }
 
-    override fun updateRoomName(roomName: String) {
+    override fun updateRoomName(userRoomId: Long, roomName: String) {
         TODO("Not yet implemented")
     }
 
-    override fun updatePassword(passwordQuestion: String, password: String) {
+    override fun updatePassword(roomId: Int, passwordQuestion: String, password: String) {
         TODO("Not yet implemented")
     }
 
