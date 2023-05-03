@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":domain:account"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:model"))
 
     implementation(composeDependencies)
     implementation(appDependencies)

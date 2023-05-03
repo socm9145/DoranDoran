@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.common.api.ApiException
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun LoginScreen(
-//    loginViewModel: LoginViewModel,
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val signInRequestCode = 1
@@ -42,6 +43,7 @@ fun LoginScreen(
                     coroutineScope.launch {
                         val idToken = account.idToken
                         Log.i(TAG, "구글 로그인 성공: $idToken")
+                        loginViewModel.googleLogin(idToken!!)
                         /* TODO : send ID Token to server and validate */
                     }
                 }
@@ -57,6 +59,7 @@ fun LoginScreen(
                 // 서비스 코드에서는 간단하게 로그인 요청하고 oAuthToken 을 받아올 수 있다.
                 val accessToken = UserApiClient.loginWithKakao(context).accessToken
                 Log.i(TAG, " $accessToken")
+                loginViewModel.kakaoLogin(accessToken!!)
             } catch (error: Throwable) {
                 if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                     Log.i(TAG, "사용자가 명시적으로 취소")
@@ -126,7 +129,7 @@ private fun SignInGoogleButton(
 @Preview
 @Composable
 private fun PreviewLoginScreen() {
-    LoginScreen(
+//    LoginScreen(
 //        loginViewModel = LoginViewModel()
-    )
+//    )
 }
