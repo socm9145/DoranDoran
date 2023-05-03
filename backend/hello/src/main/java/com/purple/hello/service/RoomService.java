@@ -28,4 +28,6 @@ public interface RoomService {
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
     ReadQuestionOutDTO readQuestionByRoomId(long roomId);
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
+
+    ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId);
 }

@@ -6,6 +6,7 @@ import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
+import com.purple.hello.dto.tool.MemberDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,4 +22,5 @@ public interface RoomDAO {
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
     LocalDate getCreatedAtByRoomId(long roomId);
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
+    List<MemberDTO> readMemberListByRoomId(long roomId, long userId);
 }
