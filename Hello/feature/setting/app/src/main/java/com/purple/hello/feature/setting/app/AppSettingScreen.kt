@@ -26,17 +26,6 @@ import com.purple.core.model.SettingItemType
 fun AppSettingRoute(
     isHost: Boolean,
 ) {
-//    var dialogsStates by remember {
-//        mutableStateOf(
-//            mapOf(
-//                "shouldShowChangeRoomNameDialog" to false,
-//                "shouldShowChangeUserNameDialog" to false,
-//                "shouldShowChangePasswordDialog" to false,
-//                "shouldShowExitRoomDialog" to false,
-//                "shouldShowDeleteRoomDialog" to false,
-//            ).toMutableMap(),
-//        )
-//    }
     var shouldShowChangeRoomNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangeUserNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangePasswordDialog by remember { mutableStateOf(false) }
@@ -55,23 +44,18 @@ fun AppSettingRoute(
                     when (itemType) {
                         SettingItemType.CHANGE_ROOM_NAME -> {
                             shouldShowChangeRoomNameDialog = true
-//                            dialogsStates["shouldShowChangeRoomNameDialog"] = true
                         }
                         SettingItemType.CHANGE_NAME -> {
                             shouldShowChangeUserNameDialog = true
-//                            dialogsStates["shouldShowChangeUserNameDialog"] = true
                         }
                         SettingItemType.CHANGE_PASSWORD -> {
                             shouldShowChangePasswordDialog = true
-//                            dialogsStates["shouldShowChangePasswordDialog"] = true
                         }
                         SettingItemType.EXIT_GROUP -> {
                             shouldShowExitRoomDialog = true
-//                            dialogsStates["shouldShowExitRoomDialog"] = true
                         }
                         SettingItemType.DELETE_GROUP -> {
                             shouldShowDeleteRoomDialog = true
-//                            dialogsStates["shouldShowDeleteRoomDialog"] = true
                         }
                         else -> {}
                     }
@@ -80,51 +64,41 @@ fun AppSettingRoute(
         }
         when {
             shouldShowChangeRoomNameDialog -> {
-//            dialogsStates["shouldShowChangeRoomNameDialog"] == true -> {
                 ChangeRoomNameDialog(
                     onDismiss = {
                         shouldShowChangeRoomNameDialog = false
-//                        dialogsStates["shouldShowChangeRoomNameDialog"] = false
                     },
                     onConfirm = { /* TODO */ },
                 )
             }
             shouldShowChangeUserNameDialog -> {
-//            dialogsStates["shouldShowChangeUserNameDialog"] == true -> {
                 ChangeUserNameDialog(
                     onDismiss = {
                         shouldShowChangeUserNameDialog = false
-//                        dialogsStates["shouldShowChangeUserNameDialog"] = false
                     },
                     onConfirm = { /* TODO */ },
                 )
             }
             shouldShowChangePasswordDialog -> {
-//            dialogsStates["shouldShowChangePasswordDialog"] == true -> {
                 ChangePasswordDialog(
                     onDismiss = {
                         shouldShowChangePasswordDialog = false
-//                        dialogsStates["shouldShowChangePasswordDialog"] = false
                     },
                     onConfirm = { /* TODO */ },
                 )
             }
             shouldShowExitRoomDialog -> {
-//            dialogsStates["shouldShowExitRoomDialog"] == true -> {
                 ExitRoomDialog(
                     onDismiss = {
                         shouldShowExitRoomDialog = false
-//                        dialogsStates["shouldShowExitRoomDialog"] = false
                     },
                     onDelete = { /* TODO */ },
                 )
             }
             shouldShowDeleteRoomDialog -> {
-//            dialogsStates["shouldShowDeleteRoomDialog"] == true -> {
                 DeleteRoomDialog(
                     onDismiss = {
                         shouldShowDeleteRoomDialog = false
-//                        dialogsStates["shouldShowDeleteRoomDialog"] = false
                     },
                     onDelete = { /* TODO */ },
                 )
@@ -229,8 +203,8 @@ private fun ChangePasswordDialog(
 ) {
     /* TODO : QUESTION_PASSWORD -> inputValue 에 현재 password 질문 넣기 */
     val inputList = listOf(
-        createInputDataByInputType(InputDialogType.QUESTION_PASSWORD, inputValue = ""),
         createInputDataByInputType(InputDialogType.EDIT_QUESTION_PASSWORD, inputValue = ""),
+        createInputDataByInputType(InputDialogType.EDIT_PASSWORD, inputValue = ""),
     )
     HiInputDialog(
         questionContent = inputList,
