@@ -51,5 +51,10 @@ val socialLogin = listOf(
 
 val retrofit2Dependencies = listOf(
     Retrofit2.RETROFIT2,
-    Retrofit2.KOTLIN_CONVERTER
+    Retrofit2.KOTLIN_CONVERTER,
+)
+
+val protobufDependencies = listOf(
+    Protobuf.PROTOBUF_JAVALITE,
+    Protobuf.PROTOBUF_KOTLINLITE,
 )

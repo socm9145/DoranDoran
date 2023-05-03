@@ -1,16 +1,25 @@
 package com.purple.hello.data.account.datasource
 
-import com.purple.hello.core.network.retrofit.AccountService
+import androidx.datastore.core.DataStore
+import com.purple.hello.core.datastore.AccountData
+import com.purple.hello.core.datastore.AccountDataSerializer.Companion.toAccountData
+import com.purple.hello.core.network.AccountService
 import javax.inject.Inject
 
 class RemoteAccountDataSource @Inject constructor(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val accountDataStore: DataStore<AccountData>,
 ) {
+
     suspend fun loginWithGoogle(idToken: String) {
-        accountService.loginWithGoogle(idToken)
+        val accountTokenResponse = accountService.loginWithGoogle(idToken)
+        val accountData = toAccountData(accountTokenResponse.accessToken, accountTokenResponse.refreshToken)
+        accountDataStore.updateData { accountData }
     }
 
     suspend fun loginWithKakao(accessToken: String) {
-        accountService.loginWithKakao(accessToken)
+        val accountTokenResponse = accountService.loginWithKakao(accessToken)
+        val accountData = toAccountData(accountTokenResponse.accessToken, accountTokenResponse.refreshToken)
+        accountDataStore.updateData { accountData }
     }
 }

@@ -28,5 +28,6 @@ dependencies {
     implementation(retrofit2Dependencies)
 
     implementation(Hilt.HILT_ANDROID)
+    implementation(project(mapOf("path" to ":core:datastore")))
     kapt(Hilt.HILT_ANDROID_COMPILER)
 }

@@ -23,11 +23,11 @@ import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.dialog.HiInputDialog
-import com.purple.core.designsystem.dialog.InputType
 import com.purple.core.designsystem.dialog.createInputDataByInputType
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
+import com.purple.core.model.InputDialogType
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 
@@ -170,15 +170,15 @@ private fun AddRoomDialog(
     onDismiss: () -> Unit,
     onConfirm: (roomName: String, userName: String, question: String, password: String) -> Unit,
 ) {
-    val roomName = createInputDataByInputType(type = InputType.ROOM_NAME, answer = "")
-    val userName = createInputDataByInputType(type = InputType.NAME, answer = "")
-    val question = createInputDataByInputType(type = InputType.QUESTION_PASSWORD, answer = "")
-    val password = createInputDataByInputType(type = InputType.CREATE_PASSWORD, answer = "")
+    val roomName = createInputDataByInputType(type = InputDialogType.ROOM_NAME, inputValue = "")
+    val userName = createInputDataByInputType(type = InputDialogType.NAME, inputValue = "")
+    val question = createInputDataByInputType(type = InputDialogType.QUESTION_PASSWORD, inputValue = "")
+    val password = createInputDataByInputType(type = InputDialogType.CREATE_PASSWORD, inputValue = "")
 
     HiInputDialog(
         questionContent = listOf(roomName, userName, question, password),
         onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(roomName.answer, userName.answer, question.answer, password.answer) },
+        onConfirm = { onConfirm(roomName.inputValue, userName.inputValue, question.inputValue, password.inputValue) },
         confirmButtonText = "생성하기",
         dismissButtonText = "취소",
     )

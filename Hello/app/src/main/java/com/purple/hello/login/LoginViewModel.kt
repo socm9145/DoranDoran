@@ -9,15 +9,16 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
-    fun kakaoLogin(accessToken: String) {
-        viewModelScope.launch {
-            loginUseCase.loginWithKakao(accessToken)
-        }
-    }
 
     fun googleLogin(idToken: String) {
         viewModelScope.launch {
             loginUseCase.loginWithGoogle(idToken)
+        }
+    }
+
+    fun kakaoLogin(accessToken: String) {
+        viewModelScope.launch {
+            loginUseCase.loginWithKakao(accessToken)
         }
     }
 }
