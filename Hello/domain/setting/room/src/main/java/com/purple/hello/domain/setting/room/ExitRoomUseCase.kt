@@ -6,6 +6,6 @@ import javax.inject.Inject
 class ExitRoomUseCase @Inject constructor(
     private val roomRepository: RoomRepository,
 ) {
-    operator fun invoke(roomId: Int) =
-        roomRepository.leaveRoom(roomId)
+    suspend operator fun invoke(userRoomId: Long) =
+        roomRepository.leaveRoom(userRoomId)
 }

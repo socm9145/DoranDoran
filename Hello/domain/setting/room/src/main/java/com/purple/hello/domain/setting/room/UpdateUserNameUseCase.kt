@@ -3,9 +3,9 @@ package com.purple.hello.domain.setting.room
 import com.purple.data.rooms.RoomRepository
 import javax.inject.Inject
 
-class ChangeUserNameUseCase @Inject constructor(
+class UpdateUserNameUseCase @Inject constructor(
     private val roomRepository: RoomRepository,
 ) {
-    operator fun invoke(userRoomId: Long, newUserName: String) =
+    suspend operator fun invoke(userRoomId: Long, newUserName: String) =
         roomRepository.updateUserName(userRoomId, newUserName)
 }

@@ -10,5 +10,5 @@ data class RoomEntity(
     val roomId: Long,
     val userRoomId: Long,
     val roomName: String,
-    val recentVisitedTime: Long
+    val recentVisitedTime: Long,
 )

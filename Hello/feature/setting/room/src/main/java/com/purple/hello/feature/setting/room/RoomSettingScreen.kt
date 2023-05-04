@@ -72,7 +72,7 @@ fun RoomSettingRoute(
                     onDismiss = {
                         shouldShowChangeRoomNameDialog = false
                     },
-                    onConfirm = roomSettingViewModel::changeRoomName,
+                    onConfirm = roomSettingViewModel::updateRoomName,
                 )
             }
             shouldShowChangeUserNameDialog -> {
@@ -80,7 +80,7 @@ fun RoomSettingRoute(
                     onDismiss = {
                         shouldShowChangeUserNameDialog = false
                     },
-                    onConfirm = roomSettingViewModel::changeUserName,
+                    onConfirm = roomSettingViewModel::updateUserName,
                 )
             }
             shouldShowChangePasswordDialog -> {
@@ -88,7 +88,7 @@ fun RoomSettingRoute(
                     onDismiss = {
                         shouldShowChangePasswordDialog = false
                     },
-                    onConfirm = roomSettingViewModel::changeRoomPassword,
+                    onConfirm = roomSettingViewModel::updateRoomPassword,
                 )
             }
             shouldShowExitRoomDialog -> {

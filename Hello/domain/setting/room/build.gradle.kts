@@ -38,7 +38,8 @@ android {
 dependencies {
 
     implementation(appDependencies)
-    implementation(project(mapOf("path" to ":data:rooms")))
+    implementation(project(":data:rooms"))
+
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
 
@@ -48,3 +49,4 @@ dependencies {
     implementation(Hilt.HILT_ANDROID)
     kapt(Hilt.HILT_ANDROID_COMPILER)
 }
+
