@@ -15,14 +15,10 @@ import java.util.List;
 public interface RoomService {
     List<ReadRoomOutDTO> readRoomByUserId(long userId);
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO);
-
     boolean comparePasswordByRoomCode(long roomId, String password);
-
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
-
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
-
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);

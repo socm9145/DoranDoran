@@ -21,7 +21,9 @@ public class UserRoom {
     long userRoomId;
     @Enumerated(EnumType.STRING)
     UserRoomRole userRoomRole;
+    @Column(nullable = false)
     String userName;
+    @Column(nullable = false)
     String roomName;
     @Enumerated(EnumType.STRING)
     BoolAlarm safeAlarm;

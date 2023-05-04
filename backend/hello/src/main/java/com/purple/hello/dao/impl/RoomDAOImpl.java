@@ -121,15 +121,10 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < 6; i++)
-            sb.append((char)(97 + (int)(Math.random()*26)));
-
         Room room = Room.builder()
                 .beginTime(0)
                 .createAt(new Date())
-                .roomCode(sb.toString())
+                //.roomCode()
                 .roomQuestion(createUserRoomInDTO.getRoomQuestion())
                 .roomPassword(createUserRoomInDTO.getRoomPassword())
                 .build();

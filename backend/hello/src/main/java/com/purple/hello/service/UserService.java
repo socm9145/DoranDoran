@@ -14,10 +14,7 @@ public interface UserService {
     ResponseEntity<String> getKakaoUserInfoWithAccessToken(String token);
     Payload googleIdTokenVerify(String idToken) throws GeneralSecurityException, IOException;
     User readUserByOauthId(String oauthId);
-
     User insertUser(OauthUserInputDTO oauthUserInputDTO);
-
     void updateRefreshToken(long userId, String refreshToken);
-
     User isValidRefreshToken(String refreshToken);
 }

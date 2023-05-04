@@ -27,6 +27,7 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String authorizationHeader = httpRequest.getHeader(AUTHORIZATION_HEADER);
 
+
         // AUTHORIZATION_HEADER 가 정상적으로 들어왔을 경우 JWT 를 추출하여 추가적인 작업을 하는 로직
         if(authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
             String jwt = authorizationHeader.substring(BEARER_PREFIX.length());

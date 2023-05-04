@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "users")
 public class User {
     @Id
@@ -34,4 +33,20 @@ public class User {
     List<Alarm> srcAlarm = new ArrayList<>();
     @OneToMany(mappedBy = "dstUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<Alarm> dstAlarm = new ArrayList<>();
+
+    @Builder
+    public User(long userId, String oauthId, String email, String name, String userProfileUrl, Date createAt, Date birth, String accessToken, String refreshToken, List<UserRoom> userRoom, List<Alarm> srcAlarm, List<Alarm> dstAlarm) {
+        this.userId = userId;
+        this.oauthId = oauthId;
+        this.email = email;
+        this.name = name;
+        this.userProfileUrl = userProfileUrl;
+        this.createAt = createAt;
+        this.birth = birth;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.userRoom = userRoom;
+        this.srcAlarm = srcAlarm;
+        this.dstAlarm = dstAlarm;
+    }
 }
