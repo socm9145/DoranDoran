@@ -78,5 +78,14 @@ enum class SettingItemType(
                 DELETE_GROUP,
             )
         }
+
+        fun getItemsForApp(): List<SettingItemType> {
+            return listOf(
+                POLICY,
+                APP_INFO,
+                LOGOUT,
+                DELETE_USER,
+            )
+        }
     }
 }

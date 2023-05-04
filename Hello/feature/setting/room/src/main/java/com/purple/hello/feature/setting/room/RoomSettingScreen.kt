@@ -217,7 +217,7 @@ private fun DeleteRoomDialog(
 @Composable
 private fun RoomSettingAppBar() {
     HiTopAppBar(
-        title = "설정",
+        title = "방 설정",
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로 가기",
         actions = {},
@@ -227,6 +227,6 @@ private fun RoomSettingAppBar() {
 
 @Preview
 @Composable
-private fun PreviewAppSettingScreen() {
+private fun PreviewRoomSettingScreen() {
     RoomSettingRoute(isHost = true)
 }
