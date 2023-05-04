@@ -1,6 +1,6 @@
-package com.purple.data.rooms.di
+package com.purple.hello.core.network.di
 
-import com.purple.data.rooms.service.RoomService
+import com.purple.hello.core.network.AccountService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +13,6 @@ import javax.inject.Named
 object ServiceModule {
 
     @Provides
-    fun provideRoomService(@Named("default") retrofit: Retrofit): RoomService =
-        retrofit.create(RoomService::class.java)
+    fun provideAccountService(@Named("login") retrofit: Retrofit): AccountService =
+        retrofit.create(AccountService::class.java)
 }

@@ -19,6 +19,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -54,10 +55,21 @@ object RetrofitApiClient {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @Named("default")
+    fun provideDefaultRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("login")
+    fun provideLoginRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
@@ -86,38 +98,25 @@ object RetrofitApiClient {
             val accessToken = runBlocking { accountDataStore.accessToken.first() }
             val refreshToken = runBlocking { accountDataStore.refreshToken.first() }
             val reIssueResponse = accountService.reIssue(accessToken, refreshToken)
-            when {
-                reIssueResponse.isSuccess -> {
-                    reIssueResponse.getOrNull().let {
-                        when (it) {
-                            null -> {
-                                accountService.logout()
-                                proceed(request())
-                            }
-                            else -> {
-                                runBlocking { accountDataStore.setToken(it.accessToken, it.refreshToken) }
-                                val newRequest = request().newBuilder()
-                                    .addHeader("Authorization", "Bearer ${it.accessToken}")
-                                    .build()
-                                proceed(newRequest)
-                            }
-                        }
+            if (reIssueResponse.isSuccessful) {
+                run {
+                    runBlocking {
+                        accountDataStore.setToken(
+                            reIssueResponse.headers()["Access-Token"] ?: "",
+                            reIssueResponse.headers()["Refresh-Token"] ?: "",
+                        )
                     }
+                    val newRequest = request().newBuilder()
+                        .addHeader("Authorization", "Bearer ${reIssueResponse.headers()["Access-Token"]}")
+                        .build()
+                    proceed(newRequest)
                 }
-                else -> {
-                    accountService.logout()
-                    proceed(request())
-                }
+            } else {
+                accountService.logout()
+                proceed(request())
             }
         }
     }
 
-    private fun loginClient(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
-    }
-
-    private val accountService: AccountService = loginClient().create(AccountService::class.java)
+    private val accountService: AccountService = provideLoginRetrofit().create(AccountService::class.java)
 }
