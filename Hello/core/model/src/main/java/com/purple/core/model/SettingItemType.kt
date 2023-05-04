@@ -59,5 +59,24 @@ enum class SettingItemType(
         "탈퇴하시면 지금까지의 모든 정보가 사라져요!",
         true,
         false,
-    ),
+    ), ;
+    companion object {
+        fun getItemsForUser(): List<SettingItemType> {
+            return listOf(
+                CHANGE_ROOM_NAME,
+                CHANGE_NAME,
+                EXIT_GROUP,
+            )
+        }
+
+        fun getItemsForHost(): List<SettingItemType> {
+            return listOf(
+                CHANGE_ROOM_NAME,
+                CHANGE_NAME,
+                CHANGE_PASSWORD,
+                EXIT_GROUP,
+                DELETE_GROUP,
+            )
+        }
+    }
 }

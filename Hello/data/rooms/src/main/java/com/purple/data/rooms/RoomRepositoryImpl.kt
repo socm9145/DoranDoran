@@ -42,23 +42,71 @@ class RoomRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun updateUserName(userName: String) {
-        TODO("Not yet implemented")
+    override suspend fun updateRoomName(userRoomId: Long, roomName: String) {
+        remoteRoomDataSource.updateRoomName(
+            userRoomId,
+            roomName,
+        ).let {
+            if (it.isSuccessful) {
+                roomDao.updateRoomName(
+                    userRoomId = userRoomId,
+                    roomName = roomName,
+                )
+            }
+        }
     }
 
-    override fun updateRoomName(roomName: String) {
-        TODO("Not yet implemented")
+    override suspend fun updateUserName(userRoomId: Long, userName: String) {
+        remoteRoomDataSource.updateUserName(
+            userRoomId,
+            userName,
+        ).let {
+            if (it.isSuccessful) {
+                roomDao.updateUserName(
+                    userRoomId = userRoomId,
+                    userName = userName,
+                )
+            }
+        }
     }
 
-    override fun updatePassword(passwordQuestion: String, password: String) {
-        TODO("Not yet implemented")
+    override suspend fun updatePassword(roomId: Long, passwordQuestion: String, password: String) {
+        remoteRoomDataSource.updatePassword(
+            roomId,
+            password,
+            passwordQuestion,
+        ).let {
+            if (it.isSuccessful) {
+                roomDao.updatePassword(
+                    roomId = roomId,
+                    password = password,
+                    question = passwordQuestion,
+                )
+            }
+        }
     }
 
-    override fun leaveRoom(roomId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun leaveRoom(userRoomId: Long) {
+        remoteRoomDataSource.exitRoom(
+            userRoomId,
+        ).let {
+            if (it.isSuccessful) {
+                roomDao.exitRoom(
+                    userRoomId = userRoomId,
+                )
+            }
+        }
     }
 
-    override fun deleteRoom(roomId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun deleteRoom(roomId: Long) {
+        remoteRoomDataSource.deleteRoom(
+            roomId,
+        ).let {
+            if (it.isSuccessful) {
+                roomDao.deleteRoom(
+                    roomId = roomId,
+                )
+            }
+        }
     }
 }
