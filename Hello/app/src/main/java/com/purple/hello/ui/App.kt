@@ -7,6 +7,8 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.purple.hello.domain.account.CheckLoggedInUseCase
+import com.purple.hello.loading.LoadingScreen
+import com.purple.hello.login.LoginScreen
 import com.purple.hello.navigation.HiNavHost
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -17,7 +19,7 @@ fun HiApp(
     appState: AppState = rememberAppState(
         windowSizeClass = windowSizeClass,
         checkLoggedInUseCase = checkLoggedInUseCase,
-    ),
+    ).value,
 ) {
     Scaffold { padding ->
         Row(
@@ -31,8 +33,17 @@ fun HiApp(
                     ),
                 ),
         ) {
-            HiNavHost(appState)
+            when (appState) {
+                is AppState.Init -> {
+                    LoadingScreen()
+                }
+                is AppState.LoggedIn -> {
+                    HiNavHost(appState)
+                }
+                is AppState.LoggedOut -> {
+                    LoginScreen()
+                }
+            }
         }
     }
 }
-

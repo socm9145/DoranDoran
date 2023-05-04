@@ -9,21 +9,23 @@ import androidx.navigation.compose.rememberNavController
 import com.purple.hello.domain.account.CheckLoggedInUseCase
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
-import com.purple.hello.login.navigation.loginNavigationRoute
-import com.purple.hello.login.navigation.navigateToLogin
 
 @Composable
 fun rememberAppState(
     windowSizeClass: WindowSizeClass,
     navController: NavHostController = rememberNavController(),
     checkLoggedInUseCase: CheckLoggedInUseCase,
-): AppState {
+): MutableState<AppState> {
     val appState = remember(navController, windowSizeClass) {
-        AppState(navController, windowSizeClass)
+        mutableStateOf<AppState>(AppState.Init(windowSizeClass))
     }
+
     LaunchedEffect(checkLoggedInUseCase) {
-        checkLoggedInUseCase().collect {
-            appState.setLoggedIn(it)
+        checkLoggedInUseCase().collect { isLoggedIn ->
+            appState.value = when (isLoggedIn) {
+                true -> AppState.LoggedIn(navController, windowSizeClass)
+                false -> AppState.LoggedOut(windowSizeClass)
+            }
         }
     }
 
@@ -31,27 +33,30 @@ fun rememberAppState(
 }
 
 @Stable
-class AppState(
-    val navController: NavHostController,
+sealed class AppState(
     val windowSizeClass: WindowSizeClass,
 ) {
-    private var isLoggedIn: MutableState<Boolean> = mutableStateOf(false)
 
-    val currentDestination: NavDestination?
-        @Composable get() = navController
-            .currentBackStackEntryAsState().value?.destination
+    class Init(
+        windowSizeClass: WindowSizeClass,
+    ) : AppState(windowSizeClass)
 
-    fun setLoggedIn(isLoggedIn: Boolean) {
-        this.isLoggedIn.value = isLoggedIn
-        navigateToDestination(
-            if (isLoggedIn) roomsNavigationRoute else loginNavigationRoute,
-        )
-    }
+    class LoggedIn(
+        val navController: NavHostController,
+        windowSizeClass: WindowSizeClass,
+    ) : AppState(windowSizeClass) {
+        val currentDestination: NavDestination?
+            @Composable get() = navController
+                .currentBackStackEntryAsState().value?.destination
 
-    private fun navigateToDestination(destination: String) {
-        when (destination) {
-            roomsNavigationRoute -> navController.navigateToRooms()
-            loginNavigationRoute -> navController.navigateToLogin()
+        private fun navigateToDestination(destination: String) {
+            when (destination) {
+                roomsNavigationRoute -> navController.navigateToRooms()
+            }
         }
     }
+
+    class LoggedOut(
+        windowSizeClass: WindowSizeClass,
+    ) : AppState(windowSizeClass)
 }
