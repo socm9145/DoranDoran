@@ -98,23 +98,20 @@ object RetrofitApiClient {
             val accessToken = runBlocking { accountDataStore.accessToken.first() }
             val refreshToken = runBlocking { accountDataStore.refreshToken.first() }
             val reIssueResponse = accountService.reIssue(accessToken, refreshToken)
-            if(reIssueResponse.isSuccessful) {
-                if(reIssueResponse.body() != null) {
+            if (reIssueResponse.isSuccessful) {
+                run {
                     runBlocking {
                         accountDataStore.setToken(
-                            reIssueResponse.body()!!.accessToken,
-                            reIssueResponse.body()!!.refreshToken
+                            reIssueResponse.headers()["Access-Token"] ?: "",
+                            reIssueResponse.headers()["Refresh-Token"] ?: "",
                         )
                     }
                     val newRequest = request().newBuilder()
-                        .addHeader("Authorization", "Bearer ${reIssueResponse.body()!!.accessToken}")
+                        .addHeader("Authorization", "Bearer ${reIssueResponse.headers()["Access-Token"]}")
                         .build()
                     proceed(newRequest)
-                }else {
-                    accountService.logout()
-                    proceed(request())
                 }
-            }else {
+            } else {
                 accountService.logout()
                 proceed(request())
             }
