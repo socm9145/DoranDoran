@@ -2,12 +2,13 @@ package com.purple.hello.core.datastore
 
 import android.util.Log
 import androidx.datastore.core.DataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
 class AccountPreferencesDataSource @Inject constructor(
-    private val accountPreferences: DataStore<AccountData>
+    private val accountPreferences: DataStore<AccountData>,
 ) {
     val accessToken = accountPreferences.data.map { it.accessToken }
     val refreshToken = accountPreferences.data.map { it.refreshToken }
@@ -23,5 +24,9 @@ class AccountPreferencesDataSource @Inject constructor(
         } catch (ioException: IOException) {
             Log.e("AccountPreferences", "Failed to update token")
         }
+    }
+
+    fun isLoggedIn(): Flow<Boolean> = accountPreferences.data.map { accountData ->
+        !accountData.accessToken.isNullOrBlank() && !accountData.refreshToken.isNullOrBlank()
     }
 }

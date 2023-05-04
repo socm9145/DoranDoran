@@ -9,7 +9,7 @@ import com.purple.hello.ui.AppState
 
 @Composable
 fun HiNavHost(
-    appState: AppState,
+    appState: AppState.LoggedIn,
     modifier: Modifier = Modifier,
     startDestination: String = roomsNavigationRoute,
 ) {

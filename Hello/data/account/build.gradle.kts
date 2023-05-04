@@ -9,7 +9,6 @@ android {
 
     defaultConfig {
         minSdk = AppConfig.minSdk
-        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -41,6 +40,7 @@ dependencies {
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
     implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation(retrofit2Dependencies)
     implementation("javax.inject:javax.inject:1")
 
     implementation(Datastore.DATASTORE)
