@@ -87,15 +87,18 @@ public class RoomController {
                                                                        HttpServletRequest request){
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         createUserRoomJoinInDTO.setUserId(userId);
+
         boolean isCorrectPassword = this.roomService.comparePasswordByRoomCode(createUserRoomJoinInDTO.getRoomId(),
                 createUserRoomJoinInDTO.getRoomPassword());
-        if (!isCorrectPassword) {
+
+        if (!isCorrectPassword)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+
         CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
-        if(createUserRoomJoinOutDTO == null){
+
+        if (createUserRoomJoinOutDTO == null)
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        }
+
         return ResponseEntity.status(HttpStatus.OK).body(createUserRoomJoinOutDTO);
     }
 

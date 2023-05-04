@@ -9,9 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 @RestController("/option")
+@ControllerAdvice
 public class OptionController {
     @Autowired
     private final AlarmService alarmService;
@@ -39,7 +42,7 @@ public class OptionController {
             value = "그룹 이름 변경 API (^)"
             , notes = "해당 그룹의 이름을 변경해주는 API. 모든 이용자가 변경 가능하다.")
     @PutMapping("/room/name")
-    public ResponseEntity<String> updateRoomName(@RequestBody UpdateRoomNameInDTO updateRoomNameInDTO, HttpServletRequest request){
+    public ResponseEntity<String> updateRoomName(@RequestBody UpdateRoomNameInDTO updateRoomNameInDTO, HttpServletRequest request) throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         updateRoomNameInDTO.setUserId(userId);
         boolean isUpdated = userRoomService.updateRoomName(updateRoomNameInDTO);
@@ -48,6 +51,7 @@ public class OptionController {
         }else {
             return ResponseEntity.status(HttpStatus.OK).body(ResultType.SUCCESS.name());
         }
+
     }
 
     @ApiOperation(
@@ -69,8 +73,9 @@ public class OptionController {
             value = "그룹 비밀번호 변경 API vv"
             , notes = "해당 그룹방 비밀번호를 변경해주는 API. 관리자만 사용 가능하다.")
     @PutMapping("/room/password")
-    public ResponseEntity<String> updateRoomPassword(@RequestBody UpdateRoomPasswordInDTO updateRoomPasswordInDTO, HttpServletRequest request){
+    public ResponseEntity<String> updateRoomPassword(@RequestBody UpdateRoomPasswordInDTO updateRoomPasswordInDTO, HttpServletRequest request) throws IllegalAccessException {
         long userId = Long.parseLong(request.getAttribute("userId").toString());
+
         updateRoomPasswordInDTO.setUserId(userId);
         boolean isUpdated = roomService.updateRoomPassword(updateRoomPasswordInDTO);
         if (!isUpdated) {

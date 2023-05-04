@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 @Service
@@ -43,7 +45,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 
     @Override
     @Transactional
-    public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) {
+    public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) throws Exception{
         return userRoomDAO.updateRoomName(updateRoomNameInDTO);
     }
 

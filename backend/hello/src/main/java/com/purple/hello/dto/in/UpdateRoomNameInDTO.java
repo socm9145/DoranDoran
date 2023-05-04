@@ -1,16 +1,21 @@
 package com.purple.hello.dto.in;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class UpdateRoomNameInDTO {
+public class UpdateRoomNameInDTO implements Serializable {
     long userId;
     long userRoomId;
     String roomName;
+
+    @Builder
+    public UpdateRoomNameInDTO(long userId, long userRoomId, String roomName) {
+        this.userId = userId;
+        this.userRoomId = userRoomId;
+        this.roomName = roomName;
+    }
 }
