@@ -59,5 +59,4 @@ sealed class AppState(
     class LoggedOut(
         windowSizeClass: WindowSizeClass,
     ) : AppState(windowSizeClass)
->>>>>>> Hello/app/src/main/java/com/purple/hello/ui/AppState.kt
 }
