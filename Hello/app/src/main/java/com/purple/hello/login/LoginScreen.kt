@@ -24,7 +24,6 @@ import com.purple.hello.R
 import com.purple.hello.login.google.GoogleAuthResultContract
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun LoginScreen(
@@ -59,7 +58,7 @@ fun LoginScreen(
                 // 서비스 코드에서는 간단하게 로그인 요청하고 oAuthToken 을 받아올 수 있다.
                 val accessToken = UserApiClient.loginWithKakao(context).accessToken
                 Log.i(TAG, " $accessToken")
-                loginViewModel.kakaoLogin(accessToken!!)
+                loginViewModel.kakaoLogin(accessToken)
             } catch (error: Throwable) {
                 if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                     Log.i(TAG, "사용자가 명시적으로 취소")

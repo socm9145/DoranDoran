@@ -10,12 +10,18 @@ class RemoteAccountDataSource @Inject constructor(
 ) {
 
     suspend fun loginWithGoogle(idToken: String) {
-        val accountTokenResponse = accountService.loginWithGoogle(idToken)
-        accountDataStore.setToken(accountTokenResponse.accessToken, accountTokenResponse.refreshToken)
+        val responseHeader = accountService.loginWithGoogle(idToken).headers()
+        accountDataStore.setToken(
+            responseHeader["Access-Token"] ?: "",
+            responseHeader["Refresh-Token"] ?: "",
+        )
     }
 
     suspend fun loginWithKakao(accessToken: String) {
-        val accountTokenResponse = accountService.loginWithKakao(accessToken)
-        accountDataStore.setToken(accountTokenResponse.accessToken, accountTokenResponse.refreshToken)
+        val responseHeader = accountService.loginWithKakao(accessToken).headers()
+        accountDataStore.setToken(
+            responseHeader["Access-Token"] ?: "",
+            responseHeader["Refresh-Token"] ?: "",
+        )
     }
 }

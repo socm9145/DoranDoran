@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.purple.hello.feature.rooms.navigation.roomsScreen
-import com.purple.hello.login.navigation.loginNavigationRoute
+import com.purple.hello.loading.navigation.loadingNavigationRoute
+import com.purple.hello.loading.navigation.loadingScreen
 import com.purple.hello.login.navigation.loginScreen
 import com.purple.hello.ui.AppState
 
@@ -12,7 +13,7 @@ import com.purple.hello.ui.AppState
 fun HiNavHost(
     appState: AppState,
     modifier: Modifier = Modifier,
-    startDestination: String = loginNavigationRoute,
+    startDestination: String = loadingNavigationRoute,
 ) {
     val navController = appState.navController
 
@@ -21,6 +22,7 @@ fun HiNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
+        loadingScreen()
         loginScreen()
         roomsScreen()
     }
