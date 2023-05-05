@@ -43,7 +43,7 @@ android {
 dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
-//    implementation(project(":domain:setting:app"))
+    implementation(project(":domain:account"))
 
     implementation(composeDependencies)
     implementation(imageLoadDependencies)

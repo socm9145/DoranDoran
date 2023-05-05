@@ -17,5 +17,13 @@ class AccountRepository @Inject constructor(
         remoteAccountDataSource.loginWithKakao(accessToken)
     }
 
+    suspend fun logout() {
+//      TODO
+    }
+
+    suspend fun deleteAccount() {
+//      TODO
+    }
+
     fun isLoggedIn(): Flow<Boolean> = accountDataStore.isLoggedIn()
 }

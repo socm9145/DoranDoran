@@ -1,5 +1,7 @@
 package com.purple.hello.feature.setting.app
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,8 +10,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.component.SettingItem
 import com.purple.core.designsystem.dialog.HiAlertDialog
@@ -18,11 +23,22 @@ import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.model.DeleteDialogType
 import com.purple.core.model.SettingItemType
 import com.purple.core.model.SettingItemType.Companion.getItemsForApp
+import com.purple.hello.feature.setting.app.viewmodel.AppSettingViewModel
 
 @Composable
-fun AppSettingRoute() {
+fun AppSettingRoute(
+    appSettingViewModel: AppSettingViewModel = hiltViewModel(),
+) {
     var shouldShowLogoutDialog by remember { mutableStateOf(false) }
     var shouldShowSecessionDialog by remember { mutableStateOf(false) }
+
+    val appPackageName = "com.purple.hello"
+    val appInfoUrl = "https://play.google.com/store/apps/details?id=$appPackageName"
+    val policyUrl = "https://mysterious-emery-1f8.notion.site/1f8b49a6235f4fa993ab301d1b090c5b"
+    val appInfoIntent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(appInfoUrl))
+    val policyIntent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(policyUrl))
+
+    val context = LocalContext.current
 
     HiTheme {
         Column(
@@ -34,10 +50,10 @@ fun AppSettingRoute() {
                 onClick = { itemType ->
                     when (itemType) {
                         SettingItemType.POLICY -> {
-//                            TODO : 개인 정보 처리 방침 URL 이동
+                            context.startActivity(policyIntent)
                         }
                         SettingItemType.APP_INFO -> {
-//                            TODO : 구글 스토어 내부 설명 페이지 URL 이동
+                            context.startActivity(appInfoIntent)
                         }
                         SettingItemType.LOGOUT -> {
                             shouldShowLogoutDialog = true
