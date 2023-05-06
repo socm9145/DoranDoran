@@ -49,6 +49,9 @@ fun AppSettingRoute(
             AppSettingScreen(
                 onClick = { itemType ->
                     when (itemType) {
+                        SettingItemType.PROFILE_SETTING -> {
+//                           // TODO : ProfileSettingScreen 으로 이동
+                        }
                         SettingItemType.POLICY -> {
                             context.startActivity(policyIntent)
                         }
