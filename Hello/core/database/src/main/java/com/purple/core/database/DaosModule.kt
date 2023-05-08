@@ -1,5 +1,6 @@
 package com.purple.core.database
 
+import com.purple.core.database.dao.FeedDao
 import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.dao.UserDao
 import dagger.Module
@@ -20,4 +21,9 @@ object DaosModule {
     fun providesUserDao(
         database: HiDatabase,
     ): UserDao = database.userDao()
+
+    @Provides
+    fun providesFeedDao(
+        database: HiDatabase,
+    ): FeedDao = database.feedDao()
 }
