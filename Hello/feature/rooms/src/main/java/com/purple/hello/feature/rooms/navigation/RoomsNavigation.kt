@@ -3,7 +3,7 @@ package com.purple.hello.feature.rooms.navigation
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.purple.hello.feature.rooms.RoomDetailScreen
+import com.purple.hello.feature.rooms.RoomDetailRoute
 import com.purple.hello.feature.rooms.RoomsRoute
 
 internal const val roomIdArg = "roomIdArg"
@@ -36,7 +36,7 @@ fun NavGraphBuilder.roomsGraph(navController: NavController) {
             route = "$roomDetailRoute/{$roomIdArg}",
             arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
         ) {
-            RoomDetailScreen()
+            RoomDetailRoute()
         }
     }
 }
