@@ -34,6 +34,7 @@ import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 @Composable
 internal fun RoomsRoute(
     roomsViewModel: RoomsViewModel = hiltViewModel(),
+    onClickRoom: (roomId: Long) -> Unit,
 ) {
     val uiState by roomsViewModel.roomsUiState.collectAsState()
     val isRoomsLoading = uiState is RoomsUiState.Loading
@@ -53,7 +54,10 @@ internal fun RoomsRoute(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
             ) {
-                roomsScreen(roomsState = uiState)
+                roomsScreen(
+                    roomsState = uiState,
+                    onClick = { onClickRoom(it) },
+                )
             }
             OpenAddRoomDialogButton(
                 onClick = {
@@ -145,6 +149,7 @@ private fun OpenAddRoomDialogButton(
 
 private fun LazyGridScope.roomsScreen(
     roomsState: RoomsUiState,
+    onClick: (roomId: Long) -> Unit,
 ) {
     when (roomsState) {
         RoomsUiState.Loading -> Unit
@@ -153,7 +158,7 @@ private fun LazyGridScope.roomsScreen(
                 RoomItem(
                     roomName = room.roomName,
                     members = room.members,
-                    onClick = {},
+                    onClick = { onClick(room.roomId) },
                 )
             }
         }
@@ -199,7 +204,7 @@ private fun PreviewRoomScreen() {
                 )
                 .fillMaxSize(),
         ) {
-            RoomsRoute()
+//            RoomsRoute()
         }
     }
 }
