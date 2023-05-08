@@ -20,7 +20,4 @@ interface AccountService {
         @Header("Access-Token") accessToken: String,
         @Header("Refresh-Token") refreshToken: String,
     ): Response<Void>
-
-    @GET("account/logout")
-    fun logout()
 }

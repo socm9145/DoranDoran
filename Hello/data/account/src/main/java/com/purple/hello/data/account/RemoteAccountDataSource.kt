@@ -1,4 +1,4 @@
-package com.purple.hello.data.account.datasource
+package com.purple.hello.data.account
 
 import com.purple.hello.core.datastore.AccountPreferencesDataSource
 import com.purple.hello.core.network.AccountService
@@ -23,5 +23,9 @@ class RemoteAccountDataSource @Inject constructor(
             responseHeader["Access-Token"] ?: "",
             responseHeader["Refresh-Token"] ?: "",
         )
+    }
+
+    suspend fun logout() {
+        accountDataStore.clearToken()
     }
 }

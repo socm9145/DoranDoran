@@ -36,6 +36,12 @@ enum class SettingItemType(
         true,
         false,
     ),
+    PROFILE_SETTING(
+        "프로필 설정",
+        "프로필 이미지를 변경하고, 생일을 설정해요",
+        false,
+        true,
+    ),
     POLICY(
         "개인 정보 처리 방침",
         "",
@@ -76,6 +82,15 @@ enum class SettingItemType(
                 CHANGE_PASSWORD,
                 EXIT_GROUP,
                 DELETE_GROUP,
+            )
+        }
+
+        fun getItemsForApp(): List<SettingItemType> {
+            return listOf(
+                PROFILE_SETTING,
+                POLICY,
+                APP_INFO,
+                LOGOUT,
             )
         }
     }

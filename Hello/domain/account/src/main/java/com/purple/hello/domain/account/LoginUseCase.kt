@@ -1,6 +1,6 @@
 package com.purple.hello.domain.account
 
-import com.purple.hello.data.account.repository.AccountRepository
+import com.purple.hello.data.account.AccountRepository
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(

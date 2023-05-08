@@ -29,4 +29,10 @@ class AccountPreferencesDataSource @Inject constructor(
     fun isLoggedIn(): Flow<Boolean> = accountPreferences.data.map { accountData ->
         !accountData.accessToken.isNullOrBlank() && !accountData.refreshToken.isNullOrBlank()
     }
+
+    suspend fun clearToken() {
+        accountPreferences.updateData {
+            it.toBuilder().clear().build()
+        }
+    }
 }

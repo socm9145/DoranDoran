@@ -1,7 +1,7 @@
-package com.purple.hello.data.account.repository
+package com.purple.hello.data.account
 
 import com.purple.hello.core.datastore.AccountPreferencesDataSource
-import com.purple.hello.data.account.datasource.RemoteAccountDataSource
+import com.purple.hello.data.account.RemoteAccountDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -15,6 +15,10 @@ class AccountRepository @Inject constructor(
 
     suspend fun loginWithKakao(accessToken: String) {
         remoteAccountDataSource.loginWithKakao(accessToken)
+    }
+
+    suspend fun logout() {
+        remoteAccountDataSource.logout()
     }
 
     fun isLoggedIn(): Flow<Boolean> = accountDataStore.isLoggedIn()

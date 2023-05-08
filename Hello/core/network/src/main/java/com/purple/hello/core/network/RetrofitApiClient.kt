@@ -112,7 +112,7 @@ object RetrofitApiClient {
                     proceed(newRequest)
                 }
             } else {
-                accountService.logout()
+                runBlocking { accountDataStore.clearToken() }
                 proceed(request())
             }
         }
