@@ -1,6 +1,7 @@
 package com.purple.core.designsystem.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,6 +26,9 @@ fun HiDropDownTextField(
             readOnly = true,
             value = value,
             onValueChange = { onValueChange(it.toInt()) },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Unspecified,
+            ),
             trailingIcon = {
                 IconButton(
                     onClick = iconClick,
@@ -36,6 +40,9 @@ fun HiDropDownTextField(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { onDismiss() },
+            modifier = Modifier
+                .fillMaxHeight(0.4f)
+                .background(MaterialTheme.colorScheme.background),
         ) {
             content.forEach { contentItem ->
                 DropdownMenuItem(

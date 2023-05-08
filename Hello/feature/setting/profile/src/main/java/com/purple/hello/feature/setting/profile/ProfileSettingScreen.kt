@@ -6,34 +6,45 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.purple.core.designsystem.component.HiDropDownTextField
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
+import com.purple.core.designsystem.theme.LocalGradientColors
 
 @Composable
 fun ProfileSettingRoute(
     isFirst: Boolean,
-    gridContent: LazyGridScope.() -> Unit,
+    imageClick: () -> Unit,
 ) {
     HiTheme {
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background),
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(LocalGradientColors.current.top, LocalGradientColors.current.bottom),
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY,
+                    ),
+                ),
         ) {
             ProfileSettingAppBar(isFirst = isFirst)
-            ProfileSettingScreen(isFirst = isFirst, gridContent)
+            ProfileSettingScreen(isFirst = isFirst, imageClick = imageClick)
         }
     }
 }
@@ -41,8 +52,17 @@ fun ProfileSettingRoute(
 @Composable
 private fun ProfileSettingScreen(
     isFirst: Boolean,
-    gridContent: LazyGridScope.() -> Unit,
+    imageClick: () -> Unit,
 ) {
+    val gridItemList = listOf(
+        painterResource(id = R.drawable.cow), painterResource(id = R.drawable.dog),
+        painterResource(id = R.drawable.dragon), painterResource(id = R.drawable.horse),
+        painterResource(id = R.drawable.monkey), painterResource(id = R.drawable.pig),
+        painterResource(id = R.drawable.rabbit), painterResource(id = R.drawable.rat),
+        painterResource(id = R.drawable.rooster), painterResource(id = R.drawable.sheep),
+        painterResource(id = R.drawable.snake), painterResource(id = R.drawable.tiger),
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,11 +82,40 @@ private fun ProfileSettingScreen(
             }
         }
         SelectBirth()
+        Spacer(modifier = Modifier.padding(8.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             state = LazyGridState(),
             contentPadding = PaddingValues(all = 12.dp),
-            content = gridContent,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            content = {
+                items(gridItemList.size) { index ->
+                    Card(
+                        modifier = Modifier
+                            .background(Color.Unspecified)
+                            .padding(2.dp)
+                            .fillMaxWidth()
+                            .shadow(
+                                elevation = 2.dp,
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable {
+//                                       TODO : 이미지 클릭
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                        ),
+                    ) {
+                        val imageId = gridItemList[index]
+                        Image(
+                            painter = imageId,
+                            contentDescription = "",
+                        )
+                    }
+                }
+            },
         )
     }
 }
@@ -91,11 +140,12 @@ private fun SelectBirth() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 12.dp),
+            .padding(vertical = 12.dp, horizontal = 16.dp),
     ) {
         Text(
             text = "생년월일을 선택해주세요!",
             color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
         )
     }
     Box(
@@ -106,7 +156,6 @@ private fun SelectBirth() {
         Row {
             Box(
                 modifier = Modifier
-                    .wrapContentSize(Alignment.TopStart)
                     .weight(1.25f)
                     .height(50.dp),
             ) {
@@ -198,5 +247,5 @@ private fun ProfileSettingAppBar(
 @Preview
 @Composable
 private fun PreviewProfileSetting() {
-    ProfileSettingRoute(isFirst = false, gridContent = {})
+    ProfileSettingRoute(isFirst = false, imageClick = {})
 }
