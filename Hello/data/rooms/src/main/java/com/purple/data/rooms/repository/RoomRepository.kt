@@ -1,4 +1,4 @@
-package com.purple.data.rooms
+package com.purple.data.rooms.repository
 
 import com.purple.core.model.Room
 import kotlinx.coroutines.flow.Flow

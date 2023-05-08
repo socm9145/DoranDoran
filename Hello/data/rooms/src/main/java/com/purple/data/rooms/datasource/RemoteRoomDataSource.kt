@@ -1,4 +1,4 @@
-package com.purple.data.rooms
+package com.purple.data.rooms.datasource
 
 import com.purple.data.rooms.model.request.*
 import com.purple.data.rooms.service.RoomService

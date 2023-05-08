@@ -1,6 +1,6 @@
 package com.purple.hello.domain.rooms
 
-import com.purple.data.rooms.RoomRepository
+import com.purple.data.rooms.repository.RoomRepository
 import javax.inject.Inject
 
 class CreateRoomUseCase @Inject constructor(

@@ -1,10 +1,11 @@
-package com.purple.data.rooms
+package com.purple.data.rooms.repository
 
 import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.entity.RoomEntity
 import com.purple.core.database.model.RoomWithMembers
 import com.purple.core.database.model.asExternalModel
 import com.purple.core.model.Room
+import com.purple.data.rooms.datasource.RemoteRoomDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

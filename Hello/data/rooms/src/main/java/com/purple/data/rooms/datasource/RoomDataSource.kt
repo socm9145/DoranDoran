@@ -1,4 +1,4 @@
-package com.purple.data.rooms
+package com.purple.data.rooms.datasource
 
 import com.purple.data.rooms.model.RoomCreationResponse
 import retrofit2.Response

@@ -7,7 +7,7 @@ sealed interface FeedUiState {
     object Loading : FeedUiState
 
     data class Loaded(
-        val date: Date,
+        val date: Date = Date(),
         val feeds: List<Feed>,
         val question: String,
     ) : FeedUiState
