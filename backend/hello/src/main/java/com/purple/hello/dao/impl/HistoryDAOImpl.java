@@ -19,7 +19,7 @@ public class HistoryDAOImpl implements HistoryDAO {
         this.historyRepo = historyRepo;
     }
     @Override
-    public boolean createHistory(CreateQuestionInDTO createQuestionInDTO) {
+    public boolean createHistory(CreateQuestionInDTO createQuestionInDTO) throws Exception{
         Room room = new Room();
         room.setRoomId(createQuestionInDTO.getRoomId());
         Question question = new Question();

@@ -1,15 +1,17 @@
 package com.purple.hello.dto.in;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class DeleteUserRoomInDTO {
     long userId;
     long userRoomId;
+
+    @Builder
+    public DeleteUserRoomInDTO(long userId, long userRoomId) {
+        this.userId = userId;
+        this.userRoomId = userRoomId;
+    }
 }

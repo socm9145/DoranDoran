@@ -1,17 +1,19 @@
 package com.purple.hello.dto.in;
 
 import com.purple.hello.enu.BoolAlarm;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateMoveAlarmInDTO {
     long userId;
     long userRoomId;
     BoolAlarm moveAlarm;
+    @Builder
+    public UpdateMoveAlarmInDTO(long userId, long userRoomId, BoolAlarm moveAlarm) {
+        this.userId = userId;
+        this.userRoomId = userRoomId;
+        this.moveAlarm = moveAlarm;
+    }
 }

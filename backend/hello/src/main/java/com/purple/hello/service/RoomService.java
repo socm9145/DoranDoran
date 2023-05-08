@@ -14,15 +14,15 @@ import java.util.List;
 @Service
 public interface RoomService {
     List<ReadRoomOutDTO> readRoomByUserId(long userId);
-    CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO);
+    CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception;
     boolean comparePasswordByRoomCode(long roomId, String password);
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
-    boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
+    boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception;
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
-    boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
-    ReadQuestionOutDTO readQuestionByRoomId(long roomId);
+    boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
+    ReadQuestionOutDTO readQuestionByRoomId(long roomId) throws Exception;
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
 
     ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId);

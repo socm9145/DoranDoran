@@ -120,22 +120,31 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception{
+        if (createUserRoomInDTO.getUserName() == null)
+            throw new IllegalArgumentException();
+
+        if (createUserRoomInDTO.getRoomName() == null)
+            throw new IllegalArgumentException();
+
+        if (createUserRoomInDTO.getRoomPassword() == null)
+            throw new IllegalArgumentException();
+
+        if (createUserRoomInDTO.getRoomQuestion() == null)
+            throw new IllegalArgumentException();
+
         Room room = Room.builder()
                 .beginTime(0)
                 .createAt(new Date())
-                //.roomCode()
                 .roomQuestion(createUserRoomInDTO.getRoomQuestion())
                 .roomPassword(createUserRoomInDTO.getRoomPassword())
                 .build();
 
         room = roomRepo.save(room);
 
-        CreateRoomDTO createRoomDTO = CreateRoomDTO.builder()
+        return CreateRoomDTO.builder()
                 .roomId(room.getRoomId())
                 .build();
-
-        return createRoomDTO;
     }
 
     @Override
@@ -181,12 +190,12 @@ public class RoomDAOImpl implements RoomDAO {
                         .and(qUserRoom.user.userId.eq(updateRoomPasswordInDTO.getUserId())))
                 .fetchOne();
 
-        if(userRoomRole == null) {
-            return false;
-        }
+        if(userRoomRole == null)
+            throw new IllegalArgumentException();
 
         if(updateRoomPasswordInDTO.getRoomQuestion() == null) {
-            updateRoomPasswordInDTO.setRoomQuestion("비밀번호를 입력하세요.");
+            //updateRoomPasswordInDTO.setRoomQuestion("비밀번호를 입력하세요.");
+            throw new IllegalArgumentException();
         }
 
         if(userRoomRole == UserRoomRole.ROLE1){
@@ -218,10 +227,9 @@ public class RoomDAOImpl implements RoomDAO {
                 .execute();
     }
 
-    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) {
+    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception{
         Room room = this.roomRepo.findById(deleteRoomInDTO.getRoomId()).get();
 
-        //List<DeleteRoomDTO> deleteRoomDTOs = new JPAQuery<>(em)
         Long count = new JPAQueryFactory(em)
                 .selectFrom(qUser)
                 .join(qUserRoom)
@@ -234,10 +242,9 @@ public class RoomDAOImpl implements RoomDAO {
                 .fetchCount();
 
         if (count == 0)
-            return false;
+            throw new IllegalArgumentException();
 
         this.roomRepo.delete(room);
-
         return true;
     }
 

@@ -45,7 +45,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
         Optional<User> user = this.userRepo.findById(createUserRoomInDTO.getUserId());
 
         if (room.isEmpty() || user.isEmpty())
-            return null;
+            throw new IllegalArgumentException();
 
         UserRoom userRoom = UserRoom.builder()
                 .userRoomRole(UserRoomRole.ROLE1)
@@ -80,12 +80,12 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) throws Exception{
         Optional<Room> room = this.roomRepo.findById(createUserRoomJoinInDTO.getRoomId());
         Optional<User> user = this.userRepo.findById(createUserRoomJoinInDTO.getUserId());
 
         if (room.isEmpty() || user.isEmpty())
-            return null;
+            throw new IllegalArgumentException();
 
         UserRoom userRoom = UserRoom.builder()
                 .createAt(new Date())
@@ -120,59 +120,61 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) {
+    public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) throws Exception{
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         long updatedRowCount = jpaUpdateClause.set(qUserRoom.roomName, updateRoomNameInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(updateRoomNameInDTO.getUserRoomId())
                         .and(qUserRoom.user.userId.eq(updateRoomNameInDTO.getUserId())))
                 .execute();
-        if(updatedRowCount == 0) {
-            return false;
-        }else {
+
+
+
+        if(updatedRowCount == 0)
+            throw new IllegalAccessException();
+
+        else
             return true;
-        }
     }
 
     @Override
-    public boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) {
+    public boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) throws Exception{
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         long updatedRowCount = jpaUpdateClause.set(qUserRoom.userName, updateUserNameInDTO.getUserName())
                 .where(qUserRoom.userRoomId.eq(updateUserNameInDTO.getUserRoomId())
                         .and(qUserRoom.user.userId.eq(updateUserNameInDTO.getUserId())))
                 .execute();
-        if(updatedRowCount == 0) {
-            return false;
-        }else {
-            return true;
-        }
+
+        if(updatedRowCount == 0)
+            throw new IllegalArgumentException();
+
+        return true;
     }
 
     @Override
-    public boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+    public boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO) throws Exception{
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         long updatedRowCount = jpaUpdateClause.set(qUserRoom.moveAlarm, updateMoveAlarmInDTO.getMoveAlarm())
                 .where(qUserRoom.userRoomId.eq(updateMoveAlarmInDTO.getUserRoomId())
                         .and(qUserRoom.user.userId.eq(updateMoveAlarmInDTO.getUserId())))
                 .execute();
-        if(updatedRowCount == 0) {
-            return false;
-        }else {
-            return true;
-        }
+
+        if(updatedRowCount == 0)
+            throw new IllegalArgumentException();
+
+        return true;
     }
 
     @Override
-    public boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+    public boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) throws Exception{
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         long updatedRowCount = jpaUpdateClause.set(qUserRoom.safeAlarm, updateSafeAlarmInDTO.getSafeAlarm())
                 .where(qUserRoom.userRoomId.eq(updateSafeAlarmInDTO.getRoomId())
                         .and(qUserRoom.user.userId.eq(updateSafeAlarmInDTO.getUserId())))
                 .execute();
-        if(updatedRowCount == 0) {
-            return false;
-        }else {
-            return true;
-        }
+        if(updatedRowCount == 0)
+            throw new IllegalArgumentException();
+
+        return true;
     }
 
     @Override
@@ -195,7 +197,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public CreateUserRoomJoinOutDTO updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+    public CreateUserRoomJoinOutDTO updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) throws Exception{
         UserRoom userRoom = readUserRoomByUserIdAndRoomId(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUserRoom);
         long updatedRowCount = jpaUpdateClause.set(qUserRoom.userRoomRole, UserRoomRole.ROLE2)
@@ -204,7 +206,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .where(qUserRoom.userRoomId.eq(userRoom.getUserRoomId()))
                 .execute();
         if(updatedRowCount == 0) {
-            return null;
+            throw new IllegalArgumentException();
         }else {
             if(em.contains(userRoom)){
                 em.refresh(userRoom);
@@ -234,12 +236,16 @@ public class UserRoomDAOImpl implements UserRoomDAO {
     }
 
     @Override
-    public UserRoom readUserRoomByUserRoomId(long userRoomId) {
+    public UserRoom readUserRoomByUserRoomId(long userRoomId) throws Exception {
         UserRoom userRoom = new JPAQuery<>(em)
                 .select(qUserRoom.userRoom)
                 .from(qUserRoom)
                 .where(qUserRoom.userRoomId.eq(userRoomId))
                 .fetchOne();
+
+        if (userRoom == null)
+            throw new IllegalArgumentException();
+
         return userRoom;
     }
 
