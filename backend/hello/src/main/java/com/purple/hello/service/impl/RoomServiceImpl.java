@@ -47,7 +47,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) {
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception{
         createUserRoomInDTO.setRoomPassword(passwordEncoder.encode(createUserRoomInDTO.getRoomPassword()));
         return this.roomDAO.createRoom(createUserRoomInDTO);
     }
@@ -69,7 +69,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) {
+    public boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception {
         updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
         return this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
     }
@@ -111,12 +111,12 @@ public class RoomServiceImpl implements RoomService {
         updateRoomCodeByRoomId(updateRoomCodeInDTO);
         return newUrl;
     }
-    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) {
+    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception{
         return this.roomDAO.deleteRoom(deleteRoomInDTO);
     }
 
     @Override
-    public ReadQuestionOutDTO readQuestionByRoomId(long roomId) {
+    public ReadQuestionOutDTO readQuestionByRoomId(long roomId) throws Exception{
         LocalDate createdAt = roomDAO.getCreatedAtByRoomId(roomId);
         LocalDate currentDate = LocalDate.now();
         long result = currentDate.getDayOfYear() - createdAt.getDayOfYear();

@@ -10,16 +10,16 @@ import com.purple.hello.enu.UserRoomRole;
 import java.util.List;
 
 public interface UserRoomDAO {
-    CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId);
-    CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
-    boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO);
-    boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO);
-    boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO);
-    boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO);
+    CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId)throws Exception;
+    CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO)throws Exception;
+    boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) throws Exception;
+    boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) throws Exception;
+    boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO)throws Exception;
+    boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) throws Exception;
     void deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO);
     UserRoom readUserRoomByUserIdAndRoomId(long userId, long roomId);
-    CreateUserRoomJoinOutDTO updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO);
+    CreateUserRoomJoinOutDTO updateUserRoomRejoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO)throws Exception;
     void updateUserRoomRoleByUserRoomId(long userRoomId, UserRoomRole userRoomRole);
-    UserRoom readUserRoomByUserRoomId(long userRoomId);
-    List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int userRoomLimit);
+    UserRoom readUserRoomByUserRoomId(long userRoomId) throws Exception;
+    List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int userRoomLimit) throws Exception;
 }

@@ -28,13 +28,13 @@ public class UserRoomServiceImpl implements UserRoomService {
         this.roomDAO = roomDAO;
     }
     @Override
-    public CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) {
+    public CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) throws Exception{
         return this.userRoomDAO.createUserRoom(createUserRoomInDTO, roomId);
     }
 
     @Override
     @Transactional
-    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) {
+    public CreateUserRoomJoinOutDTO createUserRoomJoin(CreateUserRoomJoinInDTO createUserRoomJoinInDTO) throws Exception{
         boolean isAlreadyUser = checkUserExist(createUserRoomJoinInDTO.getUserId(), createUserRoomJoinInDTO.getRoomId());
         if(isAlreadyUser){
             return this.userRoomDAO.updateUserRoomRejoin(createUserRoomJoinInDTO);
@@ -46,49 +46,61 @@ public class UserRoomServiceImpl implements UserRoomService {
     @Override
     @Transactional
     public boolean updateRoomName(UpdateRoomNameInDTO updateRoomNameInDTO) throws Exception{
+        if (updateRoomNameInDTO.getRoomName() == null)
+            throw new IllegalArgumentException("bad request");
+
         return userRoomDAO.updateRoomName(updateRoomNameInDTO);
     }
 
     @Override
     @Transactional
-    public boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) {
+    public boolean updateUserName(UpdateUserNameInDTO updateUserNameInDTO) throws Exception{
         return userRoomDAO.updateUserName(updateUserNameInDTO);
     }
 
     @Override
     @Transactional
-    public boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO) {
+    public boolean updateMoveAlarm(UpdateMoveAlarmInDTO updateMoveAlarmInDTO) throws Exception{
         return userRoomDAO.updateMoveAlarm(updateMoveAlarmInDTO);
     }
 
     @Override
     @Transactional
-    public boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) {
+    public boolean updateSafeAlarm(UpdateSafeAlarmInDTO updateSafeAlarmInDTO) throws Exception {
         return userRoomDAO.updateSafeAlarm(updateSafeAlarmInDTO);
     }
 
     @Override
     @Transactional
-    public boolean deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) {
+    public boolean deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) throws Exception {
         final int USER_ROOM_LIMIT = 1;
         UserRoom userRoom = userRoomDAO.readUserRoomByUserRoomId(deleteUserRoomInDTO.getUserRoomId());
-        List<UserRoom> userRooms = userRoomDAO.readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(userRoom.getRoom().getRoomId(), userRoom.getUserRoomId(), USER_ROOM_LIMIT);
-        if(userRooms.size() > 0) {
+        if (userRoom.getUserRoomRole() == UserRoomRole.ROLE2)
             userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE3);
-            userRoom = userRooms.get(0);
-            userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE1);
-        }else {
-            DeleteRoomInDTO deleteRoomInDTO = new DeleteRoomInDTO(userRoom.getRoom().getRoomId(), userRoom.getUser().getUserId());
-            if (roomDAO.deleteRoom(deleteRoomInDTO)) {
-                return true;
-            } else {
-                return false;
+
+        else {
+            List<UserRoom> userRooms = userRoomDAO.readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(userRoom.getRoom().getRoomId(), userRoom.getUserRoomId(), USER_ROOM_LIMIT);
+
+            if (userRooms.size() > 0) {
+                userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE3);
+                userRoom = userRooms.get(0);
+                userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE1);
+            }
+
+            else {
+                DeleteRoomInDTO deleteRoomInDTO = new DeleteRoomInDTO(userRoom.getRoom().getRoomId(), userRoom.getUser().getUserId());
+
+                if (roomDAO.deleteRoom(deleteRoomInDTO))
+                    return true;
+
+                else
+                    return false;
             }
         }
         return true;
     }
 
-    private boolean checkUserExist(long userId, long roomId) {
+    private boolean checkUserExist(long userId, long roomId)throws Exception {
         UserRoom userRoom = userRoomDAO.readUserRoomByUserIdAndRoomId(userId, roomId);
         if(userRoom != null) {
             return true;

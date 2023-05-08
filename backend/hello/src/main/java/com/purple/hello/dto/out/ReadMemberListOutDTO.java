@@ -1,18 +1,19 @@
 package com.purple.hello.dto.out;
 
 import com.purple.hello.dto.tool.MemberDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ReadMemberListOutDTO {
     long roomId;
     List<MemberDTO> members;
+    @Builder
+    public ReadMemberListOutDTO(long roomId, List<MemberDTO> members) {
+        this.roomId = roomId;
+        this.members = members;
+    }
 }

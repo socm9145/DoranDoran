@@ -1,16 +1,19 @@
 package com.purple.hello.dto.in;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateUserNameInDTO {
     long userId;
     long userRoomId;
     String userName;
+
+    @Builder
+    public UpdateUserNameInDTO(long userId, long userRoomId, String userName) {
+        this.userId = userId;
+        this.userRoomId = userRoomId;
+        this.userName = userName;
+    }
 }

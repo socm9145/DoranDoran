@@ -1,17 +1,20 @@
 package com.purple.hello.dto.in;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CreateRoomInDTO {
     String userName;
     String roomName;
     String roomPassword;
     String roomQuestion;
+    @Builder
+    public CreateRoomInDTO(String userName, String roomName, String roomPassword, String roomQuestion) {
+        this.userName = userName;
+        this.roomName = roomName;
+        this.roomPassword = roomPassword;
+        this.roomQuestion = roomQuestion;
+    }
 }

@@ -1,15 +1,16 @@
 package com.purple.hello.dto.out;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CompareFeedByRoomIdOutDTO {
     long userId;
     boolean isSubmit;
+    @Builder
+    public CompareFeedByRoomIdOutDTO(long userId, boolean isSubmit) {
+        this.userId = userId;
+        this.isSubmit = isSubmit;
+    }
 }

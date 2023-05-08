@@ -15,8 +15,12 @@ public class QuestionDAOImpl implements QuestionDAO {
         this.questionRepo = questionRepo;
     }
     @Override
-    public ReadQuestionOutDTO readQuestionByQuestionId(long questionId) {
+    public ReadQuestionOutDTO readQuestionByQuestionId(long questionId) throws Exception{
         Question question = questionRepo.findByQuestionId(questionId);
+
+        if (question == null)
+            throw new IllegalArgumentException();
+
         ReadQuestionOutDTO readQuestionOutDTO = new ReadQuestionOutDTO();
         readQuestionOutDTO.setContent(question.getContent());
         return readQuestionOutDTO;

@@ -24,14 +24,6 @@ public class GlobalExceptionHandler {
         public String getErrorMessage() {
             return errorMessage;
         }
-
-        public void setErrorCode(String errorCode) {
-            this.errorCode = errorCode;
-        }
-
-        public void setErrorMessage(String errorMessage) {
-            this.errorMessage = errorMessage;
-        }
     }
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
@@ -43,4 +35,5 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("BAD_REQUEST", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
 }

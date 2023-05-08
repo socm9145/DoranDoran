@@ -13,13 +13,13 @@ import java.util.List;
 
 public interface RoomDAO {
     List<ReadRoomOutDTO> readRoomByUserId(long userId);
-    CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO);
+    CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO)throws Exception;
     String comparePasswordByRoomCode(long roomId);
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
-    boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO);
+    boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO)  throws Exception;
     String readRoomCodeByRoomId(long roomId);
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
-    boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO);
+    boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
     LocalDate getCreatedAtByRoomId(long roomId);
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
     List<MemberDTO> readMemberListByRoomId(long roomId, long userId);

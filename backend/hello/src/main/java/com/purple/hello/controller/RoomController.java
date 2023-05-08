@@ -21,9 +21,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/room")
+@ControllerAdvice
 public class RoomController {
-    @Autowired
-    private RoomCode roomCode;
     @Autowired
     private final AlarmService alarmService;
     @Autowired
@@ -50,19 +49,13 @@ public class RoomController {
             value = "그룹방 생성 API (v) vv"
             , notes = "관리자가 그룹방을 생성할 경우 그룹방에 맞는 정보를 저장해주는 API")
     @PostMapping("/create")
-    public ResponseEntity<CreateRoomOutDTO> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO, HttpServletRequest request){
+    public ResponseEntity<CreateRoomOutDTO> createRoom(@RequestBody CreateUserRoomInDTO createUserRoomInDTO, HttpServletRequest request)throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         createUserRoomInDTO.setUserId(userId);
         CreateRoomDTO createRoomDTO = this.roomService.createRoom(createUserRoomInDTO);
 
-        if (createRoomDTO == null)
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-
         // userRoom 객체 생성
         CreateRoomOutDTO createRoomOutDTO = this.userRoomService.createUserRoom(createUserRoomInDTO, createRoomDTO.getRoomId());
-
-        if (createRoomOutDTO == null)
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.status(HttpStatus.OK).body(createRoomOutDTO);
     }
@@ -84,7 +77,7 @@ public class RoomController {
             notes = "이용자가 그룹방에 입장할 경우 그룹방 정보를 수정 및 추가해주는 API")
     @PostMapping("/join")
     public ResponseEntity<CreateUserRoomJoinOutDTO> createUserRoomJoin(@RequestBody CreateUserRoomJoinInDTO createUserRoomJoinInDTO,
-                                                                       HttpServletRequest request){
+                                                                       HttpServletRequest request)throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         createUserRoomJoinInDTO.setUserId(userId);
 
@@ -92,12 +85,9 @@ public class RoomController {
                 createUserRoomJoinInDTO.getRoomPassword());
 
         if (!isCorrectPassword)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            throw new IllegalArgumentException();
 
         CreateUserRoomJoinOutDTO createUserRoomJoinOutDTO = this.userRoomService.createUserRoomJoin(createUserRoomJoinInDTO);
-
-        if (createUserRoomJoinOutDTO == null)
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 
         return ResponseEntity.status(HttpStatus.OK).body(createUserRoomJoinOutDTO);
     }
@@ -152,7 +142,7 @@ public class RoomController {
     @ApiOperation(value = "질문 출력 API",
             notes = "해당 날짜에 사용할 질문을 랜덤으로 출력해주는 API")
     @GetMapping("/question")
-    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId){
+    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId) throws Exception{
         ReadQuestionOutDTO readQuestionOutDTO = roomService.readQuestionByRoomId(questionId);
 
         return ResponseEntity.status(HttpStatus.OK).body(readQuestionOutDTO);
