@@ -30,7 +30,6 @@ fun AppSettingRoute(
     appSettingViewModel: AppSettingViewModel = hiltViewModel(),
 ) {
     var shouldShowLogoutDialog by remember { mutableStateOf(false) }
-    var shouldShowSecessionDialog by remember { mutableStateOf(false) }
 
     val appPackageName = "com.purple.hello"
     val appInfoUrl = "https://play.google.com/store/apps/details?id=$appPackageName"
@@ -61,9 +60,6 @@ fun AppSettingRoute(
                         SettingItemType.LOGOUT -> {
                             shouldShowLogoutDialog = true
                         }
-                        SettingItemType.DELETE_USER -> {
-                            shouldShowSecessionDialog = true
-                        }
                         else -> {}
                     }
                 },
@@ -75,15 +71,7 @@ fun AppSettingRoute(
                     onDismiss = {
                         shouldShowLogoutDialog = false
                     },
-                    onDelete = { TODO() },
-                )
-            }
-            shouldShowSecessionDialog -> {
-                SecessionDialog(
-                    onDismiss = {
-                        shouldShowSecessionDialog = false
-                    },
-                    onDelete = { TODO() },
+                    onDelete = { appSettingViewModel.logout() },
                 )
             }
         }
@@ -126,18 +114,6 @@ private fun LogoutDialog(
         onDismiss = onDismiss,
         onDelete = onDelete,
         content = DeleteDialogType.LOGOUT,
-    )
-}
-
-@Composable
-private fun SecessionDialog(
-    onDismiss: () -> Unit,
-    onDelete: () -> Unit,
-) {
-    HiAlertDialog(
-        onDismiss = onDismiss,
-        onDelete = onDelete,
-        content = DeleteDialogType.DELETE_USER,
     )
 }
 

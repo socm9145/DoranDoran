@@ -38,7 +38,7 @@ enum class SettingItemType(
     ),
     PROFILE_SETTING(
         "프로필 설정",
-        "프로필 이미지를 변경하고, 생일을 설정해요!",
+        "프로필 이미지를 변경하고, 생일을 설정해요",
         false,
         true,
     ),
@@ -91,7 +91,6 @@ enum class SettingItemType(
                 POLICY,
                 APP_INFO,
                 LOGOUT,
-                DELETE_USER,
             )
         }
     }
