@@ -16,6 +16,9 @@ class RoomRepositoryImpl @Inject constructor(
     override fun getRooms(): Flow<List<Room>> =
         roomDao.getRoomsWithMembers().map { it.map(RoomWithMembers::asExternalModel) }
 
+    override fun getRoom(roomId: Long): Flow<Room> =
+        roomDao.getRoom(roomId).map(RoomWithMembers::asExternalModel)
+
     override suspend fun createRoom(roomName: String, userName: String, roomQuestion: String, roomPassword: String) {
         remoteRoomDataSource.createRoom(
             roomName,

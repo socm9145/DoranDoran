@@ -3,8 +3,8 @@ package com.purple.hello.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.purple.hello.feature.rooms.navigation.roomsGraph
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
-import com.purple.hello.feature.rooms.navigation.roomsScreen
 import com.purple.hello.ui.AppState
 
 @Composable
@@ -20,6 +20,6 @@ fun HiNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        roomsScreen()
+        roomsGraph(navController)
     }
 }

@@ -1,6 +1,7 @@
 package com.purple.hello.feature.rooms
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,9 @@ fun RoomItem(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = Modifier.height(200.dp),
+        modifier = Modifier
+            .height(200.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
@@ -65,10 +68,10 @@ fun RoomItem(
 private fun PreviewRoomItem() {
     val room = FakeFactory.makeRoom(1, "우리집")
     HiTheme {
-        RoomItem(
-            roomName = room.roomName,
-            members = room.members,
-            onClick = {},
-        )
+//        RoomItem(
+//            roomName = room.roomName,
+//            members = room.members,
+//            onClick = {},
+//        )
     }
 }
