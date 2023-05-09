@@ -6,8 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,7 +30,6 @@ import com.purple.core.designsystem.theme.LocalGradientColors
 @Composable
 fun ProfileSettingRoute(
     isFirst: Boolean,
-    imageClick: () -> Unit,
 ) {
     HiTheme {
         Column(
@@ -44,7 +43,7 @@ fun ProfileSettingRoute(
                 ),
         ) {
             ProfileSettingAppBar(isFirst = isFirst)
-            ProfileSettingScreen(isFirst = isFirst, imageClick = imageClick)
+            ProfileSettingScreen(isFirst = isFirst)
         }
     }
 }
@@ -52,7 +51,6 @@ fun ProfileSettingRoute(
 @Composable
 private fun ProfileSettingScreen(
     isFirst: Boolean,
-    imageClick: () -> Unit,
 ) {
     val gridItemList = listOf(
         painterResource(id = R.drawable.cow), painterResource(id = R.drawable.dog),
@@ -62,6 +60,11 @@ private fun ProfileSettingScreen(
         painterResource(id = R.drawable.rooster), painterResource(id = R.drawable.sheep),
         painterResource(id = R.drawable.snake), painterResource(id = R.drawable.tiger),
     )
+
+    val existedImageId =
+        if (!isFirst) painterResource(id = R.drawable.rooster) else painterResource(id = R.drawable.none)
+    var selectedImageId by remember { mutableStateOf(existedImageId) }
+    val scrollState = rememberLazyGridState()
 
     Column(
         modifier = Modifier
@@ -73,24 +76,23 @@ private fun ProfileSettingScreen(
                 .fillMaxWidth(0.5f)
                 .align(Alignment.CenterHorizontally),
         ) {
-            // TODO : isFirst->빈 이미지, !isFirst->기존 프로필 이미지
-            if (!isFirst) {
-                Image(
-                    painter = painterResource(id = R.drawable.rooster),
-                    contentDescription = "ProfileImage",
-                )
-            }
+            Image(
+                painter = selectedImageId,
+                contentDescription = "ProfileImage",
+            )
         }
         SelectBirth()
         Spacer(modifier = Modifier.padding(8.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            state = LazyGridState(),
+            state = scrollState,
             contentPadding = PaddingValues(all = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             content = {
                 items(gridItemList.size) { index ->
+                    val imageId = gridItemList[index]
+
                     Card(
                         modifier = Modifier
                             .background(Color.Unspecified)
@@ -102,13 +104,12 @@ private fun ProfileSettingScreen(
                             )
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
-//                                       TODO : 이미지 클릭
+                                selectedImageId = imageId
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.background,
                         ),
                     ) {
-                        val imageId = gridItemList[index]
                         Image(
                             painter = imageId,
                             contentDescription = "",
@@ -247,5 +248,5 @@ private fun ProfileSettingAppBar(
 @Preview
 @Composable
 private fun PreviewProfileSetting() {
-    ProfileSettingRoute(isFirst = false, imageClick = {})
+    ProfileSettingRoute(isFirst = true)
 }
