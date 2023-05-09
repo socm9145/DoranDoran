@@ -122,12 +122,11 @@ public class OptionController {
     public ResponseEntity<String> deleteRoom(@RequestBody DeleteRoomInDTO deleteRoomInDTO, HttpServletRequest request) throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         deleteRoomInDTO.setUserId(userId);
-
         boolean isDeleted = this.roomService.deleteRoom(deleteRoomInDTO);
         if (!isDeleted) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResultType.FAILED.name());
         }else {
-            return ResponseEntity.status(   HttpStatus.OK).body(ResultType.SUCCESS.name());
+            return ResponseEntity.status(HttpStatus.OK).body(ResultType.SUCCESS.name());
         }
     }
 

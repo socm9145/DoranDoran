@@ -1,20 +1,17 @@
 package com.purple.hello.service.impl;
 
-import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.CreateUserRoomJoinOutDTO;
 import com.purple.hello.entity.UserRoom;
-import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
+import com.purple.hello.service.RoomService;
 import com.purple.hello.service.UserRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 @Service
@@ -22,10 +19,10 @@ public class UserRoomServiceImpl implements UserRoomService {
     @Autowired
     private final UserRoomDAO userRoomDAO;
     @Autowired
-    private final RoomDAO roomDAO;
-    public UserRoomServiceImpl(UserRoomDAO userRoomDAO, RoomDAO roomDAO){
+    private final RoomService roomService;
+    public UserRoomServiceImpl(UserRoomDAO userRoomDAO, RoomService roomService){
         this.userRoomDAO = userRoomDAO;
-        this.roomDAO = roomDAO;
+        this.roomService = roomService;
     }
     @Override
     public CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId) throws Exception{
@@ -90,7 +87,7 @@ public class UserRoomServiceImpl implements UserRoomService {
             else {
                 DeleteRoomInDTO deleteRoomInDTO = new DeleteRoomInDTO(userRoom.getRoom().getRoomId(), userRoom.getUser().getUserId());
 
-                if (roomDAO.deleteRoom(deleteRoomInDTO))
+                if (roomService.deleteRoom(deleteRoomInDTO))
                     return true;
 
                 else

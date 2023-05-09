@@ -7,6 +7,7 @@ import com.purple.hello.dao.QuestionDAO;
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
+import com.purple.hello.dto.tool.AwsS3DTO;
 import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.dto.tool.HistoryMinMaxDTO;
 import com.purple.hello.dto.tool.HistoryTypeDTO;
@@ -16,6 +17,7 @@ import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.entity.Room;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.repo.QuestionRepo;
+import com.purple.hello.service.AwsS3Service;
 import com.purple.hello.service.RoomService;
 import org.python.core.Py;
 import org.python.core.PyObject;
@@ -49,14 +51,16 @@ public class RoomServiceImpl implements RoomService {
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private final PythonInterpreter interpreter;
+    private final AwsS3Service awsS3Service;
 
-    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter){
+    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter, AwsS3Service awsS3Service){
         this.roomDAO = roomDAO;
         this.passwordEncoder = passwordEncoder;
         this.historyDAO = historyDAO;
         this.questionRepo = questionRepo;
         this.questionDAO = questionDAO;
         this.interpreter = interpreter;
+        this.awsS3Service = awsS3Service;
     }
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
@@ -129,7 +133,12 @@ public class RoomServiceImpl implements RoomService {
         return newUrl;
     }
     public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception{
-        return this.roomDAO.deleteRoom(deleteRoomInDTO);
+        boolean isDeleted = this.roomDAO.deleteRoom(deleteRoomInDTO);
+        if(isDeleted){
+            String dirName = "feed/" + deleteRoomInDTO.getRoomId();
+            awsS3Service.removeDirectory(dirName);
+        }
+        return isDeleted;
     }
 
     public void createQuestion() throws Exception{
