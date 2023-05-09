@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OptionController.class)
-class OptionControllerTest2 {
+class OptionControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
