@@ -1,6 +1,9 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    kotlin("android")
+    kotlin("kapt")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -13,29 +16,16 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = KotlinOptions.jvmTarget
-    }
 }
 
 dependencies {
     implementation(project(":domain:model"))
 
-    implementation(appDependencies)
-    testImplementation(defaultUnitTest)
-    androidTestImplementation(defaultAndroidTest)
+    implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation(KotlinxSerializationJson.KOTLIN_SELIAIZATION_JSON)
+    implementation(retrofit2Dependencies)
+
+    implementation(Hilt.HILT_ANDROID)
+    implementation(project(mapOf("path" to ":core:datastore")))
+    kapt(Hilt.HILT_ANDROID_COMPILER)
 }

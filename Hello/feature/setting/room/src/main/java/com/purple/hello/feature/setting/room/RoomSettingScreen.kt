@@ -29,13 +29,13 @@ import com.purple.hello.feature.setting.room.viewmodel.RoomSettingViewModel
 fun RoomSettingRoute(
     roomSettingViewModel: RoomSettingViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    isHost: Boolean,
 ) {
     var shouldShowChangeRoomNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangeUserNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangePasswordDialog by remember { mutableStateOf(false) }
     var shouldShowExitRoomDialog by remember { mutableStateOf(false) }
     var shouldShowDeleteRoomDialog by remember { mutableStateOf(false) }
+    val isHost = roomSettingViewModel.isHost
 
     HiTheme {
         Column(
@@ -246,5 +246,5 @@ private fun RoomSettingAppBar(
 @Preview
 @Composable
 private fun PreviewRoomSettingScreen() {
-    RoomSettingRoute(isHost = true, onBackClick = {})
+    RoomSettingRoute(onBackClick = {})
 }

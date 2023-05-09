@@ -33,7 +33,7 @@ fun HiNavHost(
                 navController.navigateToAppSetting()
             },
             onClickRoomSetting = {
-                navController.navigateToRoomSetting()
+                navController.navigateToRoomSetting(roomId = it)
             },
         )
         appSettingScreen(

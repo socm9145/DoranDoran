@@ -24,7 +24,7 @@ fun NavGraphBuilder.roomsGraph(
     navController: NavController,
     onBackClick: () -> Unit,
     onClickAppSetting: () -> Unit,
-    onClickRoomSetting: () -> Unit,
+    onClickRoomSetting: (roomId: Long) -> Unit,
 ) {
     navigation(
         startDestination = roomsListRoute,
@@ -49,7 +49,7 @@ fun NavGraphBuilder.roomsGraph(
                     onBackClick()
                 },
                 onClickRoomSetting = {
-                    onClickRoomSetting()
+                    onClickRoomSetting(it)
                 },
             )
         }

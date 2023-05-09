@@ -24,7 +24,7 @@ import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
 internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onClickRoomSetting: () -> Unit,
+    onClickRoomSetting: (roomId: Long ) -> Unit,
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
 
@@ -32,7 +32,9 @@ internal fun RoomDetailRoute(
         RoomDetailScreen(
             roomDetailUiState = roomDetailUiState,
             onBackClick = onBackClick,
-            onClickRoomSetting = onClickRoomSetting,
+            onClickRoomSetting = {
+                onClickRoomSetting(it)
+            },
         )
     }
 }
@@ -41,7 +43,7 @@ internal fun RoomDetailRoute(
 private fun RoomDetailScreen(
     roomDetailUiState: RoomDetailUiState,
     onBackClick: () -> Unit,
-    onClickRoomSetting: () -> Unit,
+    onClickRoomSetting: (roomId: Long) -> Unit,
 ) {
     when (roomDetailUiState) {
         is RoomDetailUiState.Success -> {
@@ -49,7 +51,11 @@ private fun RoomDetailScreen(
                 RoomDetailAppBar(
                     roomDetailUiState.roomDetail.roomName,
                     onBackClick = onBackClick,
-                    onClickRoomSetting = onClickRoomSetting,
+                    onClickRoomSetting = {
+                        onClickRoomSetting(
+                            roomDetailUiState.roomDetail.roomId,
+                        )
+                    },
                 )
                 MembersViewInGroup(
                     roomDetailUiState.roomDetail.members,
