@@ -20,7 +20,12 @@ fun NavController.navigateRoomDetail(roomId: Long, navOptions: NavOptions? = nul
     this.navigate("$roomDetailRoute/$roomId", navOptions)
 }
 
-fun NavGraphBuilder.roomsGraph(navController: NavController) {
+fun NavGraphBuilder.roomsGraph(
+    navController: NavController,
+    onBackClick: () -> Unit,
+    onClickAppSetting: () -> Unit,
+    onClickRoomSetting: () -> Unit,
+) {
     navigation(
         startDestination = roomsListRoute,
         route = roomsNavigationRoute,
@@ -30,13 +35,23 @@ fun NavGraphBuilder.roomsGraph(navController: NavController) {
                 onClickRoom = {
                     navController.navigateRoomDetail(it)
                 },
+                onClickAppSetting = {
+                    onClickAppSetting()
+                },
             )
         }
         composable(
             route = "$roomDetailRoute/{$roomIdArg}",
             arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
         ) {
-            RoomDetailRoute()
+            RoomDetailRoute(
+                onBackClick = {
+                    onBackClick()
+                },
+                onClickRoomSetting = {
+                    onClickRoomSetting()
+                },
+            )
         }
     }
 }

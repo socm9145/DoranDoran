@@ -23,23 +23,37 @@ import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
 @Composable
 internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    onClickRoomSetting: () -> Unit,
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
 
     Column {
-        RoomDetailScreen(roomDetailUiState = roomDetailUiState)
+        RoomDetailScreen(
+            roomDetailUiState = roomDetailUiState,
+            onBackClick = onBackClick,
+            onClickRoomSetting = onClickRoomSetting,
+        )
     }
 }
 
 @Composable
 private fun RoomDetailScreen(
     roomDetailUiState: RoomDetailUiState,
+    onBackClick: () -> Unit,
+    onClickRoomSetting: () -> Unit,
 ) {
     when (roomDetailUiState) {
         is RoomDetailUiState.Success -> {
             Column {
-                RoomDetailAppBar(roomDetailUiState.roomDetail.roomName)
-                MembersViewInGroup(roomDetailUiState.roomDetail.members)
+                RoomDetailAppBar(
+                    roomDetailUiState.roomDetail.roomName,
+                    onBackClick = onBackClick,
+                    onClickRoomSetting = onClickRoomSetting,
+                )
+                MembersViewInGroup(
+                    roomDetailUiState.roomDetail.members,
+                )
             }
         }
         is RoomDetailUiState.Error -> Unit
@@ -50,15 +64,17 @@ private fun RoomDetailScreen(
 @Composable
 private fun RoomDetailAppBar(
     roomName: String,
+    onBackClick: () -> Unit,
+    onClickRoomSetting: () -> Unit,
 ) {
     HiTopAppBar(
         title = roomName,
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로가기",
-        onNavigationClick = { /*TODO*/ },
+        onNavigationClick = { onBackClick() },
         actions = {
             HiIconButton(
-                onClick = { /*TODO*/ },
+                onClick = { onClickRoomSetting() },
                 icon = {
                     Icon(
                         imageVector = HiIcons.Settings,

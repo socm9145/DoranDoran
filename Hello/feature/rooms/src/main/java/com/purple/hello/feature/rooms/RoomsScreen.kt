@@ -35,6 +35,7 @@ import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 internal fun RoomsRoute(
     roomsViewModel: RoomsViewModel = hiltViewModel(),
     onClickRoom: (roomId: Long) -> Unit,
+    onClickAppSetting: () -> Unit,
 ) {
     val uiState by roomsViewModel.roomsUiState.collectAsState()
     val isRoomsLoading = uiState is RoomsUiState.Loading
@@ -42,7 +43,7 @@ internal fun RoomsRoute(
     val state = rememberLazyGridState()
 
     Column {
-        RoomsAppBar()
+        RoomsAppBar(onClickAppSetting = onClickAppSetting)
         Box(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -100,7 +101,9 @@ internal fun RoomsRoute(
 }
 
 @Composable
-private fun RoomsAppBar() {
+private fun RoomsAppBar(
+    onClickAppSetting: () -> Unit,
+) {
     HiTopAppBar(
         title = "도란도란",
         navigationIcon = HiIcons.PersonAdd,
@@ -116,7 +119,7 @@ private fun RoomsAppBar() {
                 },
             )
             HiIconButton(
-                onClick = { /*TODO*/ },
+                onClick = { onClickAppSetting() },
                 icon = {
                     Icon(
                         imageVector = HiIcons.MoreVert,
