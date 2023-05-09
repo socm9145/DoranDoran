@@ -2,6 +2,7 @@ package com.purple.data.rooms.datasource
 
 import com.purple.data.rooms.model.MembersResponse
 import com.purple.data.rooms.model.RoomCreationResponse
+import com.purple.data.rooms.model.RoomListResponse
 import retrofit2.Response
 
 interface RoomDataSource {
@@ -12,6 +13,8 @@ interface RoomDataSource {
         roomQuestion: String,
         roomPassword: String,
     ): Response<RoomCreationResponse>
+
+    suspend fun getRoomList(): Response<List<RoomListResponse>>
 
     suspend fun getMembersInRoom(
         roomId: Long,
