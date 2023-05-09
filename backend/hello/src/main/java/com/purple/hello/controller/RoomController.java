@@ -35,14 +35,17 @@ public class RoomController {
     private final UserRoomService userRoomService;
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final HistoryService historyService;
     RoomController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
-                     UserRoomService userRoomService, UserService userService){
+                   UserRoomService userRoomService, UserService userService, HistoryService historyService){
         this.alarmService = alarmService;
         this.feedService = feedService;
         this.questionService = questionService;
         this.roomService = roomService;
         this.userRoomService = userRoomService;
         this.userService = userService;
+        this.historyService = historyService;
     }
 
     @ApiOperation(
@@ -132,11 +135,28 @@ public class RoomController {
 
     @ApiOperation(value = "날짜 기반 피드 출력 API (x)",
             notes = "해당 날짜에 기재한 피드 전체를 출력해주는 API / timezone 차이로 날짜 인식을 못하는 오류")
-    @GetMapping("/date-question")
+    @GetMapping("/date-feed")
     public ResponseEntity<List<ReadFeedOutDTO>> readFeedByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         List<ReadFeedOutDTO> readFeedOutDTOs = this.feedService.readFeedByRoomIdAndDate(roomId, date);
 
         return ResponseEntity.status(HttpStatus.OK).body(readFeedOutDTOs);
+    }
+
+    @ApiOperation(value = "날짜 기반 질문 출력 API (x)",
+            notes = "해당 날짜에 해당하는 질문을 출력해주는 API")
+    @GetMapping("/date-question")
+    public ResponseEntity<ReadQuestionOutDTO> readQuestionByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+        try{
+            ReadQuestionOutDTO readQuestionOutDTO = this.historyService.readQuestionByRoomIdAndDate(roomId, date);
+            if(readQuestionOutDTO == null){
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(readQuestionOutDTO);
+        }catch (NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }catch (IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @ApiOperation(value = "질문 출력 API",

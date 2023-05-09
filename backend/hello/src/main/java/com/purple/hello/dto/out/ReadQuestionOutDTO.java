@@ -1,14 +1,17 @@
 package com.purple.hello.dto.out;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ReadQuestionOutDTO {
+    long questionId;
     String content;
+
+    @Builder
+    public ReadQuestionOutDTO(long questionId, String content) {
+        this.questionId = questionId;
+        this.content = content;
+    }
 }

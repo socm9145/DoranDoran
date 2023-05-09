@@ -134,7 +134,7 @@ public class RoomDAOImpl implements RoomDAO {
             throw new IllegalArgumentException();
 
         Room room = Room.builder()
-                .beginTime(0)
+                .beginTime(8)
                 .createAt(new Date())
                 .roomQuestion(createUserRoomInDTO.getRoomQuestion())
                 .roomPassword(createUserRoomInDTO.getRoomPassword())
@@ -285,7 +285,7 @@ public class RoomDAOImpl implements RoomDAO {
             return null;
         }
         List<MemberDTO> memberDTOs = new JPAQuery<>(em)
-                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUser.userProfileUrl, qUserRoom.roomName))
+                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.roomName, qUser.userProfileUrl))
                 .from(qUser)
                 .join(qUserRoom)
                 .on(qUser.userId.eq(qUserRoom.user.userId))
@@ -294,5 +294,14 @@ public class RoomDAOImpl implements RoomDAO {
                 .where(qRoom.roomId.eq(roomId).and(qUserRoom.userRoomRole.ne(UserRoomRole.ROLE3)))
                 .fetch();
         return memberDTOs;
+    }
+
+    @Override
+    public Integer readBeginTimeByRoomId(long roomId) {
+        return new JPAQuery<>(em)
+                .select(qRoom.beginTime)
+                .from(qRoom)
+                .where(qRoom.roomId.eq(roomId))
+                .fetchOne();
     }
 }
