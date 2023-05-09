@@ -50,7 +50,7 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
 
-        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url, U2.user_id" +
+        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url, U2.user_id, UR2.user_room_role" +
                 "        from users U " +
                 "        join user_rooms UR " +
                 "        on U.user_id = UR.user_id " +
@@ -80,6 +80,7 @@ public class RoomDAOImpl implements RoomDAO {
             long userRoomId = ((Number)result[0]).longValue();
             long roomId = ((Number)result[1]).longValue();
             long rUserId = ((Number)result[5]).longValue();
+            UserRoomRole rUserRoomRole = UserRoomRole.valueOf(result[6].toString());
             if (!map.containsKey(roomId))
                 map.put(roomId, new ArrayList<>());
             
@@ -90,6 +91,7 @@ public class RoomDAOImpl implements RoomDAO {
                             .userName((String)result[3])
                             .userProfileUrl((String)result[4])
                             .userId(rUserId)
+                            .userRoomRole(rUserRoomRole)
                             .build());
         }
 
@@ -108,6 +110,7 @@ public class RoomDAOImpl implements RoomDAO {
                         .userId(readRoomDTO.getUserId())
                         .name(readRoomDTO.getUserName())
                         .profileUrl(readRoomDTO.getUserProfileUrl())
+                        .userRoomRole(readRoomDTO.getUserRoomRole())
                         .build();
 
                 memberDTOs.add(memberDTO);
@@ -285,7 +288,7 @@ public class RoomDAOImpl implements RoomDAO {
             return null;
         }
         List<MemberDTO> memberDTOs = new JPAQuery<>(em)
-                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.userName, qUser.userProfileUrl))
+                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.userName, qUser.userProfileUrl, qUserRoom.userRoomRole))
                 .from(qUser)
                 .join(qUserRoom)
                 .on(qUser.userId.eq(qUserRoom.user.userId))
