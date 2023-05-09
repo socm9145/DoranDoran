@@ -97,9 +97,6 @@ public class RoomServiceImpl implements RoomService {
     public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) {
         String url = roomDAO.readRoomCodeByRoomId(roomId);
 
-        if (url == null)
-            return null;
-
         Instant currentTime = Instant.now();
         ReadRoomCodeOutDTO readRoomCodeOutDTO = new ReadRoomCodeOutDTO();
         if(url != null && url.length() > 0){
