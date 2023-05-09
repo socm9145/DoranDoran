@@ -1,15 +1,21 @@
 package com.purple.hello.dto.in;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.purple.hello.enu.BoolAlarm;
+import com.purple.hello.enu.UserRoomRole;
+import lombok.*;
+
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CreateQuestionInDTO {
     long roomId;
-    long queryId;
+    long no;
+
+    @Builder
+    public CreateQuestionInDTO(long roomId, long no) {
+        this.no = no;
+        this.roomId = roomId;
+    }
 }

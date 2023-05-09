@@ -29,6 +29,8 @@ public class Room {
     List<Alarm> alarm = new ArrayList<>();
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<UserRoom> userRoom = new ArrayList<>();
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<History> history = new ArrayList<>();
     // construct
     @Builder
     public Room(long roomId, String roomCode, String roomQuestion,
