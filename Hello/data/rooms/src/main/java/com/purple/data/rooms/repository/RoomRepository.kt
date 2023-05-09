@@ -11,6 +11,9 @@ interface RoomRepository {
         userName: String,
         roomQuestion: String,
         roomPassword: String,
+    ): Long
+    suspend fun fetchMembersInRoom(
+        roomId: Long,
     )
     fun joinRoom(roomCode: Int)
     suspend fun updateUserName(userRoomId: Long, userName: String)

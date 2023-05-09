@@ -6,14 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.purple.core.model.Result
 import com.purple.core.model.Room
 import com.purple.core.model.asResult
+import com.purple.hello.domain.rooms.FetchRoomDetailUseCase
 import com.purple.hello.domain.rooms.GetQuestionUseCase
 import com.purple.hello.domain.rooms.GetSelectedRoomUseCase
 import com.purple.hello.feature.rooms.navigation.roomIdArg
 import com.purple.hello.feature.rooms.state.FeedUiState
 import com.purple.hello.feature.rooms.state.RoomDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -23,12 +26,19 @@ class RoomDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getRoomFlow: GetSelectedRoomUseCase,
     getQuestionFlow: GetQuestionUseCase,
+    fetchRoomDetail: FetchRoomDetailUseCase,
 ) : ViewModel() {
 
     private var selectedRoomId: Long = checkNotNull(savedStateHandle[roomIdArg])
     private val selectedDate = MutableSharedFlow<Date>()
 
-    private var selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId).asResult()
+    private var selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId)
+        .onStart {
+            withContext(Dispatchers.IO) {
+                fetchRoomDetail(selectedRoomId)
+            }
+        }
+        .asResult()
     private val dateQuestion: Flow<Result<String>> = selectedDate.flatMapLatest {
         getQuestionFlow(roomId = selectedRoomId, date = it).asResult()
     }
