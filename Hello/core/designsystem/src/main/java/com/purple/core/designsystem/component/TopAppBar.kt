@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.purple.core.designsystem.icon.HiIcons
+import com.purple.core.designsystem.icon.Icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +53,8 @@ private fun PreviewHiTopAppBar() {
         navigationIconContentDescription = "뒤로가기",
         actions = {
             IconButton(onClick = {}) {
-                Icon(imageVector = HiIcons.PersonAdd, contentDescription = "초대하기")
+                Icon.DrawableResourceIcon(HiIcons.PersonAdd)
+//                Icon(drawbe = HiIcons.PersonAdd, contentDescription = "초대하기")
             }
             IconButton(onClick = {}) {
                 Icon(imageVector = HiIcons.Calendar, contentDescription = "달력")

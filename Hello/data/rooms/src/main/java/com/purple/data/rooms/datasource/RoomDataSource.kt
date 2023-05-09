@@ -20,6 +20,8 @@ interface RoomDataSource {
         roomId: Long,
     ): Response<MembersResponse>
 
+    suspend fun getRoomCode(roomId: Long): Response<String>
+
     suspend fun updateRoomName(
         userRoomId: Long,
         roomName: String,

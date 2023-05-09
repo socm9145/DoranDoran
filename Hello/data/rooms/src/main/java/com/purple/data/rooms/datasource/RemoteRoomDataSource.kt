@@ -22,6 +22,9 @@ class RemoteRoomDataSource @Inject constructor(
     override suspend fun getMembersInRoom(roomId: Long): Response<MembersResponse> =
         roomService.getMembersInRoom(roomId)
 
+    override suspend fun getRoomCode(roomId: Long): Response<String> =
+        roomService.getRoomCode(roomId)
+
     override suspend fun updateRoomName(userRoomId: Long, roomName: String) =
         roomService.updateRoomName(
             RoomNameUpdateRequest(userRoomId, roomName),

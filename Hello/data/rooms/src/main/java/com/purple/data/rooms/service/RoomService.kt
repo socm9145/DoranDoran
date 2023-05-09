@@ -22,6 +22,11 @@ interface RoomService {
         @Query("roomId") roomId: Long,
     ): Response<MembersResponse>
 
+    @GET("room/code")
+    suspend fun getRoomCode(
+        @Query("roomId") roomId: Long,
+    ): Response<String>
+
     @PUT("room/name")
     suspend fun updateRoomName(
         @Body requestForUpdateRoomName: RoomNameUpdateRequest,

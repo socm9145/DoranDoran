@@ -8,6 +8,7 @@ import com.purple.core.model.Room
 import com.purple.core.model.asResult
 import com.purple.hello.domain.rooms.FetchRoomDetailUseCase
 import com.purple.hello.domain.rooms.GetQuestionUseCase
+import com.purple.hello.domain.rooms.GetRoomCodeUseCase
 import com.purple.hello.domain.rooms.GetSelectedRoomUseCase
 import com.purple.hello.feature.rooms.navigation.roomIdArg
 import com.purple.hello.feature.rooms.state.FeedUiState
@@ -23,19 +24,22 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RoomDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     getRoomFlow: GetSelectedRoomUseCase,
+    getRoomCode: GetRoomCodeUseCase,
     getQuestionFlow: GetQuestionUseCase,
     fetchRoomDetail: FetchRoomDetailUseCase,
 ) : ViewModel() {
 
     private var selectedRoomId: Long = checkNotNull(savedStateHandle[roomIdArg])
     private val selectedDate = MutableSharedFlow<Date>()
+    val roomCode: MutableStateFlow<String> = MutableStateFlow("")
 
     private var selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId)
         .onStart {
             withContext(Dispatchers.IO) {
                 fetchRoomDetail(selectedRoomId)
+                roomCode.value = getRoomCode(selectedRoomId)
             }
         }
         .asResult()

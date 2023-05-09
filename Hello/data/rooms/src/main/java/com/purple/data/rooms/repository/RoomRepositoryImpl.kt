@@ -25,6 +25,16 @@ class RoomRepositoryImpl @Inject constructor(
     override fun getRoom(roomId: Long): Flow<Room> =
         roomDao.getRoom(roomId).map(RoomWithMembers::asExternalModel)
 
+    override suspend fun getRoomCode(roomId: Long): String {
+        kotlin.runCatching {
+            remoteRoomDataSource.getRoomCode(roomId)
+        }.onFailure {
+            throw it
+        }.getOrThrow().let {
+            return it.body() ?: ""
+        }
+    }
+
     override suspend fun createRoom(
         roomName: String,
         userName: String,
