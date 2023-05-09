@@ -8,8 +8,19 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RoomDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertRoom(room: RoomEntity)
+
+    @Query("UPDATE rooms SET userRoomId = :userRoomId, roomName = :roomName WHERE roomId = :roomId")
+    fun updateRoom(roomId: Long, userRoomId: Long?, roomName: String?): Int
+
+    @Transaction
+    fun upsertRoom(room: RoomEntity) {
+        val updatedRows = updateRoom(room.roomId, room.userRoomId, room.roomName)
+        if (updatedRows == 0) {
+            insertRoom(room)
+        }
+    }
 
     @Query("UPDATE rooms SET roomName = :roomName WHERE userRoomId = :userRoomId")
     fun updateRoomName(userRoomId: Long, roomName: String)

@@ -9,6 +9,7 @@ import com.purple.core.model.Room
 import com.purple.data.rooms.datasource.RemoteRoomDataSource
 import com.purple.data.rooms.model.asMemberEntity
 import com.purple.data.rooms.model.asMemberRoomEntity
+import com.purple.data.rooms.model.asRoomEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class RoomRepositoryImpl @Inject constructor(
         roomQuestion: String,
         roomPassword: String,
     ): Long {
-        kotlin.runCatching {
+        runCatching {
             remoteRoomDataSource.createRoom(roomName, userName, roomQuestion, roomPassword)
         }.onFailure { e ->
             throw e
@@ -56,6 +57,24 @@ class RoomRepositoryImpl @Inject constructor(
             membersInRoom?.members?.map {
                 userDao.upsertMember(it.asMemberEntity())
                 userDao.upsertMemberRoom(it.asMemberRoomEntity(roomId))
+            }
+        }
+    }
+
+    override suspend fun fetchRooms() {
+        runCatching {
+            remoteRoomDataSource.getRoomList()
+        }.onFailure { e ->
+            throw e
+        }.getOrThrow().let {
+            val roomList = checkNotNull(it.body())
+
+            roomList.map { room ->
+                roomDao.upsertRoom(room.asRoomEntity())
+                room.members.map { member ->
+                    userDao.upsertMember(member.asMemberEntity())
+                    userDao.upsertMemberRoom(member.asMemberRoomEntity(room.roomId))
+                }
             }
         }
     }

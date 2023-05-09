@@ -15,12 +15,14 @@ data class MemberResponse(
     val name: String,
     val profileUrl: String?,
     val userId: Long,
+    val userRoomRole: String,
 )
 
 fun MemberResponse.asMemberRoomEntity(roomId: Long) = MemberRoomEntity(
     userId = userId,
     roomId = roomId,
     nickName = name,
+    role = userRoomRole,
 )
 
 fun MemberResponse.asMemberEntity() = MemberEntity(
