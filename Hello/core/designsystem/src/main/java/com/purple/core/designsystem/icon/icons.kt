@@ -15,6 +15,7 @@ object HiIcons {
     val ArrowRight = Icons.Rounded.KeyboardArrowRight
     val Calendar = Icons.Rounded.DateRange
     val PersonAdd = Icons.Rounded.Send
+    val ArrowDropDown = Icons.Rounded.ArrowDropDown
 }
 
 sealed class Icon {
