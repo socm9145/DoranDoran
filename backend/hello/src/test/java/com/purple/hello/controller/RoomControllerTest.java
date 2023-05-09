@@ -802,7 +802,7 @@ class RoomControllerTest {
 
         // given
         given(roomService.readQuestionByRoomId(any(Long.class)))
-                .willReturn(new ReadQuestionOutDTO("content"));
+                .willReturn(new ReadQuestionOutDTO(1L, "content"));
 
         // when - then
         mockMvc.perform(get("/room/question?questionId=1")
