@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Date;
 
 public interface HistoryDAO {
-    boolean createHistory(CreateQuestionInDTO createQuestionInDTO);
     ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date date) throws IOException;
     boolean createHistory(CreateQuestionInDTO createQuestionInDTO) throws Exception;
 }
