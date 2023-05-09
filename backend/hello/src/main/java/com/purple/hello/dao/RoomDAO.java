@@ -24,6 +24,8 @@ public interface RoomDAO {
     LocalDate getCreatedAtByRoomId(long roomId);
     List<Room> getRoom();
     Map<Long, List<HistoryTypeDTO>> getHistoryTypeCount(List<Long> roomListIdx);
+    Map<Long, List<HistoryTypeDTO>> getHistoryTypeFeedCount(List<Long> roomListIdx);
+    Map<Long, List<HistoryMinMaxDTO>> getHistoryMinMax(List<Long> roomListIdx);
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
     List<MemberDTO> readMemberListByRoomId(long roomId, long userId);
     Integer readBeginTimeByRoomId(long roomId);

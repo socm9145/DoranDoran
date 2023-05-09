@@ -321,21 +321,16 @@ public class RoomDAOImpl implements RoomDAO {
 
         for(Object o : result){
             Object[] results = (Object[]) o;
-            System.out.println(Arrays.toString(results));
+            HistoryMinMaxDTO temp = new HistoryMinMaxDTO();
+            temp.setMin(Integer.parseInt(results[3].toString()));
+            temp.setMax(Integer.parseInt(results[4].toString()));
+            temp.setQuestionId(Integer.parseInt(results[1].toString()));
+            temp.setQuestionType(String.valueOf(results[2]));
+
             if(map.containsKey(Long.parseLong(results[0].toString()))){
-                HistoryMinMaxDTO temp = new HistoryMinMaxDTO();
-                temp.setMin(Integer.parseInt(results[3].toString()));
-                temp.setMax(Integer.parseInt(results[4].toString()));
-                temp.setQuestionId(Integer.parseInt(results[1].toString()));
-                temp.setQuestionType(String.valueOf(results[2]));
                 map.get(Long.parseLong(results[0].toString())).add(temp);
             }else{
                 List<HistoryMinMaxDTO> historyMinMaxDTOList = new ArrayList<>();
-                HistoryMinMaxDTO temp = new HistoryMinMaxDTO();
-                temp.setMin(Integer.parseInt(results[3].toString()));
-                temp.setMax(Integer.parseInt(results[4].toString()));
-                temp.setQuestionId(Integer.parseInt(results[1].toString()));
-                temp.setQuestionType(String.valueOf(results[2]));
                 historyMinMaxDTOList.add(temp);
                 map.put(Long.parseLong(results[0].toString()), historyMinMaxDTOList);
             }
@@ -365,16 +360,14 @@ public class RoomDAOImpl implements RoomDAO {
 
         for(Object o : result){
             Object[] results = (Object[]) o;
+            HistoryTypeDTO temp = new HistoryTypeDTO();
+            temp.setTypeName(String.valueOf(results[0]));
+            temp.setCount(Integer.parseInt(results[1].toString()));
+
             if(map.containsKey(Long.parseLong(results[2].toString()))){
-                HistoryTypeDTO temp = new HistoryTypeDTO();
-                temp.setTypeName(String.valueOf(results[0]));
-                temp.setCount(Integer.parseInt(results[1].toString()));
                 map.get(Long.parseLong(results[2].toString())).add(temp);
             }else{
                 List<HistoryTypeDTO> historyTypeDTOList = new ArrayList<>();
-                HistoryTypeDTO temp = new HistoryTypeDTO();
-                temp.setTypeName(String.valueOf(results[0]));
-                temp.setCount(Integer.parseInt(results[1].toString()));
                 historyTypeDTOList.add(temp);
                 map.put(Long.parseLong(results[2].toString()), historyTypeDTOList);
             }
