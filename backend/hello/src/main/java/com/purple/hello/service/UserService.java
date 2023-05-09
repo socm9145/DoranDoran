@@ -2,6 +2,7 @@ package com.purple.hello.service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.purple.hello.dto.in.OauthUserInputDTO;
+import com.purple.hello.dto.in.UpdateUserInfoInDTO;
 import com.purple.hello.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,4 +18,5 @@ public interface UserService {
     User insertUser(OauthUserInputDTO oauthUserInputDTO);
     void updateRefreshToken(long userId, String refreshToken);
     User isValidRefreshToken(String refreshToken);
+    boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws IOException;
 }

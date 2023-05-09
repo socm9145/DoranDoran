@@ -6,6 +6,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.purple.hello.dao.UserDAO;
 import com.purple.hello.dto.in.OauthUserInputDTO;
+import com.purple.hello.dto.in.UpdateUserInfoInDTO;
 import com.purple.hello.entity.User;
 import com.purple.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -89,5 +91,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User isValidRefreshToken(String refreshToken) {
         return userDAO.isValidRefreshToken(refreshToken);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws IOException {
+        return userDAO.updateUserInfo(updateUserInfoInDTO);
     }
 }
