@@ -25,7 +25,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitApiClient {
-    /* TODO : BASE_URL 체크 필요 */
     private const val BASE_URL = "https://www.doeran.kr/api/"
     private val json = Json {
         prettyPrint = true

@@ -8,5 +8,5 @@ import androidx.room.Entity
 )
 data class MemberEntity(
     val userId: Long,
-    val profileUrl: String,
+    val profileUrl: String?,
 )

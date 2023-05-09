@@ -20,7 +20,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.model.Member
+import com.purple.hello.feature.groups.R
 import com.purple.hello.feature.rooms.fake.FakeFactory
+
+const val DEFAULT_PROFILE = ""
 
 @Composable
 fun RoomItem(
@@ -54,6 +57,8 @@ fun RoomItem(
                     modifier = Modifier.weight(1f),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(it.profileUrl)
+                        .placeholder(R.drawable.profile_placeholder)
+                        .error(R.drawable.profile_placeholder)
                         .crossfade(true)
                         .build(),
                     contentDescription = "${it.nickName}의 프로필",

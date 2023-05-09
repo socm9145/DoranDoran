@@ -6,21 +6,29 @@ import com.purple.core.model.Result
 import com.purple.core.model.Room
 import com.purple.core.model.asResult
 import com.purple.hello.domain.rooms.CreateRoomUseCase
+import com.purple.hello.domain.rooms.FetchRoomsUseCase
 import com.purple.hello.domain.rooms.GetRoomListUseCase
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class RoomsViewModel @Inject constructor(
     getRoomListFlow: GetRoomListUseCase,
+    fetchRoomsUseCase: FetchRoomsUseCase,
     private val createRoomUseCase: CreateRoomUseCase,
 ) : ViewModel() {
 
-    private val rooms: Flow<Result<List<Room>>> = getRoomListFlow().asResult()
+    private val rooms: Flow<Result<List<Room>>> = getRoomListFlow()
+        .onStart {
+            withContext(Dispatchers.IO) {
+                fetchRoomsUseCase()
+            }
+        }
+        .asResult()
 
     val roomsUiState: StateFlow<RoomsUiState> =
         rooms.map {
@@ -35,9 +43,14 @@ class RoomsViewModel @Inject constructor(
             initialValue = RoomsUiState.Loading,
         )
 
-    fun createRoom(roomName: String, userName: String, question: String, password: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            createRoomUseCase(roomName, userName, question, password)
-        }
+    suspend fun createRoom(
+        roomName: String,
+        userName: String,
+        question: String,
+        password: String,
+        onRoomCreate: (Long) -> Unit,
+    ) {
+        val roomId = createRoomUseCase(roomName, userName, question, password)
+        onRoomCreate(roomId)
     }
 }

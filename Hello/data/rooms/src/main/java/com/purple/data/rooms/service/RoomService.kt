@@ -1,19 +1,26 @@
 package com.purple.data.rooms.service
 
+import com.purple.data.rooms.model.MembersResponse
 import com.purple.data.rooms.model.RoomCreationResponse
+import com.purple.data.rooms.model.RoomListResponse
 import com.purple.data.rooms.model.request.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.POST
-import retrofit2.http.PUT
+import retrofit2.http.*
 
 interface RoomService {
+
+    @GET("user/rooms")
+    suspend fun getRoomList(): Response<List<RoomListResponse>>
 
     @POST("room/create")
     suspend fun createRoom(
         @Body requestForCreate: RoomCreationRequest,
     ): Response<RoomCreationResponse>
+
+    @GET("room/user-list")
+    suspend fun getMembersInRoom(
+        @Query("roomId") roomId: Long,
+    ): Response<MembersResponse>
 
     @PUT("room/name")
     suspend fun updateRoomName(

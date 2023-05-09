@@ -1,26 +1,24 @@
 package com.purple.data.rooms.model
 
+import com.purple.core.database.entity.RoomEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class RoomListResponse(
     @SerialName("members")
-    val members: List<Member>,
+    val members: List<MemberResponse>,
     @SerialName("roomId")
     val roomId: Long,
     @SerialName("roomName")
     val roomName: String,
     @SerialName("userRoomId")
     val userRoomId: Long,
-) {
-    @Serializable
-    data class Member(
-        @SerialName("id")
-        val id: Long,
-        @SerialName("name")
-        val name: String,
-        @SerialName("profileUrl")
-        val profileUrl: String,
-    )
-}
+)
+
+fun RoomListResponse.asRoomEntity() = RoomEntity(
+    roomId,
+    userRoomId,
+    roomName,
+    recentVisitedTime = 0L,
+)

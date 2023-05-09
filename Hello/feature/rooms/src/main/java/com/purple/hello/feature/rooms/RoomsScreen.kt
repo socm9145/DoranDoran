@@ -27,9 +27,12 @@ import com.purple.core.designsystem.dialog.createInputDataByInputType
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
+import com.purple.core.designsystem.utils.multipleEventsCutter
 import com.purple.core.model.InputDialogType
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun RoomsRoute(
@@ -41,6 +44,8 @@ internal fun RoomsRoute(
     val isRoomsLoading = uiState is RoomsUiState.Loading
     var shouldShowAddDialog by remember { mutableStateOf(false) }
     val state = rememberLazyGridState()
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column {
         RoomsAppBar(onClickAppSetting = onClickAppSetting)
@@ -70,13 +75,26 @@ internal fun RoomsRoute(
             )
         }
     }
+
     if (shouldShowAddDialog) {
-        AddRoomDialog(
-            onDismiss = {
-                shouldShowAddDialog = false
-            },
-            onConfirm = roomsViewModel::createRoom,
-        )
+        multipleEventsCutter { manager ->
+            AddRoomDialog(
+                onDismiss = {
+                    shouldShowAddDialog = false
+                },
+                onConfirm = { roomName, userName, question, password ->
+                    manager.processEvent {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            roomsViewModel.createRoom(roomName, userName, question, password) { roomId ->
+                                launch(Dispatchers.Main) {
+                                    onClickRoom(roomId)
+                                }
+                            }
+                        }
+                    }
+                },
+            )
+        }
     }
     AnimatedVisibility(
         visible = isRoomsLoading,
