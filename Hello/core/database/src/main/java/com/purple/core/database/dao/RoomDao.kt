@@ -29,7 +29,7 @@ interface RoomDao {
     fun deleteRoom(roomId: Long)
 
     @Transaction
-    @Query("SELECT * FROM rooms")
+    @Query("SELECT * FROM rooms ORDER BY recentVisitedTime DESC")
     fun getRoomsWithMembers(): Flow<List<RoomWithMembers>>
 
     @Transaction

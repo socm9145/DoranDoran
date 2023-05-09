@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.purple.core.model.Member
+import com.purple.hello.feature.groups.R
 
 @Composable
 fun MemberProfileItem(
@@ -33,6 +34,8 @@ fun MemberProfileItem(
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(member.profileUrl)
+                .placeholder(R.drawable.profile_placeholder)
+                .error(R.drawable.profile_placeholder)
                 .crossfade(true)
                 .build(),
             contentDescription = "${member.nickName}의 프로필",

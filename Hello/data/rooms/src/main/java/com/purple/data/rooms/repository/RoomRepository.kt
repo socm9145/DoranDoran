@@ -1,4 +1,4 @@
-package com.purple.data.rooms
+package com.purple.data.rooms.repository
 
 import com.purple.core.model.Room
 import kotlinx.coroutines.flow.Flow
@@ -11,6 +11,9 @@ interface RoomRepository {
         userName: String,
         roomQuestion: String,
         roomPassword: String,
+    ): Long
+    suspend fun fetchMembersInRoom(
+        roomId: Long,
     )
     fun joinRoom(roomCode: Int)
     suspend fun updateUserName(userRoomId: Long, userName: String)

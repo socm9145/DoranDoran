@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class RoomCreationRequest(
     val roomName: String,
     val userName: String,
-    val question: String,
-    val password: String,
+    val roomQuestion: String,
+    val roomPassword: String,
 )
