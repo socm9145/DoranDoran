@@ -23,4 +23,5 @@ public interface RoomDAO {
     LocalDate getCreatedAtByRoomId(long roomId);
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
     List<MemberDTO> readMemberListByRoomId(long roomId, long userId);
+    Integer readBeginTimeByRoomId(long roomId);
 }
