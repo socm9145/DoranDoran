@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RoomController.class)
-class RoomControllerTest2 {
+class RoomControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
