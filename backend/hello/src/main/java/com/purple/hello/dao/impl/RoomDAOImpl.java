@@ -285,7 +285,7 @@ public class RoomDAOImpl implements RoomDAO {
             return null;
         }
         List<MemberDTO> memberDTOs = new JPAQuery<>(em)
-                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.roomName, qUser.userProfileUrl))
+                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.userName, qUser.userProfileUrl))
                 .from(qUser)
                 .join(qUserRoom)
                 .on(qUser.userId.eq(qUserRoom.user.userId))
