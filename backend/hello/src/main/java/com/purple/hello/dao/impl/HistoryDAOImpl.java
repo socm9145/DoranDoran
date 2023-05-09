@@ -5,6 +5,9 @@ import com.purple.hello.dto.in.CreateQuestionInDTO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.repo.HistoryRepo;
+import com.purple.hello.repo.QuestionRepo;
+import com.purple.hello.repo.RoomRepo;
+import org.checkerframework.checker.units.qual.A;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -25,22 +28,28 @@ public class HistoryDAOImpl implements HistoryDAO {
     EntityManager em;
     @Autowired
     private HistoryRepo historyRepo;
+    @Autowired
+    private RoomRepo roomRepo;
+    @Autowired
+    private QuestionRepo questionRepo;
     private final QHistory qHistory = QHistory.history;
     private final QQuestion qQuestion = QQuestion.question;
-    public HistoryDAOImpl(HistoryRepo historyRepo){
+
+    public HistoryDAOImpl(HistoryRepo historyRepo, RoomRepo roomRepo, QuestionRepo questionRepo) {
         this.historyRepo = historyRepo;
+        this.roomRepo = roomRepo;
+        this.questionRepo = questionRepo;
     }
+
     @Override
-    public boolean createHistory(CreateQuestionInDTO createQuestionInDTO) throws Exception{
-        Room room = new Room();
-        room.setRoomId(createQuestionInDTO.getRoomId());
-        Question question = new Question();
-        question.setQuestionId(createQuestionInDTO.getQueryId());
+    public boolean createHistory(CreateQuestionInDTO createQuestionInDTO) {
+        Room realRoom = roomRepo.findById(createQuestionInDTO.getRoomId()).get();
+        Question question = questionRepo.findById(createQuestionInDTO.getNo()).get();
 
         History history = History.builder()
                 .createAt(new Date())
                 .question(question)
-                .room(room)
+                .room(realRoom)
                 .build();
         historyRepo.save(history);
 

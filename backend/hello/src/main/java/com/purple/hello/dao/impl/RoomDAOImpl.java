@@ -1,14 +1,9 @@
 package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.RoomDAO;
-import com.purple.hello.dto.in.CreateUserRoomInDTO;
-import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
-import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
-import com.purple.hello.dto.in.DeleteRoomInDTO;
+import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
-import com.purple.hello.dto.tool.CreateRoomDTO;
-import com.purple.hello.dto.tool.MemberDTO;
-import com.purple.hello.dto.tool.ReadRoomDTO;
+import com.purple.hello.dto.tool.*;
 import com.purple.hello.entity.*;
 import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.HistoryRepo;
@@ -83,7 +78,7 @@ public class RoomDAOImpl implements RoomDAO {
             UserRoomRole rUserRoomRole = UserRoomRole.valueOf(result[6].toString());
             if (!map.containsKey(roomId))
                 map.put(roomId, new ArrayList<>());
-            
+
             map.get(roomId).add(ReadRoomDTO.builder()
                             .userRoomId(userRoomId)
                             .roomId(roomId)
@@ -260,6 +255,11 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
+    public List<Room> getRoom() {
+        return roomRepo.findAll();
+    }
+
+    @Override
     public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) {
         ReadRoomQuestionOutDTO readRoomQuestionOutDTO = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadRoomQuestionOutDTO.class, qRoom.roomId, qRoom.roomQuestion))
@@ -271,6 +271,115 @@ public class RoomDAOImpl implements RoomDAO {
                 .where(qRoom.roomId.eq(roomId).and(qUser.userId.eq(userId)))
                 .fetchOne();
         return readRoomQuestionOutDTO;
+    }
+
+    @Override
+    public Map<Long, List<HistoryTypeDTO>> getHistoryTypeFeedCount(List<Long> roomListIdx) {
+        String jpql = "select question_type, count(question_type), room_id " +
+                "from (select history_id, h.question_id, question_type, room_id, DATE_FORMAT(create_at,'%Y-%m-%d') as date " +
+                "      from histories h, questions q " +
+                "      where h.question_id = q.question_id) t, feeds f " +
+                "where DATE_FORMAT(f.create_at,'%Y-%m-%d') = date AND room_id in (:roomListIdx) " +
+                "group by room_id, question_type ";
+        Query query = em.createNativeQuery(jpql);
+        query.setParameter("roomListIdx", roomListIdx);
+        List result = query.getResultList();
+
+        if(result.size() == 0) return null;
+
+        return getHistoryTypeUtil(result);
+    }
+
+    @Override
+    public Map<Long, List<HistoryMinMaxDTO>> getHistoryMinMax(List<Long> roomListIdx) {
+        String jpql = "SELECT h.room_id, no, q.question_type, q2.min, q2.max " +
+                "FROM questions q " +
+                "JOIN ( " +
+                "    SELECT h.question_id, h.room_id " +
+                "    FROM histories h " +
+                "    JOIN ( " +
+                "      SELECT room_id, MAX(create_at) AS max_create_at " +
+                "      FROM histories " +
+                "      GROUP BY room_id " +
+                "    ) h2 ON h.room_id = h2.room_id AND h.create_at = h2.max_create_at " +
+                ") h " +
+                "ON h.question_id = q.question_id " +
+                "JOIN ( " +
+                "    SELECT question_type, MIN(q.no) as min, MAX(q.no) as max " +
+                "    FROM questions q " +
+                "    GROUP BY question_type " +
+                ") q2 " +
+                "ON q.question_type = q2.question_type " +
+                "WHERE room_id in (:roomListIdx) ";
+        Query query = em.createNativeQuery(jpql);
+        query.setParameter("roomListIdx", roomListIdx);
+        List result = query.getResultList();
+
+        if(result.size() == 0) return null;
+
+        Map<Long, List<HistoryMinMaxDTO>> map = new HashMap<>();
+
+        for(Object o : result){
+            Object[] results = (Object[]) o;
+            System.out.println(Arrays.toString(results));
+            if(map.containsKey(Long.parseLong(results[0].toString()))){
+                HistoryMinMaxDTO temp = new HistoryMinMaxDTO();
+                temp.setMin(Integer.parseInt(results[3].toString()));
+                temp.setMax(Integer.parseInt(results[4].toString()));
+                temp.setQuestionId(Integer.parseInt(results[1].toString()));
+                temp.setQuestionType(String.valueOf(results[2]));
+                map.get(Long.parseLong(results[0].toString())).add(temp);
+            }else{
+                List<HistoryMinMaxDTO> historyMinMaxDTOList = new ArrayList<>();
+                HistoryMinMaxDTO temp = new HistoryMinMaxDTO();
+                temp.setMin(Integer.parseInt(results[3].toString()));
+                temp.setMax(Integer.parseInt(results[4].toString()));
+                temp.setQuestionId(Integer.parseInt(results[1].toString()));
+                temp.setQuestionType(String.valueOf(results[2]));
+                historyMinMaxDTOList.add(temp);
+                map.put(Long.parseLong(results[0].toString()), historyMinMaxDTOList);
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public Map<Long, List<HistoryTypeDTO>> getHistoryTypeCount(List<Long> roomListIdx){
+        String jpql = "select question_type, count(question_type), room_id " +
+                "from histories h " +
+                "join questions q " +
+                "on q.question_id = h.question_id " +
+                "where room_id in (:roomListIdx) " +
+                "group by question_type, room_id";
+        Query query = em.createNativeQuery(jpql);
+        query.setParameter("roomListIdx", roomListIdx);
+        List result = query.getResultList();
+
+        if(result.size() == 0) return null;
+
+        return getHistoryTypeUtil(result);
+    }
+
+    private Map<Long, List<HistoryTypeDTO>> getHistoryTypeUtil(List result){
+        Map<Long, List<HistoryTypeDTO>> map = new HashMap<>();
+
+        for(Object o : result){
+            Object[] results = (Object[]) o;
+            if(map.containsKey(Long.parseLong(results[2].toString()))){
+                HistoryTypeDTO temp = new HistoryTypeDTO();
+                temp.setTypeName(String.valueOf(results[0]));
+                temp.setCount(Integer.parseInt(results[1].toString()));
+                map.get(Long.parseLong(results[2].toString())).add(temp);
+            }else{
+                List<HistoryTypeDTO> historyTypeDTOList = new ArrayList<>();
+                HistoryTypeDTO temp = new HistoryTypeDTO();
+                temp.setTypeName(String.valueOf(results[0]));
+                temp.setCount(Integer.parseInt(results[1].toString()));
+                historyTypeDTOList.add(temp);
+                map.put(Long.parseLong(results[2].toString()), historyTypeDTOList);
+            }
+        }
+        return map;
     }
 
     @Override

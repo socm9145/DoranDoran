@@ -1,16 +1,25 @@
 package com.purple.hello.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.purple.hello.dao.HistoryDAO;
 import com.purple.hello.dao.QuestionDAO;
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
+import com.purple.hello.dto.tool.HistoryMinMaxDTO;
+import com.purple.hello.dto.tool.HistoryTypeDTO;
+import com.purple.hello.dto.tool.HistoryTypePythonDTO;
 import com.purple.hello.dto.tool.MemberDTO;
 import com.purple.hello.encoder.PasswordEncoder;
+import com.purple.hello.entity.Room;
 import com.purple.hello.generator.RoomCode;
 import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.service.RoomService;
+import org.python.core.Py;
+import org.python.core.PyObject;
+import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -34,12 +47,16 @@ public class RoomServiceImpl implements RoomService {
     private final QuestionRepo questionRepo;
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO){
+    @Autowired
+    private final PythonInterpreter interpreter;
+
+    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter){
         this.roomDAO = roomDAO;
         this.passwordEncoder = passwordEncoder;
         this.historyDAO = historyDAO;
         this.questionRepo = questionRepo;
         this.questionDAO = questionDAO;
+        this.interpreter = interpreter;
     }
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
@@ -115,19 +132,76 @@ public class RoomServiceImpl implements RoomService {
         return this.roomDAO.deleteRoom(deleteRoomInDTO);
     }
 
-    @Override
-    public ReadQuestionOutDTO readQuestionByRoomId(long roomId) throws Exception{
-        LocalDate createdAt = roomDAO.getCreatedAtByRoomId(roomId);
-        LocalDate currentDate = LocalDate.now();
-        long result = currentDate.getDayOfYear() - createdAt.getDayOfYear();
-        long totalQuestion = questionRepo.count() - 1;
-        long questionId = (result % totalQuestion) + 2;
+    public void createQuestion(){
+        List<Room> roomList = roomDAO.getRoom();
+        System.out.println(11);
+        try{
+            if(roomList.size() == 0){
+                throw new NullPointerException("Don't Created Room");
+            }
 
-        CreateQuestionInDTO createQuestionInDTO = new CreateQuestionInDTO();
-        createQuestionInDTO.setRoomId(roomId);
-        createQuestionInDTO.setQueryId(questionId);
-        historyDAO.createHistory(createQuestionInDTO);
-        return questionDAO.readQuestionByQuestionId(questionId);
+            LocalDate currentDate = LocalDate.now();
+            CreateQuestionInDTO createQuestionInDTO;
+            List<Long> roomListIdx = new ArrayList<>();
+
+            for(Room room : roomList) {
+                LocalDate createdAt = room.getCreateAt().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                long result = currentDate.getDayOfYear() - createdAt.getDayOfYear();
+
+                if (result < 9) {    // 방이 생성된지 10일 이전
+                    long totalQuestion = questionRepo.count() - 1;
+                    long questionId = (result % totalQuestion) + 2;
+
+                    createQuestionInDTO = CreateQuestionInDTO.builder()
+                            .roomId(room.getRoomId())
+                            .no(questionId)
+                            .build();
+                    historyDAO.createHistory(createQuestionInDTO);
+                } else {              // 방이 생선된지 10일 이후
+                    roomListIdx.add(room.getRoomId());
+                }
+            }
+            // 10일 이후 이면
+            if(roomListIdx.size() != 0){
+                // 각 방마다 daily, game, know 타입이 몇 개 있는지
+                Map<Long, List<HistoryTypeDTO>> resultMapType = roomDAO.getHistoryTypeCount(roomListIdx);
+                // 각 방마다 daily, game, know 타입에 대해서 포스트가 몇 개 있는지 추출
+                Map<Long, List<HistoryTypeDTO>> resultMapFeed = roomDAO.getHistoryTypeFeedCount(roomListIdx);
+                // 각 방마다 타입에 최소 인덱스와 최대 인덱스 그리고 현재 인덱스를 출력한다.
+                Map<Long, List<HistoryMinMaxDTO>> resultMapMinMax = roomDAO.getHistoryMinMax(roomListIdx);
+
+                Map<Long, HistoryTypePythonDTO> pyDTO = new HashMap<>();
+                for(Long l : roomListIdx){
+                    HistoryTypePythonDTO historyTypePythonDTO = HistoryTypePythonDTO.builder()
+                            .types(resultMapType.get(l))
+                            .feeds(resultMapFeed.get(l))
+                            .minMaxCurrent(resultMapMinMax.get(l))
+                            .build();
+                    pyDTO.put(l, historyTypePythonDTO);
+                }
+                ObjectMapper mapper = new ObjectMapper();
+                String json = mapper.writeValueAsString(pyDTO);
+                System.out.println(json);
+
+                interpreter.execfile("src/main/java/com/purple/hello/python/test.py");
+                interpreter.exec("print('Hello, world!')");
+                PyObject jsonString = Py.java2py(json);
+                PyObject resultHistory = interpreter.get("testFunc").__call__(jsonString);
+                Long resultRoomId = (Long) Py.tojava(resultHistory, Long.class);
+            }
+
+        }catch (NullPointerException e){
+            System.out.println(e.getMessage());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ReadQuestionOutDTO readQuestionByRoomId(long roomId) {
+        return null;
     }
 
     @Override

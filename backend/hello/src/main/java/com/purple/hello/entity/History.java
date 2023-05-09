@@ -18,7 +18,7 @@ public class History {
     @Temporal(TemporalType.TIMESTAMP)
     Date createAt;
     @ManyToOne
-    @JoinColumn(name = "query_id")
+    @JoinColumn(name = "question_id")
     Question question;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
