@@ -3,6 +3,7 @@ package com.purple.hello.service.impl;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.purple.hello.dto.tool.AwsS3DTO;
 import com.purple.hello.service.AwsS3Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,11 +50,15 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public boolean remove(AwsS3DTO awsS3DTO) throws AmazonS3Exception{
-        if (!amazonS3.doesObjectExist(bucket, awsS3DTO.getKey())) {
+    public boolean removeDirectory(String dirName) throws AmazonS3Exception{
+        List<S3ObjectSummary> fileList = amazonS3.listObjects(bucket, dirName).getObjectSummaries();
+        if(fileList.size() == 0) {
             return false;
         }else {
-            amazonS3.deleteObject(bucket, awsS3DTO.getKey());
+            for(S3ObjectSummary file : fileList) {
+                amazonS3.deleteObject(bucket, file.getKey());
+            }
+            amazonS3.deleteObject(bucket, dirName);
             return true;
         }
     }

@@ -409,4 +409,15 @@ public class RoomDAOImpl implements RoomDAO {
                 .where(qRoom.roomId.eq(roomId))
                 .fetchOne();
     }
+
+    @Override
+    public Room readRoomByUserRoomId(long userRoomId) {
+        return new JPAQuery<>(em)
+                .select(qRoom)
+                .from(qUserRoom)
+                .where(qUserRoom.userRoomId.eq(userRoomId))
+                .fetchOne();
+    }
+
+
 }

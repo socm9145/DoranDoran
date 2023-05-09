@@ -7,6 +7,7 @@ import com.purple.hello.dto.tool.HistoryMinMaxDTO;
 import com.purple.hello.dto.tool.HistoryTypeDTO;
 import com.purple.hello.entity.Room;
 import com.purple.hello.dto.tool.MemberDTO;
+import com.purple.hello.entity.Room;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,4 +30,5 @@ public interface RoomDAO {
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
     List<MemberDTO> readMemberListByRoomId(long roomId, long userId);
     Integer readBeginTimeByRoomId(long roomId);
+    Room readRoomByUserRoomId(long userRoomId);
 }
