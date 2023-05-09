@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface FeedDAO {
-    List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date);
-    CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO);
+    List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date)throws Exception;
+    CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) throws Exception;
     List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date);
 }

@@ -4,10 +4,10 @@ import com.purple.hello.service.FileService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FileServiceImpl implements FileService {
+public class FileServiceImpl implements FileService  {
 
     @Override
-    public boolean compareExtensions(String fileExtension, String[] imageExtensions) {
+    public boolean compareExtensions(String fileExtension, String[] imageExtensions) throws Exception{
         for(String imageExtension: imageExtensions){
             if(fileExtension.equals(imageExtension)){
                 return true;

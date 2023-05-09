@@ -39,7 +39,7 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) {
+    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) throws Exception{
         // 특정 그룹방에서 특정 날짜에 피드를 올린 유저의 ID를 반환
         List<UserIdDateDTO> userIdDateDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(UserIdDateDTO.class, qUser.userId, qFeed.createAt))
@@ -54,7 +54,7 @@ public class FeedDAOImpl implements FeedDAO {
                 .fetch();
 
         if (userIdDateDTOs.isEmpty())
-            return null;
+            throw new IllegalArgumentException();
 
         List<UserIdDTO> userIdDTOs = new ArrayList<>();
 
@@ -93,9 +93,9 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) {
+    public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) throws Exception{
         if (this.userRoomRepo.findById(createFeedInDTO.getUserRoomId()).isEmpty())
-            return null;
+            throw new IllegalArgumentException();
 
         // feed 데이터 저장
         Feed feed = Feed.builder()

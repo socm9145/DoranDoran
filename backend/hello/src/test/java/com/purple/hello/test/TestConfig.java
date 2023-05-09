@@ -35,7 +35,6 @@ public class TestConfig {
                         .build();
 
                 userRoomRepo.save(userRoom);
-                System.out.println("run init");
             }
         };
     }
