@@ -318,7 +318,6 @@ class OptionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .requestAttr("userId", updateMoveAlarmInDTO.getUserId()))
-                .andExpect(result -> System.out.println(result.getResolvedException()))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalArgumentException))
                 .andReturn();
     }

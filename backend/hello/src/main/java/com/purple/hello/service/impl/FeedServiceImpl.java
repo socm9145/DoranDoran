@@ -28,27 +28,32 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) {
+    public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) throws Exception{
         return this.feedDAO.compareFeedByRoomIdAndDate(roomId, date);
     }
 
     @Override
-    public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) throws IOException {
+    public CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) throws Exception {
         MultipartFile multipartFile = createFeedInDTO.getFeedFile();
-        if(multipartFile == null) {
-            return null;
-        }
+
+        if(multipartFile == null)
+            throw new IllegalArgumentException();
+
         String fileName = multipartFile.getOriginalFilename();
         String fileExtension = fileService.getExtension(fileName);
         String[] imageExtensions = {"jpg", "jpeg", "png", "bmp", "webp"};
-        if(!(fileService.compareExtensions(fileExtension, imageExtensions))){
-            return null;
-        }
+
+        if(!(fileService.compareExtensions(fileExtension, imageExtensions)))
+            throw new IllegalArgumentException();
+
         String dirname = "feed";
         AwsS3DTO awsS3DTO = awsS3Service.upload(multipartFile, dirname);
-        if(awsS3DTO == null) {
-            return null;
-        }else {
+
+
+        if(awsS3DTO == null)
+            throw new IllegalArgumentException();
+
+        else {
             createFeedInDTO.setFeedUrl(awsS3DTO.getPath());
             return this.feedDAO.createFeed(createFeedInDTO);
         }
