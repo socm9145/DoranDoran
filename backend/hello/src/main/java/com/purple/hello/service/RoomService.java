@@ -19,11 +19,10 @@ public interface RoomService {
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception;
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
-    void createQuestion();
+    void createQuestion() throws Exception;
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
-    ReadQuestionOutDTO readQuestionByRoomId(long roomId) throws Exception;
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
 
     ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId);

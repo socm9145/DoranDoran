@@ -132,7 +132,7 @@ public class RoomServiceImpl implements RoomService {
         return this.roomDAO.deleteRoom(deleteRoomInDTO);
     }
 
-    public void createQuestion(){
+    public void createQuestion() throws Exception{
         List<Room> roomList = roomDAO.getRoom();
         System.out.println(11);
         try{
@@ -197,11 +197,6 @@ public class RoomServiceImpl implements RoomService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public ReadQuestionOutDTO readQuestionByRoomId(long roomId) {
-        return null;
     }
 
     @Override

@@ -162,8 +162,7 @@ public class RoomController {
     @ApiOperation(value = "질문 출력 API",
             notes = "해당 날짜에 사용할 질문을 랜덤으로 출력해주는 API")
     @GetMapping("/question")
-    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId) throws NullPointerException{
-//        ReadQuestionOutDTO readQuestionOutDTO = roomService.readQuestionByRoomId(questionId);
+    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId) throws Exception, NullPointerException{
         try{
             roomService.createQuestion();
         }catch (NullPointerException e){
