@@ -24,7 +24,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RoomDetailViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     getRoomFlow: GetSelectedRoomUseCase,
     getRoomCode: GetRoomCodeUseCase,
     getQuestionFlow: GetQuestionUseCase,
@@ -35,14 +35,7 @@ class RoomDetailViewModel @Inject constructor(
     private val selectedDate = MutableSharedFlow<Date>()
     val roomCode: MutableStateFlow<String> = MutableStateFlow("")
 
-    private var selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId)
-        .onStart {
-            withContext(Dispatchers.IO) {
-                fetchRoomDetail(selectedRoomId)
-                roomCode.value = getRoomCode(selectedRoomId)
-            }
-        }
-        .asResult()
+    private var selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId).asResult()
     private val dateQuestion: Flow<Result<String>> = selectedDate.flatMapLatest {
         getQuestionFlow(roomId = selectedRoomId, date = it).asResult()
     }
@@ -54,12 +47,18 @@ class RoomDetailViewModel @Inject constructor(
                 is Result.Success -> RoomDetailUiState.Success(it.data)
                 is Result.Error -> RoomDetailUiState.Error(it.exception)
             }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = RoomDetailUiState.Loading,
-        )
-
+        }
+            .onStart {
+                withContext(Dispatchers.Default) {
+                    fetchRoomDetail(selectedRoomId)
+                    roomCode.emit(getRoomCode(selectedRoomId))
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = RoomDetailUiState.Loading,
+            )
     val feedUiState: StateFlow<FeedUiState> =
         dateQuestion.map {
             when (it) {
