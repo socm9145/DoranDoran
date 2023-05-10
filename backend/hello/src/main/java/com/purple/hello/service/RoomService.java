@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 public interface RoomService {
-    List<ReadRoomOutDTO> readRoomByUserId(long userId);
+    List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception;
     boolean comparePasswordByRoomCode(long roomId, String password);
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
