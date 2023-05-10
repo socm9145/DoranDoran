@@ -22,4 +22,10 @@ class UserDataStore @Inject constructor(
             Log.e("userProtoDataStore", "Failed to update id")
         }
     }
+
+    suspend fun clearUserId() {
+        userProtoDataStore.updateData {
+            it.toBuilder().clear().build()
+        }
+    }
 }

@@ -1,12 +1,14 @@
 package com.purple.hello.data.account
 
 import com.purple.hello.core.datastore.AccountDataStore
+import com.purple.hello.core.datastore.UserDataStore
 import com.purple.hello.core.network.AccountService
 import javax.inject.Inject
 
 class RemoteAccountDataSource @Inject constructor(
     private val accountService: AccountService,
     private val accountDataStore: AccountDataStore,
+    private val userDataStore: UserDataStore,
 ) {
 
     suspend fun loginWithGoogle(idToken: String) {
@@ -27,5 +29,6 @@ class RemoteAccountDataSource @Inject constructor(
 
     suspend fun logout() {
         accountDataStore.clearToken()
+        userDataStore.clearUserId()
     }
 }
