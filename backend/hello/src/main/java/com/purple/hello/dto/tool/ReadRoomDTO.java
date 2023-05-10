@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -19,9 +20,10 @@ public class ReadRoomDTO {
     String userName;
     String userProfileUrl;
     UserRoomRole userRoomRole;
+    Date birth;
 
     @Builder
-    public ReadRoomDTO(long userRoomId, long roomId, String roomName, String userName, String userProfileUrl, long userId, UserRoomRole userRoomRole) {
+    public ReadRoomDTO(long userRoomId, long roomId, String roomName, String userName, String userProfileUrl, long userId, UserRoomRole userRoomRole, Date birth) {
         this.userId = userId;
         this.userRoomId = userRoomId;
         this.roomId = roomId;
@@ -29,5 +31,6 @@ public class ReadRoomDTO {
         this.userName = userName;
         this.userProfileUrl = userProfileUrl;
         this.userRoomRole = userRoomRole;
+        this.birth = birth;
     }
 }
