@@ -16,7 +16,7 @@ import java.util.Map;
 public interface RoomDAO {
     List<ReadRoomOutDTO> readRoomByUserId(long userId)throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO)throws Exception;
-    String comparePasswordByRoomCode(long roomId);
+    String comparePasswordByRoomCode(long roomId) throws Exception;
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO)  throws Exception;
     String readRoomCodeByRoomId(long roomId);
