@@ -55,7 +55,6 @@ private fun RoomDetailScreen(
         is RoomDetailUiState.Success -> {
             Column {
                 RoomDetailAppBar(
-                    roomDetailUiState.roomDetail.roomName,
                     onBackClick = onBackClick,
                     onClickRoomSetting = {
                         onClickRoomSetting(
