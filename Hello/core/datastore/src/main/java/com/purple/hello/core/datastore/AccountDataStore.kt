@@ -7,31 +7,31 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-class AccountPreferencesDataSource @Inject constructor(
-    private val accountPreferences: DataStore<AccountData>,
+class AccountDataStore @Inject constructor(
+    private val accountProtoDataStore: DataStore<AccountData>,
 ) {
-    val accessToken = accountPreferences.data.map { it.accessToken }
-    val refreshToken = accountPreferences.data.map { it.refreshToken }
+    val accessToken = accountProtoDataStore.data.map { it.accessToken }
+    val refreshToken = accountProtoDataStore.data.map { it.refreshToken }
 
     suspend fun setToken(accessToken: String, refreshToken: String) {
         try {
-            accountPreferences.updateData {
+            accountProtoDataStore.updateData {
                 it.copy {
                     this.accessToken = accessToken
                     this.refreshToken = refreshToken
                 }
             }
         } catch (ioException: IOException) {
-            Log.e("AccountPreferences", "Failed to update token")
+            Log.e("accountProtoDataStore", "Failed to update token")
         }
     }
 
-    fun isLoggedIn(): Flow<Boolean> = accountPreferences.data.map { accountData ->
+    fun isLoggedIn(): Flow<Boolean> = accountProtoDataStore.data.map { accountData ->
         !accountData.accessToken.isNullOrBlank() && !accountData.refreshToken.isNullOrBlank()
     }
 
     suspend fun clearToken() {
-        accountPreferences.updateData {
+        accountProtoDataStore.updateData {
             it.toBuilder().clear().build()
         }
     }

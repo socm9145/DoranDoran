@@ -7,6 +7,9 @@ import com.purple.core.database.entity.MemberRoomEntity
 @Dao
 interface UserDao {
 
+    @Query("SELECT * FROM user_room_cross WHERE roomId = :roomId AND userId = :userId")
+    fun getUserInRoom(userId: Long, roomId: Long): MemberRoomEntity
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertMember(member: MemberEntity)
 

@@ -35,6 +35,7 @@ android {
 dependencies {
     implementation(project(":domain:model"))
     implementation(project(":data:account"))
+    implementation(project(":data:user"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)

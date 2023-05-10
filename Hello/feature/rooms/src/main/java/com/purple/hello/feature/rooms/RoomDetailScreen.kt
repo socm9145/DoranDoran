@@ -26,6 +26,8 @@ import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
 @Composable
 internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    onClickRoomSetting: (roomId: Long) -> Unit,
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
     val roomCode by roomDetailViewModel.roomCode.collectAsState()
@@ -33,6 +35,10 @@ internal fun RoomDetailRoute(
     Column {
         RoomDetailScreen(
             roomDetailUiState = roomDetailUiState,
+            onBackClick = onBackClick,
+            onClickRoomSetting = {
+                onClickRoomSetting(it)
+            },
             roomCode = roomCode,
         )
     }
@@ -41,12 +47,20 @@ internal fun RoomDetailRoute(
 @Composable
 private fun RoomDetailScreen(
     roomDetailUiState: RoomDetailUiState,
+    onBackClick: () -> Unit,
+    onClickRoomSetting: (roomId: Long) -> Unit,
     roomCode: String,
 ) {
     when (roomDetailUiState) {
         is RoomDetailUiState.Success -> {
             Column {
                 RoomDetailAppBar(
+                    onBackClick = onBackClick,
+                    onClickRoomSetting = {
+                        onClickRoomSetting(
+                            roomDetailUiState.roomDetail.roomId,
+                        )
+                    },
                     roomName = roomDetailUiState.roomDetail.roomName,
                     roomCode = roomCode,
                 )
@@ -61,6 +75,8 @@ private fun RoomDetailScreen(
 @Composable
 private fun RoomDetailAppBar(
     roomName: String,
+    onBackClick: () -> Unit,
+    onClickRoomSetting: () -> Unit,
     roomCode: String,
 ) {
     val sendIntent: Intent = Intent().apply {
@@ -75,7 +91,7 @@ private fun RoomDetailAppBar(
         title = roomName,
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로가기",
-        onNavigationClick = { /*TODO*/ },
+        onNavigationClick = { onBackClick() },
         actions = {
             HiIconButton(
                 onClick = {
@@ -89,7 +105,7 @@ private fun RoomDetailAppBar(
                 },
             )
             HiIconButton(
-                onClick = { /*TODO*/ },
+                onClick = { onClickRoomSetting() },
                 icon = {
                     Icon(
                         imageVector = HiIcons.Settings,

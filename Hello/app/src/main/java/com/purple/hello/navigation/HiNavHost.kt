@@ -5,6 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.purple.hello.feature.rooms.navigation.roomsGraph
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
+import com.purple.hello.feature.setting.app.navigation.appSettingScreen
+import com.purple.hello.feature.setting.app.navigation.navigateToAppSetting
+import com.purple.hello.feature.setting.room.navigation.navigateToRoomSetting
+import com.purple.hello.feature.setting.room.navigation.roomSettingScreen
 import com.purple.hello.ui.AppState
 
 @Composable
@@ -20,6 +24,27 @@ fun HiNavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        roomsGraph(navController)
+        roomsGraph(
+            navController = navController,
+            onBackClick = {
+                navController.popBackStack()
+            },
+            onClickAppSetting = {
+                navController.navigateToAppSetting()
+            },
+            onClickRoomSetting = {
+                navController.navigateToRoomSetting(roomId = it)
+            },
+        )
+        appSettingScreen(
+            onBackClick = {
+                navController.popBackStack()
+            },
+        )
+        roomSettingScreen(
+            onBackClick = {
+                navController.popBackStack()
+            },
+        )
     }
 }
