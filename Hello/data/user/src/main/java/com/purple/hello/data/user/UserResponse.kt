@@ -1,6 +1,7 @@
 package com.purple.hello.data.user
 
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.Date
 
@@ -9,5 +10,5 @@ import java.util.Date
 data class UserResponse(
     val birth: @Contextual Date?,
     val userId: Long,
-    val profileUrl: String?,
+    @SerialName("profileURL") val profileUrl: String?,
 )

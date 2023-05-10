@@ -12,19 +12,19 @@ import com.purple.hello.feature.rooms.state.RoomsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RoomsViewModel @Inject constructor(
     getRoomListFlow: GetRoomListUseCase,
-    fetchRoomsUseCase: FetchRoomsUseCase,
+    private val fetchRoomsUseCase: FetchRoomsUseCase,
     private val createRoomUseCase: CreateRoomUseCase,
 ) : ViewModel() {
 
     private val rooms: Flow<Result<List<Room>>> = getRoomListFlow()
         .onStart {
-            withContext(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.IO) {
                 fetchRoomsUseCase()
             }
         }

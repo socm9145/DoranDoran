@@ -40,6 +40,9 @@ fun HiNavHost(
             onBackClick = {
                 navController.popBackStack()
             },
+            clearNav = {
+                navController.popBackStack()
+            },
         )
         roomSettingScreen(
             onBackClick = {

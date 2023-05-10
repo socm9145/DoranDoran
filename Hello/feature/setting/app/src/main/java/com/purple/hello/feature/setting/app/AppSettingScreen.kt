@@ -29,6 +29,7 @@ import com.purple.hello.feature.setting.app.viewmodel.AppSettingViewModel
 fun AppSettingRoute(
     appSettingViewModel: AppSettingViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
+    clearNav: () -> Unit,
 ) {
     var shouldShowLogoutDialog by remember { mutableStateOf(false) }
 
@@ -72,7 +73,10 @@ fun AppSettingRoute(
                     onDismiss = {
                         shouldShowLogoutDialog = false
                     },
-                    onDelete = { appSettingViewModel.logout() },
+                    onDelete = {
+                        appSettingViewModel.logout()
+                        clearNav()
+                   },
                 )
             }
         }
@@ -134,5 +138,5 @@ private fun AppSettingAppBar(
 @Preview
 @Composable
 private fun PreviewAppSettingScreen() {
-    AppSettingRoute(onBackClick = {})
+    AppSettingRoute(onBackClick = {}, clearNav= {})
 }

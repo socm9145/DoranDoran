@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
 }
 
 android {
@@ -35,6 +36,13 @@ android {
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
+
+    implementation(Room.ROOM)
+    implementation(Room.ROOM_KTX)
+    implementation(Room.ROOM_COMMON)
+    annotationProcessor(Room.ROOM_COMPILER)
+    kapt(Room.ROOM_COMPILER)
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)
