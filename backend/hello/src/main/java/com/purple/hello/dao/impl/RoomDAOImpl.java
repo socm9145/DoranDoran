@@ -43,7 +43,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
+    public List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception{
 
         String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url, U2.user_id, UR2.user_room_role" +
                 "        from users U " +
@@ -65,7 +65,7 @@ public class RoomDAOImpl implements RoomDAO {
         List resultList = query.getResultList();
 
         if (resultList.size() == 0)
-            return null;
+            throw new IllegalArgumentException();
 
         Map<Long, List<ReadRoomDTO>> map = new HashMap<>();
 
