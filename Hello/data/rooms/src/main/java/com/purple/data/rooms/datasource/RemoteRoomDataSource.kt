@@ -1,6 +1,7 @@
 package com.purple.data.rooms.datasource
 
 import com.purple.data.rooms.model.MembersResponse
+import com.purple.data.rooms.model.RoomCodeResponse
 import com.purple.data.rooms.model.RoomListResponse
 import com.purple.data.rooms.model.request.*
 import com.purple.data.rooms.service.RoomService
@@ -21,6 +22,9 @@ class RemoteRoomDataSource @Inject constructor(
 
     override suspend fun getMembersInRoom(roomId: Long): Response<MembersResponse> =
         roomService.getMembersInRoom(roomId)
+
+    override suspend fun getRoomCode(roomId: Long): Response<RoomCodeResponse> =
+        roomService.getRoomCode(roomId)
 
     override suspend fun updateRoomName(userRoomId: Long, roomName: String) =
         roomService.updateRoomName(

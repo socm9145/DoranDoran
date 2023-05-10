@@ -124,7 +124,7 @@ private fun RoomsAppBar(
 ) {
     HiTopAppBar(
         title = "도란도란",
-        navigationIcon = HiIcons.PersonAdd,
+        navigationIcon = HiIcons.Notifications,
         navigationIconContentDescription = "",
         actions = {
             HiIconButton(

@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.purple.core.designsystem.R
 
 object HiIcons {
 
@@ -14,7 +15,7 @@ object HiIcons {
     val Settings = Icons.Rounded.Settings
     val ArrowRight = Icons.Rounded.KeyboardArrowRight
     val Calendar = Icons.Rounded.DateRange
-    val PersonAdd = Icons.Rounded.Send
+    val PersonAdd = R.drawable.baseline_person_add_24
     val ArrowDropDown = Icons.Rounded.ArrowDropDown
 }
 
