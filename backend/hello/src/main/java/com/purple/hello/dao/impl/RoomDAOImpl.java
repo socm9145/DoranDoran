@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -45,7 +46,7 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception{
 
-        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url, U2.user_id, UR2.user_room_role" +
+        String sql = "select UR.user_room_id, R.room_id, UR.room_name, UR2.user_name, U2.user_profile_url, U2.user_id, UR2.user_room_role, U2.birth" +
                 "        from users U " +
                 "        join user_rooms UR " +
                 "        on U.user_id = UR.user_id " +
@@ -76,6 +77,11 @@ public class RoomDAOImpl implements RoomDAO {
             long roomId = ((Number)result[1]).longValue();
             long rUserId = ((Number)result[5]).longValue();
             UserRoomRole rUserRoomRole = UserRoomRole.valueOf(result[6].toString());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date rBirth = null;
+            if(result[7] != null){
+                rBirth = simpleDateFormat.parse(result[7].toString());
+            }
             if (!map.containsKey(roomId))
                 map.put(roomId, new ArrayList<>());
 
@@ -87,6 +93,7 @@ public class RoomDAOImpl implements RoomDAO {
                             .userProfileUrl((String)result[4])
                             .userId(rUserId)
                             .userRoomRole(rUserRoomRole)
+                            .birth(rBirth)
                             .build());
         }
 
@@ -106,6 +113,7 @@ public class RoomDAOImpl implements RoomDAO {
                         .name(readRoomDTO.getUserName())
                         .profileUrl(readRoomDTO.getUserProfileUrl())
                         .userRoomRole(readRoomDTO.getUserRoomRole())
+                        .birth(readRoomDTO.getBirth())
                         .build();
 
                 memberDTOs.add(memberDTO);
@@ -390,7 +398,8 @@ public class RoomDAOImpl implements RoomDAO {
             return null;
         }
         List<MemberDTO> memberDTOs = new JPAQuery<>(em)
-                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.userName, qUser.userProfileUrl, qUserRoom.userRoomRole))
+                .select(Projections.constructor(MemberDTO.class, qUser.userId, qUserRoom.userName, qUser.userProfileUrl,
+                        qUserRoom.userRoomRole, qUser.birth))
                 .from(qUser)
                 .join(qUserRoom)
                 .on(qUser.userId.eq(qUserRoom.user.userId))

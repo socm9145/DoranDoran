@@ -2,9 +2,12 @@ package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.UserDAO;
 import com.purple.hello.dto.in.UpdateUserInfoInDTO;
+import com.purple.hello.dto.out.ReadUserInfoOutDTO;
 import com.purple.hello.entity.QUser;
 import com.purple.hello.entity.User;
 import com.purple.hello.repo.UserRepo;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,5 +60,15 @@ public class UserDAOImpl implements UserDAO {
                 .where(qUser.userId.eq(updateUserInfoInDTO.getUserId()))
                 .execute();
         return true;
+    }
+
+    @Override
+    public ReadUserInfoOutDTO readUserInfoByUserId(long userId) {
+        ReadUserInfoOutDTO readUserInfoOutDTO = new JPAQuery<>(em)
+                .select(Projections.constructor(ReadUserInfoOutDTO.class, qUser.userId, qUser.birth, qUser.userProfileUrl))
+                .from(qUser)
+                .where(qUser.userId.eq(userId))
+                .fetchOne();
+        return readUserInfoOutDTO;
     }
 }

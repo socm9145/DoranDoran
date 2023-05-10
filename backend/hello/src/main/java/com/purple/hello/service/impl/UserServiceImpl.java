@@ -7,6 +7,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.purple.hello.dao.UserDAO;
 import com.purple.hello.dto.in.OauthUserInputDTO;
 import com.purple.hello.dto.in.UpdateUserInfoInDTO;
+import com.purple.hello.dto.out.ReadUserInfoOutDTO;
 import com.purple.hello.entity.User;
 import com.purple.hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,5 +98,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws IOException {
         return userDAO.updateUserInfo(updateUserInfoInDTO);
+    }
+
+    @Override
+    public ReadUserInfoOutDTO readUserInfoByUserId(long userId) {
+        return userDAO.readUserInfoByUserId(userId);
     }
 }
