@@ -20,32 +20,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class NotificationServiceImpl implements NotificationService {
-
-    @Value("${fcm.key.path}")
-    private String FCM_PRIVATE_KEY_PATH;
-    @Value("${fcm.key.scope}")
-    private String firebaseScope;
-
-    @Override
-    @PostConstruct
-    public void init() {
-        try {
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(
-                            GoogleCredentials
-                                    .fromStream(new ClassPathResource(FCM_PRIVATE_KEY_PATH).getInputStream())
-                                    .createScoped(List.of(firebaseScope)))
-                    .build();
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-                log.info("Firebase application has been initialized");
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
     @Override
     public void sendCommonNotifications(List<String> tokenList, String title, String body) {
         List<Message> messages = tokenList.stream().map(token -> Message.builder()
