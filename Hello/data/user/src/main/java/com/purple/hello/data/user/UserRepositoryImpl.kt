@@ -1,0 +1,35 @@
+package com.purple.hello.data.user
+
+import com.purple.core.database.dao.UserDao
+import com.purple.core.database.entity.MemberEntity
+import com.purple.hello.core.datastore.UserDataStore
+import com.purple.hello.core.datastore.UserInfoData
+import javax.inject.Inject
+
+class UserRepositoryImpl @Inject constructor(
+    private val remoteUserDataSource: RemoteUserDataSource,
+    private val userDao: UserDao,
+    private val userData: UserDao,
+    private val userInfoData: UserInfoData,
+    private val userDataStore: UserDataStore,
+
+) : UserRepository {
+
+    override suspend fun getUserInfo() {
+        runCatching {
+            remoteUserDataSource.getUserInfo()
+        }.onFailure {
+            throw it
+        }.getOrThrow().let {
+            val response = checkNotNull(it.body())
+            userDao.insertMember(
+                MemberEntity(
+                    response.birth,
+                    response.userId,
+                    response.userProfileUrl,
+                )
+            )
+            userDataStore.setUserId(response.userId)
+        }
+    }
+}
