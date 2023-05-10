@@ -50,10 +50,10 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public boolean removeDirectory(String dirName) throws AmazonS3Exception{
+    public boolean removeDirectory(String dirName) throws Exception{
         List<S3ObjectSummary> fileList = amazonS3.listObjects(bucket, dirName).getObjectSummaries();
         if(fileList.size() == 0) {
-            return false;
+            throw new IllegalArgumentException();
         }else {
             for(S3ObjectSummary file : fileList) {
                 amazonS3.deleteObject(bucket, file.getKey());

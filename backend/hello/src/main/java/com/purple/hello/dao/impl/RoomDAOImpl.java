@@ -156,7 +156,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) {
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) throws Exception {
 
         List<ReadUserRoomJoinOutDTO> readUserRoomJoinOutDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadUserRoomJoinOutDTO.class, qRoom.roomId, qUserRoom.roomName, qRoom.roomQuestion))
@@ -168,7 +168,7 @@ public class RoomDAOImpl implements RoomDAO {
                 .fetch();
 
         if (readUserRoomJoinOutDTOs.size() == 0)
-            return null;
+            throw new IllegalArgumentException();
 
         ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = ReadUserRoomJoinOutDTO.builder()
                 .roomId(readUserRoomJoinOutDTOs.get(0).getRoomId())
@@ -218,8 +218,9 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     @Transactional
-    public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO) {
+    public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO){
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qRoom);
+
         jpaUpdateClause.set(qRoom.roomCode, updateRoomCodeInDTO.getRoomCode())
                 .where(qRoom.roomId.eq(updateRoomCodeInDTO.getRoomId()))
                 .execute();
@@ -260,7 +261,10 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) {
+    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception{
+        if (!qRoom.roomId.equals(roomId) || !qUser.userId.equals(userId))
+            throw new IllegalArgumentException();
+
         ReadRoomQuestionOutDTO readRoomQuestionOutDTO = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadRoomQuestionOutDTO.class, qRoom.roomId, qRoom.roomQuestion))
                 .from(qRoom)

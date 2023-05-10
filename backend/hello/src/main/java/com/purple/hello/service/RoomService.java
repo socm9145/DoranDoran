@@ -16,14 +16,14 @@ public interface RoomService {
     List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception;
     boolean comparePasswordByRoomCode(long roomId, String password) throws Exception;
-    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
+    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode)throws Exception;
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception;
-    ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);
+    ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId)throws Exception;
     void createQuestion() throws Exception;
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
-    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
+    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId)throws Exception;
 
-    ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId);
+    ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId)throws Exception;
 }

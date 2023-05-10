@@ -66,11 +66,11 @@ public class RoomController {
             value = "그룹방 입장 정보 출력 API (v) vv",
             notes = "그룹방 코드를 입력할 경우 다이얼로그에 사용할 정보를 출력해주는 API")
     @GetMapping("/join-info")
-    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam("code") String roomCode){
+    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam("code") String roomCode)throws Exception{
         ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomCode(roomCode);
 
         if (readUserRoomJoinOutDTO == null)
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            throw new IllegalArgumentException();
 
         return ResponseEntity.status(HttpStatus.OK).body(readUserRoomJoinOutDTO);
     }
@@ -121,11 +121,11 @@ public class RoomController {
     @ApiOperation(value = "초대 링크 생성 API (v) vv",
                     notes = "해당 그룹방 초대 링크를 출력")
     @GetMapping("/code")
-    public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId){
+    public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId) throws Exception{
         ReadRoomCodeOutDTO result = roomService.readRoomCodeByRoomId(roomId);
 
         if (result == null)
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            throw new IllegalArgumentException();
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -172,7 +172,7 @@ public class RoomController {
             value = "비밀번호 질문 출력 API "
             , notes = "그룹 비밀번호 질문을 출력하는 API.")
     @GetMapping("/room-question")
-    public ResponseEntity<ReadRoomQuestionOutDTO> readRoomQuestion(@RequestParam("roomId") long roomId, HttpServletRequest request){
+    public ResponseEntity<ReadRoomQuestionOutDTO> readRoomQuestion(@RequestParam("roomId") long roomId, HttpServletRequest request)throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         ReadRoomQuestionOutDTO readRoomQuestionOutDTO = roomService.readRoomQuestionByRoomIdAndUserId(roomId, userId);
         if(readRoomQuestionOutDTO == null){
@@ -185,11 +185,12 @@ public class RoomController {
     @ApiOperation(value = "그룹 유저 리스트 출력 API (v) vv",
             notes = "해당 그룹방 유저리스트를 출력")
     @GetMapping("/user-list")
-    public ResponseEntity<ReadMemberListOutDTO> readMemberListByRoomId(@RequestParam long roomId, HttpServletRequest request){
+    public ResponseEntity<ReadMemberListOutDTO> readMemberListByRoomId(@RequestParam long roomId, HttpServletRequest request)throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         ReadMemberListOutDTO result = roomService.readMemberListByRoomId(roomId, userId);
+
         if (result == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            throw new IllegalArgumentException();
         }else {
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }

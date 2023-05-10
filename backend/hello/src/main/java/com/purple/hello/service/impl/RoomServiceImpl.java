@@ -53,7 +53,7 @@ public class RoomServiceImpl implements RoomService {
     private final PythonInterpreter interpreter;
     private final AwsS3Service awsS3Service;
 
-    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter, AwsS3Service awsS3Service){
+    public RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter, AwsS3Service awsS3Service){
         this.roomDAO = roomDAO;
         this.passwordEncoder = passwordEncoder;
         this.historyDAO = historyDAO;
@@ -81,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) {
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) throws Exception{
         return this.roomDAO.readUserRoomJoinByRoomCode(roomCode);
     }
 
@@ -91,7 +91,8 @@ public class RoomServiceImpl implements RoomService {
         updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
         return this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
     }
-    public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) {
+
+    public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) throws Exception{
         String url = roomDAO.readRoomCodeByRoomId(roomId);
 
         Instant currentTime = Instant.now();
@@ -117,7 +118,7 @@ public class RoomServiceImpl implements RoomService {
     public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO) {
         roomDAO.updateRoomCodeByRoomId(updateRoomCodeInDTO);
     }
-    private String saveAndResult(long roomId, Instant time) {
+    private String saveAndResult(long roomId, Instant time) throws Exception{
         String newUrl = roomCode.makeUrl(roomId, time);
         UpdateRoomCodeInDTO updateRoomCodeInDTO = new UpdateRoomCodeInDTO();
         updateRoomCodeInDTO.setRoomId(roomId);
@@ -137,11 +138,10 @@ public class RoomServiceImpl implements RoomService {
 
     public void createQuestion() throws Exception{
         List<Room> roomList = roomDAO.getRoom();
-        System.out.println(11);
         try{
-            if(roomList.size() == 0){
+            if(roomList.size() == 0)
                 throw new NullPointerException("Don't Created Room");
-            }
+
 
             LocalDate currentDate = LocalDate.now();
             CreateQuestionInDTO createQuestionInDTO;
@@ -203,15 +203,15 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) {
+    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception{
         return roomDAO.readRoomQuestionByRoomIdAndUserId(roomId, userId);
     }
 
     @Override
-    public ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId) {
+    public ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId) throws Exception{
         List<MemberDTO> memberDTOS = roomDAO.readMemberListByRoomId(roomId, userId);
         if(memberDTOS == null) {
-            return null;
+            throw new IllegalArgumentException();
         }else {
             ReadMemberListOutDTO readMemberListOutDTO = new ReadMemberListOutDTO(roomId, memberDTOS);
             return readMemberListOutDTO;
