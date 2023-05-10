@@ -11,7 +11,7 @@ val composeDebug = listOf(
 )
 
 val imageLoadDependencies = listOf(
-    Coil.COMPOSE
+    Coil.COMPOSE,
 )
 
 val appDependencies = listOf(

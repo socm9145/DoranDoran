@@ -1,7 +1,6 @@
 package com.purple.hello.feature.setting.profile
 
 import android.icu.util.Calendar
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,11 +16,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.purple.core.designsystem.component.HiDropDownTextField
+import com.purple.core.designsystem.component.HiLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
@@ -53,17 +56,16 @@ private fun ProfileSettingScreen(
     isFirst: Boolean,
 ) {
     val gridItemList = listOf(
-        painterResource(id = R.drawable.cow), painterResource(id = R.drawable.dog),
-        painterResource(id = R.drawable.dragon), painterResource(id = R.drawable.horse),
-        painterResource(id = R.drawable.monkey), painterResource(id = R.drawable.pig),
-        painterResource(id = R.drawable.rabbit), painterResource(id = R.drawable.rat),
-        painterResource(id = R.drawable.rooster), painterResource(id = R.drawable.sheep),
-        painterResource(id = R.drawable.snake), painterResource(id = R.drawable.tiger),
+        "rat.png", "cow.png", "tiger.png", "rabbit.png", "dragon.png", "snake.png",
+        "horse.png", "sheep.png", "monkey.png", "rooster.png", "dog.png", "pig.png",
     )
 
-    val existedImageId =
-        if (!isFirst) painterResource(id = R.drawable.rooster) else painterResource(id = R.drawable.none)
-    var selectedImageId by remember { mutableStateOf(existedImageId) }
+    // TODO : none.png S3 에 올리고, pig -> none , rooster -> 기존 url
+    val existedImageName =
+        if (!isFirst) "rooster.png" else "pig.png"
+    var selectedImageName by remember { mutableStateOf(existedImageName) }
+    val coilUrl = "https://doeran.s3.ap-northeast-2.amazonaws.com/profile/zodiac/"
+
     val scrollState = rememberLazyGridState()
 
     Column(
@@ -76,8 +78,14 @@ private fun ProfileSettingScreen(
                 .fillMaxWidth(0.5f)
                 .align(Alignment.CenterHorizontally),
         ) {
-            Image(
-                painter = selectedImageId,
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("$coilUrl$selectedImageName")
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .build(),
+                loading = {
+                    HiLoadingWheel(contentDesc = "LoadingWheel")
+                },
                 contentDescription = "ProfileImage",
             )
         }
@@ -91,7 +99,7 @@ private fun ProfileSettingScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             content = {
                 items(gridItemList.size) { index ->
-                    val imageId = gridItemList[index]
+                    val imageName = gridItemList[index]
 
                     Card(
                         modifier = Modifier
@@ -104,14 +112,20 @@ private fun ProfileSettingScreen(
                             )
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
-                                selectedImageId = imageId
+                                selectedImageName = imageName
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.background,
                         ),
                     ) {
-                        Image(
-                            painter = imageId,
+                        SubcomposeAsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("$coilUrl$imageName")
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .build(),
+                            loading = {
+                                HiLoadingWheel(contentDesc = "LoadingWheel")
+                            },
                             contentDescription = "",
                         )
                     }
