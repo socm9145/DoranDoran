@@ -23,20 +23,22 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date date) throws IOException, NullPointerException {
-        if(date == null) {
-            throw new NullPointerException();
-        }else {
+        if(date == null)
+            throw new IllegalArgumentException();
+
+        else {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date currentDate = new Date();
-            if(currentDate.compareTo(date) < 0){
-                return null;
-            }
+
+            if(currentDate.compareTo(date) < 0)
+                throw new IllegalArgumentException();
+
             if(simpleDateFormat.format(currentDate).equals(simpleDateFormat.format(date))) {
                 int beginTime = roomDAO.readBeginTimeByRoomId(roomId);
                 int currentHour = LocalDateTime.now().getHour();
-                if(currentHour < beginTime){
-                    return null;
-                }
+
+                if(currentHour < beginTime)
+                    throw new IllegalArgumentException();
             }
             return historyDAO.readQuestionByRoomIdAndDate(roomId, date);
         }
