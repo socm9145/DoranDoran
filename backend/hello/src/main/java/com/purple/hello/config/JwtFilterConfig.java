@@ -16,7 +16,7 @@ public class JwtFilterConfig {
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilter(){
         FilterRegistrationBean<JwtFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new JwtFilter(SECRET_KEY, 1000));
+        registrationBean.setFilter(new JwtFilter(SECRET_KEY, ACCESS_TOKEN_EXPIRATION_TIME));
         registrationBean.addUrlPatterns("/room/*");
         registrationBean.addUrlPatterns("/user/*");
         registrationBean.addUrlPatterns("/option/*");
