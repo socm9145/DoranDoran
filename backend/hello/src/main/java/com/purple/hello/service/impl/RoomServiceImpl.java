@@ -63,7 +63,7 @@ public class RoomServiceImpl implements RoomService {
         this.awsS3Service = awsS3Service;
     }
     @Override
-    public List<ReadRoomOutDTO> readRoomByUserId(long userId) {
+    public List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception{
         return this.roomDAO.readRoomByUserId(userId);
     }
 
