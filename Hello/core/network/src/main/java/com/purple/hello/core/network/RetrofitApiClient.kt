@@ -83,6 +83,7 @@ object RetrofitApiClient {
             val tokenAddedRequest = request().newBuilder()
                 .addHeader("Authorization", "Bearer $accessToken")
                 .build()
+
             val response = proceed(tokenAddedRequest)
 
             when (response.code) {
@@ -96,22 +97,30 @@ object RetrofitApiClient {
         ): Response = with(chain) {
             val accessToken = runBlocking { accountDataStore.accessToken.first() }
             val refreshToken = runBlocking { accountDataStore.refreshToken.first() }
-            val reIssueResponse = accountService.reIssue(accessToken, refreshToken)
-            if (reIssueResponse.isSuccessful) {
-                run {
-                    runBlocking {
-                        accountDataStore.setToken(
-                            reIssueResponse.headers()["Access-Token"] ?: "",
-                            reIssueResponse.headers()["Refresh-Token"] ?: "",
-                        )
+
+            val reIssueCall = accountService.reIssue(accessToken, refreshToken)
+
+            try {
+                val reIssueResponse = reIssueCall.execute()
+
+                if (reIssueResponse.isSuccessful) {
+                    run {
+                        runBlocking {
+                            accountDataStore.setToken(
+                                reIssueResponse.headers()["Access-Token"] ?: "",
+                                reIssueResponse.headers()["Refresh-Token"] ?: "",
+                            )
+                        }
+                        val newRequest = request().newBuilder()
+                            .addHeader("Authorization", "Bearer ${reIssueResponse.headers()["Access-Token"]}")
+                            .build()
+                        proceed(newRequest)
                     }
-                    val newRequest = request().newBuilder()
-                        .addHeader("Authorization", "Bearer ${reIssueResponse.headers()["Access-Token"]}")
-                        .build()
-                    proceed(newRequest)
+                } else {
+                    runBlocking { accountDataStore.clearToken() }
+                    proceed(request())
                 }
-            } else {
-                runBlocking { accountDataStore.clearToken() }
+            } catch (e: IOException) {
                 proceed(request())
             }
         }

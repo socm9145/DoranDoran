@@ -1,5 +1,6 @@
 package com.purple.hello.feature.rooms
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiIconButton
@@ -25,20 +28,28 @@ internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
+    val roomCode by roomDetailViewModel.roomCode.collectAsState()
 
     Column {
-        RoomDetailScreen(roomDetailUiState = roomDetailUiState)
+        RoomDetailScreen(
+            roomDetailUiState = roomDetailUiState,
+            roomCode = roomCode,
+        )
     }
 }
 
 @Composable
 private fun RoomDetailScreen(
     roomDetailUiState: RoomDetailUiState,
+    roomCode: String,
 ) {
     when (roomDetailUiState) {
         is RoomDetailUiState.Success -> {
             Column {
-                RoomDetailAppBar(roomDetailUiState.roomDetail.roomName)
+                RoomDetailAppBar(
+                    roomName = roomDetailUiState.roomDetail.roomName,
+                    roomCode = roomCode,
+                )
                 MembersViewInGroup(roomDetailUiState.roomDetail.members)
             }
         }
@@ -50,13 +61,33 @@ private fun RoomDetailScreen(
 @Composable
 private fun RoomDetailAppBar(
     roomName: String,
+    roomCode: String,
 ) {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, roomCode)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    val context = LocalContext.current
+
     HiTopAppBar(
         title = roomName,
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로가기",
         onNavigationClick = { /*TODO*/ },
         actions = {
+            HiIconButton(
+                onClick = {
+                    context.startActivity(shareIntent)
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = HiIcons.PersonAdd),
+                        contentDescription = "공유하기",
+                    )
+                },
+            )
             HiIconButton(
                 onClick = { /*TODO*/ },
                 icon = {

@@ -1,5 +1,6 @@
 package com.purple.hello.core.network
 
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -19,5 +20,5 @@ interface AccountService {
     fun reIssue(
         @Header("Access-Token") accessToken: String,
         @Header("Refresh-Token") refreshToken: String,
-    ): Response<Void>
+    ): Call<Void>
 }
