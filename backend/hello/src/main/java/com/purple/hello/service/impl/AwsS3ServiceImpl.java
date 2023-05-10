@@ -34,6 +34,20 @@ public class AwsS3ServiceImpl implements AwsS3Service {
                 .build();
     }
 
+    public boolean removeDirectory(String dirName) throws Exception{
+        List<S3ObjectSummary> fileList = amazonS3.listObjects(bucket, dirName).getObjectSummaries();
+
+        if(fileList.size() == 0) {
+            throw new IllegalArgumentException();
+        }else {
+            for(S3ObjectSummary file : fileList)
+                amazonS3.deleteObject(bucket, file.getKey());
+
+            amazonS3.deleteObject(bucket, dirName);
+            return true;
+        }
+    }
+
     private String randomFileName(MultipartFile file, String dirName) {
         return dirName + "/" + UUID.randomUUID() + file.getOriginalFilename();
     }
@@ -45,21 +59,8 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         amazonS3.putObject(bucket,fileName,uploadFile.getInputStream(), metadata);
         return getS3(bucket, fileName);
     }
-
     private String getS3(String bucket, String fileName) {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public boolean removeDirectory(String dirName) throws Exception{
-        List<S3ObjectSummary> fileList = amazonS3.listObjects(bucket, dirName).getObjectSummaries();
-        if(fileList.size() == 0) {
-            throw new IllegalArgumentException();
-        }else {
-            for(S3ObjectSummary file : fileList) {
-                amazonS3.deleteObject(bucket, file.getKey());
-            }
-            amazonS3.deleteObject(bucket, dirName);
-            return true;
-        }
-    }
 }
