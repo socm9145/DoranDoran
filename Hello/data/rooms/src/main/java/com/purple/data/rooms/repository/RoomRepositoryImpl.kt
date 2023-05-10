@@ -26,12 +26,12 @@ class RoomRepositoryImpl @Inject constructor(
         roomDao.getRoom(roomId).map(RoomWithMembers::asExternalModel)
 
     override suspend fun getRoomCode(roomId: Long): String {
-        kotlin.runCatching {
+        runCatching {
             remoteRoomDataSource.getRoomCode(roomId)
         }.onFailure {
             throw it
         }.getOrThrow().let {
-            return it.body() ?: ""
+            return it.body()?.roomCode ?: ""
         }
     }
 

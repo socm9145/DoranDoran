@@ -1,6 +1,7 @@
 package com.purple.data.rooms.service
 
 import com.purple.data.rooms.model.MembersResponse
+import com.purple.data.rooms.model.RoomCodeResponse
 import com.purple.data.rooms.model.RoomCreationResponse
 import com.purple.data.rooms.model.RoomListResponse
 import com.purple.data.rooms.model.request.*
@@ -25,7 +26,7 @@ interface RoomService {
     @GET("room/code")
     suspend fun getRoomCode(
         @Query("roomId") roomId: Long,
-    ): Response<String>
+    ): Response<RoomCodeResponse>
 
     @PUT("room/name")
     suspend fun updateRoomName(
