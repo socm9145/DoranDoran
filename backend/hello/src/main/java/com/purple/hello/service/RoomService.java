@@ -15,7 +15,7 @@ import java.util.List;
 public interface RoomService {
     List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception;
-    boolean comparePasswordByRoomCode(long roomId, String password);
+    boolean comparePasswordByRoomCode(long roomId, String password) throws Exception;
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception;
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId);

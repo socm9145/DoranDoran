@@ -150,7 +150,7 @@ public class RoomDAOImpl implements RoomDAO {
 
         Optional<Room> room = this.roomRepo.findById(roomId);
         if (room.isEmpty())
-            return null;
+            throw new IllegalArgumentException();
 
         return room.get().getRoomPassword();
     }
