@@ -1,6 +1,8 @@
 package com.purple.hello.service;
 
+import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dao.impl.FeedDAOImpl;
+import com.purple.hello.dao.impl.RoomDAOImpl;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
 import com.purple.hello.dto.out.CreateFeedOutDTO;
@@ -15,9 +17,6 @@ import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,17 +29,19 @@ class FeedServiceTest {
     static private AwsS3ServiceImpl awsS3Service;
     static private FileServiceImpl fileService;
     static private FeedDAOImpl feedDAO;
+    static private RoomDAOImpl roomDAO;
 
     @BeforeAll
     static void beforeAll() {
         awsS3Service = Mockito.mock(AwsS3ServiceImpl.class);
         fileService = Mockito.mock(FileServiceImpl.class);
         feedDAO = Mockito.mock(FeedDAOImpl.class);
+        roomDAO = Mockito.mock(RoomDAOImpl.class);
     }
 
     @BeforeEach
     void setUp() {
-        feedService = new FeedServiceImpl(awsS3Service, fileService, feedDAO);
+        feedService = new FeedServiceImpl(awsS3Service, fileService, feedDAO, roomDAO);
     }
 
     @AfterEach

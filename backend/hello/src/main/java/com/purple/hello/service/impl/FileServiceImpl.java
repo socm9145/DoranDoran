@@ -19,6 +19,10 @@ public class FileServiceImpl implements FileService  {
     @Override
     public String getExtension(String fileName) {
         String[] fileNameTokens = fileName.split("\\.");
+
+        if (fileNameTokens.length == 1)
+            return null;
+
         int fileNameTokenLastIndex = fileNameTokens.length-1;
         String fileNameExtension = fileNameTokens[fileNameTokenLastIndex];
         return fileNameExtension;
