@@ -27,7 +27,7 @@ import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
 internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onClickRoomSetting: (roomId: Long ) -> Unit,
+    onClickRoomSetting: (roomId: Long) -> Unit,
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
     val roomCode by roomDetailViewModel.roomCode.collectAsState()
@@ -55,7 +55,6 @@ private fun RoomDetailScreen(
         is RoomDetailUiState.Success -> {
             Column {
                 RoomDetailAppBar(
-<<<<<<< Hello/feature/rooms/src/main/java/com/purple/hello/feature/rooms/RoomDetailScreen.kt
                     roomDetailUiState.roomDetail.roomName,
                     onBackClick = onBackClick,
                     onClickRoomSetting = {
