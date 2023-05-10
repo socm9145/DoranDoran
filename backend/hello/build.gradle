@@ -65,6 +65,8 @@ dependencies {
     implementation 'com.google.auth:google-auth-library-oauth2-http:0.25.0'
     implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
 
+    // fcm
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
     // starter
     //testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.11'
 

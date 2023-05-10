@@ -23,6 +23,10 @@ spring:
       max-request-size: 10MB
 server:
   port: 8000
+fcm:
+  key:
+    path: properties/firebase_admin_sdk.json
+    scope: https://www.googleapis.com/auth/cloud-platform
 cloud:
   aws:
     s3:
