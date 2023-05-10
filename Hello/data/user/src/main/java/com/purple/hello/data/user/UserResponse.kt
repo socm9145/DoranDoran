@@ -9,5 +9,5 @@ import java.util.Date
 data class UserResponse(
     val birth: @Contextual Date?,
     val userId: Long,
-    val userProfileUrl: String?,
+    val profileUrl: String?,
 )
