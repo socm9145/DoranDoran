@@ -797,8 +797,8 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(questionIdId);
 
         // given
-        given(roomService.readQuestionByRoomId(any(Long.class)))
-                .willReturn(new ReadQuestionOutDTO(1L, "content"));
+        given(roomService.readRoomQuestionByRoomIdAndUserId(any(Long.class), any(Long.class)))
+                .willReturn(new ReadRoomQuestionOutDTO(1L, "content"));
 
         // when - then
         mockMvc.perform(get("/room/question?questionId=1")
@@ -815,7 +815,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(questionIdId);
 
         // given
-        given(roomService.readQuestionByRoomId(any(Long.class)))
+        given(roomService.readRoomQuestionByRoomIdAndUserId(any(Long.class), any(Long.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
@@ -833,8 +833,8 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(questionIdId);
 
         // given
-        given(roomService.readQuestionByRoomId(any(Long.class)))
-                .willReturn(new ReadQuestionOutDTO(1L, "content"));
+        given(roomService.readRoomQuestionByRoomIdAndUserId(any(Long.class), any(Long.class)))
+                .willReturn(new ReadRoomQuestionOutDTO(1L, "content"));
 
         // when - then
         mockMvc.perform(post("/room/question")
@@ -855,7 +855,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(questionIdId);
 
         // given
-        given(roomService.readQuestionByRoomId(any(Long.class)))
+        given(roomService.readRoomQuestionByRoomIdAndUserId(any(Long.class), any(Long.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
