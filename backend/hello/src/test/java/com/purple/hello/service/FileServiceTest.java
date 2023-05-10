@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 class FileServiceTest {
     static private FileServiceImpl fileService;
