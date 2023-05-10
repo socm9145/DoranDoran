@@ -23,7 +23,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(userId)
                 .claim("userId", userId)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
