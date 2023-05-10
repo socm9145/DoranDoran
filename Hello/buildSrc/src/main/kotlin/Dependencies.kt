@@ -12,6 +12,7 @@ object Versions {
     const val COMPOSE = "1.3.3"
     const val MATERIAL3 = "1.0.1"
     const val ACTIVITY = "1.7.0"
+    const val ACCOMPANIST_PERMISSIONS = "0.31.1-alpha"
 
     // Coil
     const val COIL = "2.3.0"
@@ -56,6 +57,9 @@ object Versions {
 
     // Protobuf
     const val PROTOBUF = "3.21.12"
+
+    // Camera
+    const val CAMERA_X = "1.2.1"
 }
 
 object KTX {
@@ -69,6 +73,7 @@ object Compose {
     const val MATERIAL3 = "androidx.compose.material3:material3:${Versions.MATERIAL3}"
     const val MATERIAL3_WINDOW_SIZE = "androidx.compose.material3:material3-window-size-class:${Versions.MATERIAL3}"
     const val ACTIVITY = "androidx.activity:activity-compose:${Versions.ACTIVITY}"
+    const val PERMISSION = "com.google.accompanist:accompanist-permissions:${Versions.ACCOMPANIST_PERMISSIONS}"
 }
 
 object Coil {
@@ -142,4 +147,10 @@ object Protobuf {
     const val PROTOBUF_JAVALITE = "com.google.protobuf:protobuf-javalite:${Versions.PROTOBUF}"
     const val PROTOBUF_KOTLINLITE = "com.google.protobuf:protobuf-kotlin-lite:${Versions.PROTOBUF}"
     const val PROTOC = "com.google.protobuf:protoc:${Versions.PROTOBUF}"
+}
+
+object Camera {
+    const val CAMERA_CORE = "androidx.camera:camera-core:${Versions.CAMERA_X}"
+    const val CAMERA2 = "androidx.camera:camera-camera2:${Versions.CAMERA_X}"
+    const val CAMERA_LIFECYCLE = "androidx.camera:camera-lifecycle:${Versions.CAMERA_X}"
 }

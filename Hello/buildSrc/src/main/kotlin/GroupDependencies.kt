@@ -58,3 +58,9 @@ val protobufDependencies = listOf(
     Protobuf.PROTOBUF_JAVALITE,
     Protobuf.PROTOBUF_KOTLINLITE,
 )
+
+val cameraDependencies = listOf(
+    Camera.CAMERA2,
+    Camera.CAMERA_CORE,
+    Camera.CAMERA_LIFECYCLE
+)

@@ -49,8 +49,11 @@ dependencies {
     implementation(imageLoadDependencies)
     implementation(appDependencies)
     implementation(navDependencies)
+    implementation(cameraDependencies)
+    implementation(Compose.PERMISSION)
 
     implementation(Hilt.HILT_ANDROID)
+    implementation("androidx.camera:camera-view:1.1.0-beta02")
     kapt(Hilt.HILT_ANDROID_COMPILER)
 
     debugImplementation(composeDebug)
