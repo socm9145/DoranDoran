@@ -1,15 +1,16 @@
 package com.purple.hello.dto.in;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRoomCodeInDTO {
     long roomId;
     String roomCode;
+    @Builder
+    public UpdateRoomCodeInDTO(long roomId, String roomCode) {
+        this.roomId = roomId;
+        this.roomCode = roomCode;
+    }
 }

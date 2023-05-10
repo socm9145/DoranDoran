@@ -10,5 +10,5 @@ import java.io.IOException;
 @Service
 public interface AwsS3Service {
     AwsS3DTO upload(MultipartFile multipartFile, String dirname) throws IOException;
-    boolean removeDirectory(String directoryName) throws AmazonS3Exception;
+    boolean removeDirectory(String directoryName) throws Exception;
 }

@@ -17,7 +17,7 @@ public interface RoomDAO {
     List<ReadRoomOutDTO> readRoomByUserId(long userId)throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO)throws Exception;
     String comparePasswordByRoomCode(long roomId) throws Exception;
-    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode);
+    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) throws Exception;
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO)  throws Exception;
     String readRoomCodeByRoomId(long roomId);
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
@@ -27,7 +27,7 @@ public interface RoomDAO {
     Map<Long, List<HistoryTypeDTO>> getHistoryTypeCount(List<Long> roomListIdx);
     Map<Long, List<HistoryTypeDTO>> getHistoryTypeFeedCount(List<Long> roomListIdx);
     Map<Long, List<HistoryMinMaxDTO>> getHistoryMinMax(List<Long> roomListIdx);
-    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
+    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId)throws Exception;
     List<MemberDTO> readMemberListByRoomId(long roomId, long userId);
     Integer readBeginTimeByRoomId(long roomId);
     Room readRoomByUserRoomId(long userRoomId);
