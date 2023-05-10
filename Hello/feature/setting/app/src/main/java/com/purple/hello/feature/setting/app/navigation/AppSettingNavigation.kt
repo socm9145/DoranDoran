@@ -14,8 +14,9 @@ fun NavController.navigateToAppSetting(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.appSettingScreen(
     onBackClick: () -> Unit,
+    clearNav: () -> Unit,
 ) {
     composable(route = appSettingNavigationRoute) {
-        AppSettingRoute(onBackClick = onBackClick)
+        AppSettingRoute(onBackClick = onBackClick, clearNav = clearNav)
     }
 }
