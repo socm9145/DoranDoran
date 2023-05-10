@@ -4,33 +4,39 @@ import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.os.Build
 import android.util.Log
+import android.util.Size
+import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.camera.core.*
+import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.Send
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.*
+import com.purple.core.designsystem.component.HiIconButton
+import com.purple.core.designsystem.icon.HiIcons
+import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.Executor
@@ -38,6 +44,7 @@ import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen() {
@@ -52,37 +59,177 @@ fun CameraScreen() {
     val isCaptured = remember { mutableStateOf(false) }
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
-    if (!isCaptured.value) {
-        when {
-            cameraPermissionState.status.isGranted -> {
-                CameraView(
-                    executor = Executors.newSingleThreadExecutor(),
-                    onImageCaptured = {
-                        bitmap.value = it
-                        isCaptured.value = true
-                    },
-                    onError = { Log.e("kilo", "View error:", it) },
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.Start
+    ) {
+        if (!isCaptured.value) {
+            when {
+                cameraPermissionState.status.isGranted -> {
+                    CameraCapture(
+                        executor = Executors.newSingleThreadExecutor(),
+                        onImageCaptured = {
+                            bitmap.value = it
+                            isCaptured.value = true
+                        },
+                    )
+                }
+                else -> {
+                    // TODO: deny 했을 때 새로 권한요청하는 dialog 필요
+                    Text(text = "카메라 권한이 필요합니다")
+                }
+            }
+        } else {
+            bitmap.value?.let {
+                WriteFeedScreen(
+                    feedImageBitmap = it,
+                    onClickBackButton = { isCaptured.value = false },
+                    onClickUploadButton = {}
                 )
             }
-            else -> {
-                // TODO: deny 했을 때 새로 권한요청하는 dialog 필요
-                Text(text = "카메라 권한이 필요합니다")
-            }
-        }
-    } else {
-        Column {
-            bitmap.value?.let { Image(bitmap = it.asImageBitmap(), contentDescription = "") }
         }
     }
 }
 
-private fun takePhoto(
-    imageCapture: ImageCapture,
+@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.R)
+@Composable
+fun CameraCapture(
+    executor: Executor,
+    modifier: Modifier = Modifier,
+    cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
+    onImageCaptured: (Bitmap) -> Unit,
+) {
+    val context = LocalContext.current
+    val screenSize = with(context.resources.displayMetrics) {
+        Size(widthPixels, heightPixels)
+    }
+
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.onBackground)
+    ) {
+        val lifecycleOwner = LocalLifecycleOwner.current
+        var previewUseCase by remember { mutableStateOf<UseCase>(Preview.Builder().build()) }
+        val imageCaptureUseCase by remember {
+            mutableStateOf(
+                ImageCapture.Builder()
+                    .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .build()
+            )
+        }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CameraPreview(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(3 / 4f),
+                onUseCase = { previewUseCase = it }
+            )
+            Surface(
+                onClick = {
+                    imageCaptureUseCase.takePhoto(
+                        executor = executor,
+                        onImageCaptured = onImageCaptured,
+                        onError = {}
+                    )
+                },
+                modifier = Modifier.size(90.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.background,
+                content = { }
+            )
+        }
+
+        LaunchedEffect(previewUseCase) {
+            val cameraProvider = context.getCameraProvider()
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner, cameraSelector, previewUseCase, imageCaptureUseCase
+                )
+            } catch (ex: Exception) {
+                Log.e("CameraCapture", "Failed to bind camera use cases", ex)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.WriteFeedScreen(
+    feedImageBitmap: Bitmap,
+    onClickBackButton: () -> Unit,
+    onClickUploadButton: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        HiIconButton(
+            onClick = onClickBackButton,
+            icon = {
+                Icon(
+                    imageVector = HiIcons.ArrowBack,
+                    contentDescription = "카메라로 돌아가자...",
+                )
+            }
+        )
+        HiIconButton(
+            onClick = onClickUploadButton,
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Send,
+                    contentDescription = "피드 업로드",
+                )
+            }
+        )
+    }
+
+    Image(
+        bitmap = feedImageBitmap.asImageBitmap(),
+        contentDescription = "",
+        contentScale = ContentScale.Fit
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+@Composable
+private fun CameraPreview(
+    modifier: Modifier = Modifier,
+    scaleType: PreviewView.ScaleType = PreviewView.ScaleType.FIT_CENTER,
+    onUseCase: (UseCase) -> Unit = { }
+) {
+    AndroidView(
+        modifier = modifier.clipToBounds(),
+        factory = { context ->
+            val previewView = PreviewView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                this.scaleType = scaleType
+            }
+            onUseCase(Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
+            )
+            previewView
+        }
+    )
+}
+
+private fun ImageCapture.takePhoto(
     executor: Executor,
     onImageCaptured: (Bitmap) -> Unit,
     onError: (ImageCaptureException) -> Unit,
 ) {
-    imageCapture.takePicture(
+    takePicture(
         executor,
         object : ImageCapture.OnImageCapturedCallback() {
             override fun onError(exception: ImageCaptureException) {
@@ -92,7 +239,10 @@ private fun takePhoto(
 
             override fun onCaptureSuccess(image: ImageProxy) {
                 //get bitmap from image
-                val bitmap = imageProxyToBitmap(image)
+                val rotationDegrees = image.imageInfo.rotationDegrees
+
+                val bitmap = imageProxyToBitmap(image, rotationDegrees.toFloat())
+
                 onImageCaptured(bitmap)
                 image.close()
             }
@@ -108,76 +258,18 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspend
     }
 }
 
-@Composable
-fun CameraView(
-    executor: Executor,
-    onImageCaptured: (Bitmap) -> Unit,
-    onError: (ImageCaptureException) -> Unit,
-) {
-    // 1
-    val lensFacing = CameraSelector.LENS_FACING_BACK
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    val preview = Preview.Builder().build()
-    val previewView = remember { PreviewView(context) }
-    val imageCapture: ImageCapture = remember { ImageCapture.Builder().build() }
-    val cameraSelector = CameraSelector.Builder()
-        .requireLensFacing(lensFacing)
-        .build()
-
-    // 2
-    LaunchedEffect(lensFacing) {
-        val cameraProvider = context.getCameraProvider()
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner,
-            cameraSelector,
-            preview,
-            imageCapture,
-        )
-
-        preview.setSurfaceProvider(previewView.surfaceProvider)
-    }
-
-    // 3
-    Box(
-        contentAlignment = Alignment.BottomCenter,
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
-
-        IconButton(
-            modifier = Modifier.padding(bottom = 20.dp),
-            onClick = {
-                Log.i("camera", "ON CLICK")
-                takePhoto(
-                    imageCapture = imageCapture,
-                    executor = executor,
-                    onImageCaptured = onImageCaptured,
-                    onError = onError,
-                )
-            },
-            content = {
-                Icon(
-                    imageVector = Icons.Sharp.Send,
-                    contentDescription = "Take picture",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(1.dp)
-                        .border(1.dp, Color.White, CircleShape),
-                )
-            },
-        )
-    }
-}
-
-private fun imageProxyToBitmap(image: ImageProxy): Bitmap {
+private fun imageProxyToBitmap(image: ImageProxy, degrees: Float): Bitmap {
     val planeProxy = image.planes[0]
     val buffer: ByteBuffer = planeProxy.buffer
     val bytes = ByteArray(buffer.remaining())
     buffer.get(bytes)
-    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+    // Decode the byte array into a bitmap
+    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    // Create a new matrix and rotate it by the specified number of degrees
+    val matrix = Matrix()
+    matrix.postRotate(degrees)
+
+    // Create a new bitmap by applying the matrix to the original bitmap
+    return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }

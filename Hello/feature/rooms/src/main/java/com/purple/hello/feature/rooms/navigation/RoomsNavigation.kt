@@ -1,5 +1,9 @@
 package com.purple.hello.feature.rooms.navigation
 
+import android.os.Build
+import android.view.WindowManager
+import androidx.annotation.RequiresApi
+import androidx.compose.ui.geometry.Size
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -26,6 +30,7 @@ fun NavController.navigateToCamera(roomId: Long, navOptions: NavOptions? = null)
     this.navigate("$cameraRoute/$roomId", navOptions)
 }
 
+@RequiresApi(Build.VERSION_CODES.R)
 fun NavGraphBuilder.roomsGraph(
     navController: NavController,
 ) {
