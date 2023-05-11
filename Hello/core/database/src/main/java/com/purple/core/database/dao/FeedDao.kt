@@ -1,6 +1,7 @@
 package com.purple.core.database.dao
 
 import androidx.room.*
+import com.purple.core.database.entity.FeedEntity
 import com.purple.core.database.entity.QuestionEntity
 import com.purple.core.database.entity.QuestionRoomCrossEntity
 import kotlinx.coroutines.flow.Flow
@@ -21,4 +22,7 @@ interface FeedDao {
 
     @Insert
     fun insertQuestionEntity(questionEntity: QuestionEntity)
+
+    @Insert
+    fun insertFeedEntity(feedEntity: FeedEntity)
 }

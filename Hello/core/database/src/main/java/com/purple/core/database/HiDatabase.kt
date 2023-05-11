@@ -17,6 +17,7 @@ import com.purple.core.database.utils.DateConverters
         RoomEntity::class,
         QuestionEntity::class,
         QuestionRoomCrossEntity::class,
+        FeedEntity::class,
     ],
     version = 1,
     exportSchema = false

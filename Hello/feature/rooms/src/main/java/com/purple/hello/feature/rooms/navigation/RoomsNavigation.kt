@@ -69,7 +69,9 @@ fun NavGraphBuilder.roomsGraph(
             route = "$cameraRoute/{$roomIdArg}",
             arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
         ) {
-            CameraScreen()
+            CameraScreen(
+                backToDetail = { navController.popBackStack() },
+            )
         }
     }
 }
