@@ -26,6 +26,7 @@ public class User {
     Date birth;
     String accessToken;
     String refreshToken;
+    String deviceToken;
     // mapping
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<UserRoom> userRoom = new ArrayList<>();
