@@ -20,11 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.purple.core.designsystem.component.HiDropDownTextField
-import com.purple.core.designsystem.component.HiLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
@@ -60,9 +59,9 @@ private fun ProfileSettingScreen(
         "horse.png", "sheep.png", "monkey.png", "rooster.png", "dog.png", "pig.png",
     )
 
-    // TODO : none.png S3 에 올리고, pig -> none , rooster -> 기존 url
+    // TODO : rooster -> 기존 url
     val existedImageName =
-        if (!isFirst) "rooster.png" else "pig.png"
+        if (!isFirst) "rooster.png" else ""
     var selectedImageName by remember { mutableStateOf(existedImageName) }
     val coilUrl = "https://doeran.s3.ap-northeast-2.amazonaws.com/profile/zodiac/"
 
@@ -78,14 +77,14 @@ private fun ProfileSettingScreen(
                 .fillMaxWidth(0.5f)
                 .align(Alignment.CenterHorizontally),
         ) {
-            SubcomposeAsyncImage(
+            AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data("$coilUrl$selectedImageName")
+                    .placeholder(R.drawable.profile_placeholder)
+                    .error(R.drawable.profile_placeholder)
+                    .crossfade(true)
                     .diskCachePolicy(CachePolicy.ENABLED)
                     .build(),
-                loading = {
-                    HiLoadingWheel(contentDesc = "LoadingWheel")
-                },
                 contentDescription = "ProfileImage",
             )
         }
@@ -118,14 +117,14 @@ private fun ProfileSettingScreen(
                             containerColor = MaterialTheme.colorScheme.background,
                         ),
                     ) {
-                        SubcomposeAsyncImage(
+                        AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data("$coilUrl$imageName")
+                                .placeholder(R.drawable.profile_placeholder)
+                                .error(R.drawable.profile_placeholder)
+                                .crossfade(true)
                                 .diskCachePolicy(CachePolicy.ENABLED)
                                 .build(),
-                            loading = {
-                                HiLoadingWheel(contentDesc = "LoadingWheel")
-                            },
                             contentDescription = "",
                         )
                     }
