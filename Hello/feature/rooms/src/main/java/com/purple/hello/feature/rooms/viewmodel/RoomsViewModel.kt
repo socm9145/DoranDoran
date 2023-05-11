@@ -10,9 +10,7 @@ import com.purple.hello.domain.rooms.FetchRoomsUseCase
 import com.purple.hello.domain.rooms.GetRoomListUseCase
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,13 +20,7 @@ class RoomsViewModel @Inject constructor(
     private val createRoomUseCase: CreateRoomUseCase,
 ) : ViewModel() {
 
-    private val rooms: Flow<Result<List<Room>>> = getRoomListFlow()
-        .onStart {
-            viewModelScope.launch(Dispatchers.IO) {
-                fetchRoomsUseCase()
-            }
-        }
-        .asResult()
+    private val rooms: Flow<Result<List<Room>>> = getRoomListFlow().asResult()
 
     val roomsUiState: StateFlow<RoomsUiState> =
         rooms.map {
@@ -53,4 +45,6 @@ class RoomsViewModel @Inject constructor(
         val roomId = createRoomUseCase(roomName, userName, question, password)
         onRoomCreate(roomId)
     }
+
+    suspend fun fetchRoom() = fetchRoomsUseCase()
 }

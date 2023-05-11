@@ -47,6 +47,12 @@ internal fun RoomsRoute(
 
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(Unit) {
+        launch(Dispatchers.IO) {
+            roomsViewModel.fetchRoom()
+        }
+    }
+
     Column {
         RoomsAppBar(onClickAppSetting = onClickAppSetting)
         Box(
