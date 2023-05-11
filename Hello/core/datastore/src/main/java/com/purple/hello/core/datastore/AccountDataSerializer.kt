@@ -14,7 +14,7 @@ class AccountDataSerializer @Inject constructor() : Serializer<AccountData> {
         try {
             return AccountData.parseFrom(input)
         } catch (exception: InvalidProtocolBufferException) {
-            throw CorruptionException("can not read proto", exception)
+            throw CorruptionException("can not read account proto", exception)
         }
     }
 

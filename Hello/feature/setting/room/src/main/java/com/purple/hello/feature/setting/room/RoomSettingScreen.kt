@@ -28,20 +28,21 @@ import com.purple.hello.feature.setting.room.viewmodel.RoomSettingViewModel
 @Composable
 fun RoomSettingRoute(
     roomSettingViewModel: RoomSettingViewModel = hiltViewModel(),
-    isHost: Boolean,
+    onBackClick: () -> Unit,
 ) {
     var shouldShowChangeRoomNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangeUserNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangePasswordDialog by remember { mutableStateOf(false) }
     var shouldShowExitRoomDialog by remember { mutableStateOf(false) }
     var shouldShowDeleteRoomDialog by remember { mutableStateOf(false) }
+    val isHost = roomSettingViewModel.isHost
 
     HiTheme {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            RoomSettingAppBar()
+            RoomSettingAppBar(onBackClick = onBackClick)
             RoomSettingScreen(
                 isHost = isHost,
                 onClick = { itemType ->
@@ -150,7 +151,10 @@ private fun ChangeRoomNameDialog(
     HiInputDialog(
         questionContent = listOf(newRoomName),
         onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(newRoomName.inputValue) },
+        onConfirm = {
+            onConfirm(newRoomName.inputValue)
+            onDismiss()
+        },
         confirmButtonText = "변경하기",
         dismissButtonText = "취소",
     )
@@ -167,7 +171,10 @@ private fun ChangeUserNameDialog(
     HiInputDialog(
         questionContent = listOf(newUserName),
         onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(newUserName.inputValue) },
+        onConfirm = {
+            onConfirm(newUserName.inputValue)
+            onDismiss()
+        },
         confirmButtonText = "변경하기",
         dismissButtonText = "취소",
     )
@@ -184,7 +191,10 @@ private fun ChangePasswordDialog(
     HiInputDialog(
         questionContent = listOf(newPasswordQuestion, newPassword),
         onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(newPasswordQuestion.inputValue, newPassword.inputValue) },
+        onConfirm = {
+            onConfirm(newPasswordQuestion.inputValue, newPassword.inputValue)
+            onDismiss()
+        },
         confirmButtonText = "변경하기",
         dismissButtonText = "취소",
     )
@@ -196,8 +206,11 @@ private fun ExitRoomDialog(
     onDelete: () -> Unit,
 ) {
     HiAlertDialog(
-        onDismiss = onDismiss,
-        onDelete = onDelete,
+        onDismiss = { onDismiss() },
+        onDelete = {
+            onDelete()
+            onDismiss()
+        },
         content = DeleteDialogType.EXIT_GROUP,
     )
 }
@@ -208,25 +221,30 @@ private fun DeleteRoomDialog(
     onDelete: () -> Unit,
 ) {
     HiAlertDialog(
-        onDismiss = onDismiss,
-        onDelete = onDelete,
+        onDismiss = { onDismiss() },
+        onDelete = {
+            onDelete()
+            onDismiss()
+        },
         content = DeleteDialogType.DELETE_GROUP,
     )
 }
 
 @Composable
-private fun RoomSettingAppBar() {
+private fun RoomSettingAppBar(
+    onBackClick: () -> Unit,
+) {
     HiTopAppBar(
         title = "방 설정",
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로 가기",
         actions = {},
-        onNavigationClick = { /* TODO : 뒤로가기 */ },
+        onNavigationClick = { onBackClick() },
     )
 }
 
 @Preview
 @Composable
 private fun PreviewRoomSettingScreen() {
-    RoomSettingRoute(isHost = true)
+    RoomSettingRoute(onBackClick = {})
 }

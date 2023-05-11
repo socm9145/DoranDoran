@@ -43,7 +43,7 @@ fun HiInputDialog(
     questionContent: List<InputData>,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties = DialogProperties(dismissOnClickOutside = false),
     confirmButtonText: String,
     dismissButtonText: String,
 ) {

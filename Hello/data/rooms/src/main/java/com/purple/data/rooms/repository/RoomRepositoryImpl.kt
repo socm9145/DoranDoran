@@ -23,7 +23,7 @@ class RoomRepositoryImpl @Inject constructor(
         roomDao.getRoomsWithMembers().map { it.map(RoomWithMembers::asExternalModel) }
 
     override fun getRoom(roomId: Long): Flow<Room> =
-        roomDao.getRoom(roomId).map(RoomWithMembers::asExternalModel)
+        roomDao.getRoomWithMembers(roomId).map(RoomWithMembers::asExternalModel)
 
     override suspend fun getRoomCode(roomId: Long): String {
         runCatching {
@@ -92,6 +92,21 @@ class RoomRepositoryImpl @Inject constructor(
     override fun joinRoom(roomCode: Int) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getRoomSettings(roomId: Long) {
+//        TODO
+    }
+
+//    override suspend fun getRoomSettings(roomId: Long): RoomSetting {
+//        val room = roomDao.getRoom(roomId)
+//        val user = userDao.getUserInRoom(userId, roomId)
+//
+//        return RoomSetting(
+//            room.roomName,
+//            room.userRoomId,
+//
+//        )
+//    }
 
     override suspend fun updateRoomName(userRoomId: Long, roomName: String) {
         remoteRoomDataSource.updateRoomName(

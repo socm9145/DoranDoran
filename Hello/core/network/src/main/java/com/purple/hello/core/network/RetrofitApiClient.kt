@@ -3,7 +3,7 @@ package com.purple.hello.core.network
 import androidx.datastore.core.DataStore
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.purple.hello.core.datastore.AccountData
-import com.purple.hello.core.datastore.AccountPreferencesDataSource
+import com.purple.hello.core.datastore.AccountDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,7 +48,7 @@ object RetrofitApiClient {
     @Singleton
     fun provideAppInterceptor(accountDataStore: DataStore<AccountData>): AppInterceptor {
         return AppInterceptor(
-            AccountPreferencesDataSource(accountDataStore),
+            AccountDataStore(accountDataStore),
         )
     }
 
@@ -74,7 +74,7 @@ object RetrofitApiClient {
     }
 
     class AppInterceptor @Inject constructor(
-        private val accountDataStore: AccountPreferencesDataSource,
+        private val accountDataStore: AccountDataStore,
     ) : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response = with(chain) {

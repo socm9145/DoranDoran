@@ -45,5 +45,8 @@ interface RoomDao {
 
     @Transaction
     @Query("SELECT * FROM rooms WHERE roomId = :roomId")
-    fun getRoom(roomId: Long): Flow<RoomWithMembers>
+    fun getRoomWithMembers(roomId: Long): Flow<RoomWithMembers>
+
+    @Query("SELECT * FROM rooms WHERE roomId = :roomId")
+    fun getRoom(roomId: Long): RoomEntity
 }

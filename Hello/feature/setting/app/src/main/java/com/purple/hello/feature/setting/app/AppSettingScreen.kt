@@ -28,6 +28,8 @@ import com.purple.hello.feature.setting.app.viewmodel.AppSettingViewModel
 @Composable
 fun AppSettingRoute(
     appSettingViewModel: AppSettingViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    clearNav: () -> Unit,
 ) {
     var shouldShowLogoutDialog by remember { mutableStateOf(false) }
 
@@ -44,7 +46,7 @@ fun AppSettingRoute(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            AppSettingAppBar()
+            AppSettingAppBar(onBackClick = onBackClick)
             AppSettingScreen(
                 onClick = { itemType ->
                     when (itemType) {
@@ -71,7 +73,10 @@ fun AppSettingRoute(
                     onDismiss = {
                         shouldShowLogoutDialog = false
                     },
-                    onDelete = { appSettingViewModel.logout() },
+                    onDelete = {
+                        appSettingViewModel.logout()
+                        clearNav()
+                   },
                 )
             }
         }
@@ -118,18 +123,20 @@ private fun LogoutDialog(
 }
 
 @Composable
-private fun AppSettingAppBar() {
+private fun AppSettingAppBar(
+    onBackClick: () -> Unit,
+) {
     HiTopAppBar(
         title = "앱 설정",
         navigationIcon = HiIcons.ArrowBack,
         navigationIconContentDescription = "뒤로 가기",
         actions = {},
-        onNavigationClick = {},
+        onNavigationClick = { onBackClick() },
     )
 }
 
 @Preview
 @Composable
 private fun PreviewAppSettingScreen() {
-    AppSettingRoute()
+    AppSettingRoute(onBackClick = {}, clearNav= {})
 }

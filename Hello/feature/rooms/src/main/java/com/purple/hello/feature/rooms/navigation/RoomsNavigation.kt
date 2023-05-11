@@ -33,6 +33,9 @@ fun NavController.navigateToCamera(roomId: Long, navOptions: NavOptions? = null)
 @RequiresApi(Build.VERSION_CODES.R)
 fun NavGraphBuilder.roomsGraph(
     navController: NavController,
+    onBackClick: () -> Unit,
+    onClickAppSetting: () -> Unit,
+    onClickRoomSetting: (roomId: Long) -> Unit,
 ) {
     navigation(
         startDestination = roomsListRoute,
@@ -42,6 +45,9 @@ fun NavGraphBuilder.roomsGraph(
             RoomsRoute(
                 onClickRoom = {
                     navController.navigateRoomDetail(it)
+                },
+                onClickAppSetting = {
+                    onClickAppSetting()
                 },
             )
         }
@@ -60,6 +66,13 @@ fun NavGraphBuilder.roomsGraph(
             arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
         ) {
             CameraScreen()
+                onBackClick = {
+                    onBackClick()
+                },
+                onClickRoomSetting = {
+                    onClickRoomSetting(it)
+                },
+            )
         }
     }
 }

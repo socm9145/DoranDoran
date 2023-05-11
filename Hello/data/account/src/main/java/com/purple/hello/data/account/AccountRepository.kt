@@ -1,12 +1,14 @@
 package com.purple.hello.data.account
 
-import com.purple.hello.core.datastore.AccountPreferencesDataSource
+import com.purple.core.database.HiDatabase
+import com.purple.hello.core.datastore.AccountDataStore
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AccountRepository @Inject constructor(
     private val remoteAccountDataSource: RemoteAccountDataSource,
-    private val accountDataStore: AccountPreferencesDataSource
+    private val accountDataStore: AccountDataStore,
+    private val hiDatabase: HiDatabase,
 ) {
     suspend fun loginWithGoogle(idToken: String) {
         remoteAccountDataSource.loginWithGoogle(idToken)
@@ -17,6 +19,7 @@ class AccountRepository @Inject constructor(
     }
 
     suspend fun logout() {
+        hiDatabase.clearAllTables()
         remoteAccountDataSource.logout()
     }
 

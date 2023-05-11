@@ -1,6 +1,6 @@
 package com.purple.hello.domain.setting.room
 
-import com.purple.data.rooms.RoomRepository
+import com.purple.data.rooms.repository.RoomRepository
 import javax.inject.Inject
 
 class UpdateUserNameUseCase @Inject constructor(
