@@ -13,5 +13,7 @@ interface FeedRepository {
 
     suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String
 
+    suspend fun updateDateFeed(roomId: Long, date: LocalDateTime)
+
     suspend fun uploadFeed(roomId: Long, feedImage: File)
 }

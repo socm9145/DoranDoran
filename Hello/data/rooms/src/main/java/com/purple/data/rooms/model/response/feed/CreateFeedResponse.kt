@@ -1,4 +1,4 @@
-package com.purple.data.rooms.model
+package com.purple.data.rooms.model.response.feed
 
 import android.os.Build
 import androidx.annotation.RequiresApi

@@ -1,4 +1,4 @@
-package com.purple.data.rooms.model
+package com.purple.data.rooms.model.response
 
 import com.purple.core.database.entity.RoomEntity
 import kotlinx.serialization.SerialName

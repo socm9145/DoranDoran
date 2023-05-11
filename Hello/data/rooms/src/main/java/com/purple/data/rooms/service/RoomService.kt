@@ -1,9 +1,9 @@
 package com.purple.data.rooms.service
 
-import com.purple.data.rooms.model.MembersResponse
-import com.purple.data.rooms.model.RoomCodeResponse
-import com.purple.data.rooms.model.RoomCreationResponse
-import com.purple.data.rooms.model.RoomListResponse
+import com.purple.data.rooms.model.response.MembersResponse
+import com.purple.data.rooms.model.response.RoomCodeResponse
+import com.purple.data.rooms.model.response.RoomCreationResponse
+import com.purple.data.rooms.model.response.RoomListResponse
 import com.purple.data.rooms.model.request.*
 import retrofit2.Response
 import retrofit2.http.*

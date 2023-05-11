@@ -1,5 +1,7 @@
 package com.purple.hello.feature.rooms.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +32,7 @@ class RoomDetailViewModel @Inject constructor(
     getQuestionFlow: GetQuestionUseCase,
     getFeedFlow: GetDateFeedUseCase,
     fetchRoomDetail: FetchRoomDetailUseCase,
+    private val fetchDateFeed: FetchDateFeedUseCase
 ) : ViewModel() {
 
     private val userId: Long = checkNotNull(savedStateHandle["userId"])
@@ -86,6 +89,16 @@ class RoomDetailViewModel @Inject constructor(
     fun selectDate(date: LocalDateTime) {
         viewModelScope.launch(Dispatchers.IO) {
             selectedDate.emit(date)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun fetchFeed(date: LocalDateTime) {
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchDateFeed(
+                date = date,
+                roomId = selectedRoomId
+            )
         }
     }
 }

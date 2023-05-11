@@ -4,14 +4,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.FeedDao
 import com.purple.core.database.dao.RoomDao
+import com.purple.core.database.entity.FeedEntity
 import com.purple.core.database.entity.QuestionEntity
 import com.purple.core.database.entity.QuestionRoomCrossEntity
 import com.purple.core.database.model.FeedWithAuthor
 import com.purple.core.database.model.asExternalModel
 import com.purple.core.model.Feed
 import com.purple.data.rooms.datasource.RemoteFeedDataSource
-import com.purple.data.rooms.model.asFeedEntity
+import com.purple.data.rooms.model.response.feed.asFeedEntity
 import com.purple.hello.core.datastore.UserDataStore
+import com.purple.hello.core.network.utils.toLocalDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -60,6 +62,28 @@ class FeedRepositoryImpl @Inject constructor(
         } else {
             return "네트워크 문제가 발생했습니다.."
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun updateDateFeed(roomId: Long, date: LocalDateTime) {
+        runCatching {
+            val response = remoteFeedDataSource.getDateFeed(roomId, date)
+            if(response.isSuccessful) {
+                val feedList = response.body() ?: emptyList()
+                feedList.map { feed ->
+                    feedDao.insertFeedEntity(
+                        FeedEntity(
+                            roomId = roomId,
+                            userId = feed.userId,
+                            createAt = feed.createdAt.toLocalDateTime() ?: date,
+                            feedUrl = feed.feedUrl,
+                            content = feed.content
+                        )
+                    )
+                }
+            }
+        }.getOrNull()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

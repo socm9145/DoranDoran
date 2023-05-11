@@ -48,6 +48,7 @@ internal fun RoomDetailRoute(
 
     LaunchedEffect(currentDate) {
         roomDetailViewModel.selectDate(currentDate.value)
+        roomDetailViewModel.fetchFeed(currentDate.value)
     }
 
     Column {
