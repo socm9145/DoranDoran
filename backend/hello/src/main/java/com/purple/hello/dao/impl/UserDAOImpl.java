@@ -29,8 +29,12 @@ public class UserDAOImpl implements UserDAO {
         this.userRepo = userRepo;
     }
     @Override
-    public User readUserByOauthId(String oauthId) {
+    public User readUserByOauthId(String oauthId) throws Exception{
         Optional<User> isUser = userRepo.findByOauthId(oauthId);
+
+        if (isUser.isEmpty())
+            throw new IllegalArgumentException();
+
         return isUser.orElse(null);
     }
 
@@ -53,7 +57,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws IOException {
+    public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws Exception {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUser);
         jpaUpdateClause.set(qUser.birth, updateUserInfoInDTO.getBirth())
                 .set(qUser.userProfileUrl, updateUserInfoInDTO.getUserProfileUrl())

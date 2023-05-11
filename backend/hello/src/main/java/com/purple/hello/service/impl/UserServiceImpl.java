@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User readUserByOauthId(String oauthId) {
+    public User readUserByOauthId(String oauthId) throws Exception{
         return userDAO.readUserByOauthId(oauthId);
     }
 
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws IOException {
+    public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws Exception {
         return userDAO.updateUserInfo(updateUserInfoInDTO);
     }
 
