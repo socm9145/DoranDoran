@@ -7,14 +7,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.purple.hello.domain.account.CheckLoggedInUseCase
+import com.purple.hello.domain.account.GetUserIdUseCase
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
+import kotlinx.coroutines.flow.first
+import kotlin.properties.Delegates
 
 @Composable
 fun rememberAppState(
     windowSizeClass: WindowSizeClass,
     navController: NavHostController = rememberNavController(),
     checkLoggedInUseCase: CheckLoggedInUseCase,
+    getUserIdUseCase: GetUserIdUseCase,
 ): MutableState<AppState> {
     val appState = remember(navController, windowSizeClass) {
         mutableStateOf<AppState>(AppState.Init(windowSizeClass))
@@ -23,7 +27,11 @@ fun rememberAppState(
     LaunchedEffect(checkLoggedInUseCase) {
         checkLoggedInUseCase().collect { isLoggedIn ->
             appState.value = when (isLoggedIn) {
-                true -> AppState.LoggedIn(navController, windowSizeClass)
+                true -> {
+                    AppState.LoggedIn(navController, windowSizeClass).apply {
+                        userId = getUserIdUseCase().first()
+                    }
+                }
                 false -> AppState.LoggedOut(windowSizeClass)
             }
         }
@@ -48,6 +56,8 @@ sealed class AppState(
         val currentDestination: NavDestination?
             @Composable get() = navController
                 .currentBackStackEntryAsState().value?.destination
+
+        var userId by Delegates.notNull<Long>()
 
         private fun navigateToDestination(destination: String) {
             when (destination) {

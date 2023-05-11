@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":data:user"))
 
     implementation(appDependencies)
+    implementation(project(mapOf("path" to ":data:user")))
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
     implementation(Kotlin.KOTLIN_COROUTINES)

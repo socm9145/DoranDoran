@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.hello.domain.account.CheckLoggedInUseCase
+import com.purple.hello.domain.account.GetUserIdUseCase
 import com.purple.hello.login.LoginScreen
 import com.purple.hello.ui.HiApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +22,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var checkLoggedInUseCase: CheckLoggedInUseCase
 
+    @Inject
+    lateinit var getUserIdUseCase: GetUserIdUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,6 +33,7 @@ class MainActivity : ComponentActivity() {
                 HiApp(
                     windowSizeClass = calculateWindowSizeClass(this),
                     checkLoggedInUseCase = checkLoggedInUseCase,
+                    getUserIdUseCase = getUserIdUseCase
                 )
             }
         }

@@ -4,6 +4,7 @@ import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.MemberEntity
 import com.purple.hello.core.datastore.UserDataStore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ class UserRepositoryImpl @Inject constructor(
     private val userDataStore: UserDataStore,
 ) : UserRepository {
 
-    override suspend fun getUserInfo() {
+    override suspend fun fetchUserInfo() {
         runCatching {
             remoteUserDataSource.getUserInfo()
         }.onFailure {
@@ -32,4 +33,6 @@ class UserRepositoryImpl @Inject constructor(
             userDataStore.setUserId(response.userId)
         }
     }
+
+    override fun getUserId(): Flow<Long> = userDataStore.userId
 }

@@ -10,6 +10,7 @@ import com.purple.hello.feature.rooms.RoomDetailRoute
 import com.purple.hello.feature.rooms.RoomsRoute
 
 internal const val roomIdArg = "roomIdArg"
+internal const val userIdArg = "userIdArg"
 
 const val roomsNavigationRoute = "rooms_route"
 const val roomsListRoute = "room_list_route"
@@ -30,6 +31,7 @@ fun NavController.navigateToCamera(roomId: Long, navOptions: NavOptions? = null)
 
 @RequiresApi(Build.VERSION_CODES.R)
 fun NavGraphBuilder.roomsGraph(
+    userId: Long,
     navController: NavController,
     onBackClick: () -> Unit,
     onClickAppSetting: () -> Unit,
@@ -51,7 +53,10 @@ fun NavGraphBuilder.roomsGraph(
         }
         composable(
             route = "$roomDetailRoute/{$roomIdArg}",
-            arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
+            arguments = listOf(
+                navArgument(roomIdArg) { type = NavType.LongType },
+                navArgument("userId") { defaultValue = userId; type = NavType.LongType },
+            ),
         ) {
             RoomDetailRoute(
                 onClickCameraButton = { roomId ->
@@ -67,7 +72,9 @@ fun NavGraphBuilder.roomsGraph(
         }
         composable(
             route = "$cameraRoute/{$roomIdArg}",
-            arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
+            arguments = listOf(
+                navArgument(roomIdArg) { type = NavType.LongType },
+            ),
         ) {
             CameraScreen(
                 backToDetail = { navController.popBackStack() },
