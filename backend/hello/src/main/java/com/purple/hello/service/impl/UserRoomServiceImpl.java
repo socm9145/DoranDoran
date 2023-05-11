@@ -72,6 +72,7 @@ public class UserRoomServiceImpl implements UserRoomService {
     public boolean deleteUserRoom(DeleteUserRoomInDTO deleteUserRoomInDTO) throws Exception {
         final int USER_ROOM_LIMIT = 1;
         UserRoom userRoom = userRoomDAO.readUserRoomByUserRoomId(deleteUserRoomInDTO.getUserRoomId());
+
         if (userRoom.getUserRoomRole() == UserRoomRole.ROLE2)
             userRoomDAO.updateUserRoomRoleByUserRoomId(userRoom.getUserRoomId(), UserRoomRole.ROLE3);
 
