@@ -3,10 +3,13 @@ package com.purple.hello.feature.rooms
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiIconButton
+import com.purple.core.designsystem.component.HiOutlinedButton
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.model.Member
@@ -26,8 +30,9 @@ import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
 @Composable
 internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
-    onBackClick: () -> Unit,
+    onClickCameraButton: (roomId: Long) -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
     val roomCode by roomDetailViewModel.roomCode.collectAsState()
@@ -40,6 +45,7 @@ internal fun RoomDetailRoute(
                 onClickRoomSetting(it)
             },
             roomCode = roomCode,
+            onClickCameraButton = onClickCameraButton,
         )
     }
 }
@@ -50,6 +56,7 @@ private fun RoomDetailScreen(
     onBackClick: () -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
     roomCode: String,
+    onClickCameraButton: (roomId: Long) -> Unit,
 ) {
     when (roomDetailUiState) {
         is RoomDetailUiState.Success -> {
@@ -65,6 +72,9 @@ private fun RoomDetailScreen(
                     roomCode = roomCode,
                 )
                 MembersViewInGroup(roomDetailUiState.roomDetail.members)
+                OpenCameraButton(
+                    onClick = { onClickCameraButton(roomDetailUiState.roomDetail.roomId) },
+                )
             }
         }
         is RoomDetailUiState.Error -> Unit
@@ -129,4 +139,20 @@ private fun MembersViewInGroup(
             MemberProfileItem(member = member)
         }
     }
+}
+
+@Composable
+private fun OpenCameraButton(
+    onClick: () -> Unit,
+) {
+    HiOutlinedButton(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(
+                text = "사진 찍어서 올리기",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        },
+    )
 }
