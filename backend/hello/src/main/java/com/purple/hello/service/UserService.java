@@ -15,10 +15,10 @@ import java.security.GeneralSecurityException;
 public interface UserService {
     ResponseEntity<String> getKakaoUserInfoWithAccessToken(String token);
     Payload googleIdTokenVerify(String idToken) throws GeneralSecurityException, IOException;
-    User readUserByOauthId(String oauthId);
+    User readUserByOauthId(String oauthId)throws Exception;
     User insertUser(OauthUserInputDTO oauthUserInputDTO);
     void updateRefreshToken(long userId, String refreshToken);
     User isValidRefreshToken(String refreshToken);
-    boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws IOException;
+    boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws Exception;
     ReadUserInfoOutDTO readUserInfoByUserId(long userId);
 }

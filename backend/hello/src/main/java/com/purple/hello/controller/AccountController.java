@@ -37,7 +37,7 @@ public class AccountController {
     }
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<String> loginKakao(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse){
+    public ResponseEntity<String> loginKakao(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse)throws Exception{
         ResponseEntity<String> response = userService.getKakaoUserInfoWithAccessToken(token);
         JSONObject jsonObject = new JSONObject(response.getBody());
         String oauthId = jsonObject.get("id").toString();
@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @GetMapping("/login/google")
-    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse) throws GeneralSecurityException, IOException {
+    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse) throws Exception {
         Payload payload = userService.googleIdTokenVerify(token);
         if(payload != null){
             String oauthId = payload.getSubject();
@@ -107,7 +107,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body("LOGOUT SUCCESS");
     }
 
-    private String[] loginLogic(String oauthId){
+    private String[] loginLogic(String oauthId)throws Exception{
         String[] answer = new String[2];
         User user = userService.readUserByOauthId(oauthId);
 
