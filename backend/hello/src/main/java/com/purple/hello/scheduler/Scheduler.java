@@ -1,40 +1,66 @@
 package com.purple.hello.scheduler;
 
+import com.purple.hello.dto.tool.NotificationDTO;
+import com.purple.hello.service.HistoryService;
 import com.purple.hello.service.NotificationService;
+import com.purple.hello.service.RoomService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Component
 public class Scheduler {
     private final NotificationService notificationService;
-    public Scheduler(NotificationService notificationService) {
+    private final HistoryService historyService;
+    private final RoomService roomService;
+    private final int EXPIRATION_PERIOD = 12;
+    public Scheduler(NotificationService notificationService, HistoryService historyService, RoomService roomService) {
         this.notificationService = notificationService;
+        this.historyService = historyService;
+        this.roomService = roomService;
     }
 
-    // @Scheduled(cron = "8,9,10 * * * * ?")
-    @Scheduled(cron = "0 0 8,9,10 * * ?")
+//    @Scheduled(cron = "0 * * * * ?")
+//    @Scheduled(cron = "0 0 8,9,10,11 * * ?")
     public void createQuestionAlarm() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.now();
-        System.out.println("#" + localDateTime.getSecond() + " CreateQuestionAlarm : " + simpleDateFormat.format(new Date()));
-        if(localDateTime.getSecond() == 8){
-            List<String> tokenList = new ArrayList();
-            tokenList.add("cdSCzwtUTLWm2LQ0LyvCqT:APA91bE0XQcEc43b_KkvpCfNCqpKxtIS-V1MuVIf1lbg4EtE0G0NZYHmIgZplHNiR1QOK7whmqWHUw6C15qX7QmTmsOACvGXnpt5EcNarV54S8-Pc8e0bjLqC23H1tI5Hu3pr0xM1OBP");
-            notificationService.sendCommonNotifications(tokenList, localDateTime.getSecond() + "시 알람일까요?.", "피곤할지도");
+        int beginTime = localDateTime.getHour();
+        try {
+            List<NotificationDTO> notificationDTOS = historyService.createNewQuestionNotificationsByBeginTime(beginTime);
+            int notificationCount = notificationService.sendCommonNotifications(notificationDTOS);
+            log.info(notificationCount + " NewQuestionNotifications sent");
+        }catch (Exception e){
+            log.error(e.getMessage());
         }
     }
 
-    // @Scheduled(cron = "19,20,21 * * * * ?")
-    @Scheduled(cron = "0 0 19,20,21 * * ?")
+//    @Scheduled(cron = "30 * * * * ?")
+//    @Scheduled(cron = "0 0 19,20,21,22 * * ?")
     public void remindQuestionAlarm() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.now();
-        System.out.println("#" + localDateTime.getSecond() + " RemindQuestionAlarm : " + simpleDateFormat.format(new Date()));
+        int beginTime = localDateTime.getHour() - EXPIRATION_PERIOD + 1;
+        try {
+            List<NotificationDTO> notificationDTOS = historyService.createRemindQuestionNotificationsByBeginTime(beginTime);
+            int notificationCount = notificationService.sendCommonNotifications(notificationDTOS);
+            log.info(notificationCount + " RemindQuestionNotifications sent");
+        }catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+//    @Scheduled(cron = "0 0 0 * * ?")
+    public void createQuestion() {
+        try {
+            roomService.createQuestion();
+            log.info("Questions Created");
+        }catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 }

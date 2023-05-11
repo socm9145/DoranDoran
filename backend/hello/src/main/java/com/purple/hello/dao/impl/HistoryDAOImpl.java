@@ -3,11 +3,12 @@ package com.purple.hello.dao.impl;
 import com.purple.hello.dao.HistoryDAO;
 import com.purple.hello.dto.in.CreateQuestionInDTO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
+import com.purple.hello.dto.tool.DeviceWithQuestionDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.repo.HistoryRepo;
 import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.repo.RoomRepo;
-import org.checkerframework.checker.units.qual.A;
+import com.querydsl.core.Fetchable;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -21,6 +22,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class HistoryDAOImpl implements HistoryDAO {
@@ -34,6 +36,10 @@ public class HistoryDAOImpl implements HistoryDAO {
     private QuestionRepo questionRepo;
     private final QHistory qHistory = QHistory.history;
     private final QQuestion qQuestion = QQuestion.question;
+    private final QUser qUser = QUser.user;
+    private final QUserRoom qUserRoom = QUserRoom.userRoom;
+    private final QRoom qRoom = QRoom.room;
+    private final QFeed qFeed = QFeed.feed;
 
     public HistoryDAOImpl(HistoryRepo historyRepo, RoomRepo roomRepo, QuestionRepo questionRepo) {
         this.historyRepo = historyRepo;
@@ -57,10 +63,63 @@ public class HistoryDAOImpl implements HistoryDAO {
     }
 
     @Override
+    public List<DeviceWithQuestionDTO> readDevicesWithDailyQuestionByBeginTime(int beginTime) throws Exception {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", qHistory.createAt, ConstantImpl.create("%Y-%m-%d"));
+        String currentDate = simpleDateFormat.format(new Date());
+        return new JPAQuery<>(em)
+                .select(Projections.constructor(DeviceWithQuestionDTO.class, qRoom.roomId, qUserRoom.roomName, qUser.deviceToken, qHistory.question.content))
+                .distinct()
+                .from(qUser)
+                .join(qUserRoom)
+                .on(qUser.userId.eq(qUserRoom.user.userId))
+                .join(qRoom)
+                .on(qUserRoom.room.roomId.eq(qRoom.roomId))
+                .join(qHistory)
+                .on(qRoom.roomId.eq(qHistory.room.roomId))
+                .where(qRoom.beginTime.eq(beginTime))
+                .where(historyCreateAt.eq(currentDate))
+                .where(qUser.deviceToken.isNotNull())
+                .fetch();
+    }
+
+    @Override
+    public List<DeviceWithQuestionDTO> readDevicesNotUploadedByBeginTime(int beginTime) throws Exception {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", qHistory.createAt, ConstantImpl.create("%Y-%m-%d"));
+        StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", qFeed.createAt, ConstantImpl.create("%Y-%m-%d"));
+        String currentDate = simpleDateFormat.format(new Date());
+        return new JPAQuery<>(em)
+                .select(Projections.constructor(DeviceWithQuestionDTO.class, qRoom.roomId, qUserRoom.roomName, qUser.deviceToken, qHistory.question.content))
+                .distinct()
+                .from(qUser)
+                .join(qUserRoom)
+                .on(qUser.userId.eq(qUserRoom.user.userId))
+                .join(qRoom)
+                .on(qUserRoom.room.roomId.eq(qRoom.roomId))
+                .join(qHistory)
+                .on(qRoom.roomId.eq(qHistory.room.roomId))
+                .where(qRoom.beginTime.eq(beginTime))
+                .where(historyCreateAt.eq(currentDate))
+                .where(qUser.deviceToken.isNotNull())
+                .where(qUserRoom.userRoomId.notIn(new JPAQuery<>(em)
+                        .select(qUserRoom.userRoomId)
+                        .from(qUser)
+                        .join(qUserRoom)
+                        .on(qUser.userId.eq(qUserRoom.user.userId))
+                        .join(qFeed)
+                        .on(qUserRoom.userRoomId.eq(qFeed.userRoom.userRoomId))
+                        .where(feedCreateAt.eq(currentDate))
+                        .fetch())
+                )
+                .fetch();
+    }
+
+    @Override
     public ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date date) throws IOException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         StringTemplate dateStringTemplate = Expressions.stringTemplate("DATE_FORMAT({0}, {1})",qHistory.createAt, ConstantImpl.create("%Y-%m-%d"));
-        ReadQuestionOutDTO readQuestionOutDTO = new JPAQuery<>(em)
+        return new JPAQuery<>(em)
                 .select(Projections.constructor(ReadQuestionOutDTO.class, qHistory.question.questionId, qHistory.question.content))
                 .from(qHistory)
                 .join(qQuestion)
@@ -68,6 +127,5 @@ public class HistoryDAOImpl implements HistoryDAO {
                 .where(qHistory.room.roomId.eq(roomId))
                 .where(dateStringTemplate.eq(simpleDateFormat.format(date)))
                 .fetchOne();
-        return readQuestionOutDTO;
     }
 }

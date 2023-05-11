@@ -3,13 +3,15 @@ package com.purple.hello.service.impl;
 import com.purple.hello.dao.HistoryDAO;
 import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
+import com.purple.hello.dto.tool.DeviceWithQuestionDTO;
+import com.purple.hello.dto.tool.NotificationDTO;
 import com.purple.hello.service.HistoryService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 
 @Service
 public class HistoryServiceImpl implements HistoryService {
@@ -42,5 +44,46 @@ public class HistoryServiceImpl implements HistoryService {
             }
             return historyDAO.readQuestionByRoomIdAndDate(roomId, date);
         }
+    }
+
+    @Override
+    public List<NotificationDTO> createNewQuestionNotificationsByBeginTime(int beginTime) throws Exception {
+        List<DeviceWithQuestionDTO> deviceWithQuestionDTOS = historyDAO.readDevicesWithDailyQuestionByBeginTime(beginTime);
+        String sentence = "의 오늘의 질문이 생성되었습니다.";
+        return parseNotificationList(deviceWithQuestionDTOS, sentence);
+    }
+
+    @Override
+    public List<NotificationDTO> createRemindQuestionNotificationsByBeginTime(int beginTime) throws Exception {
+        List<DeviceWithQuestionDTO> deviceWithQuestionDTOS = historyDAO.readDevicesNotUploadedByBeginTime(beginTime);
+        String sentence = "의 오늘의 질문 마감 1시간 전입니다.";
+        return parseNotificationList(deviceWithQuestionDTOS, sentence);
+    }
+
+    private List<NotificationDTO> parseNotificationList(List<DeviceWithQuestionDTO> deviceWithQuestionDTOS, String sentence) {
+        Map<Long, NotificationDTO> roomNotificationMap = new HashMap<>();
+        for(DeviceWithQuestionDTO deviceWithQuestionDTO : deviceWithQuestionDTOS) {
+            if(!roomNotificationMap.containsKey(deviceWithQuestionDTO.getRoomId())) {
+                List<String> tokenList = new ArrayList<>();
+                tokenList.add(deviceWithQuestionDTO.getDeviceToken());
+                String title = deviceWithQuestionDTO.getRoomName() + sentence;
+                String content = deviceWithQuestionDTO.getContent();
+                roomNotificationMap.put(deviceWithQuestionDTO.getRoomId(), NotificationDTO.builder()
+                        .tokenList(tokenList)
+                        .title(title)
+                        .content(content)
+                        .build());
+            }else {
+                long roomId = deviceWithQuestionDTO.getRoomId();
+                NotificationDTO notificationDTO = roomNotificationMap.get(roomId);
+                List<String> tokenList = notificationDTO.getTokenList();
+                tokenList.add(deviceWithQuestionDTO.getDeviceToken());
+            }
+        }
+        List<NotificationDTO> notificationDTOS = new ArrayList<>();
+        for(NotificationDTO notificationDTO : roomNotificationMap.values()) {
+            notificationDTOS.add(notificationDTO);
+        }
+        return notificationDTOS;
     }
 }
