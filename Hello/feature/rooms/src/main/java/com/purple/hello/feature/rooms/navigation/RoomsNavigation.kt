@@ -1,9 +1,7 @@
 package com.purple.hello.feature.rooms.navigation
 
 import android.os.Build
-import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.geometry.Size
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -59,13 +57,6 @@ fun NavGraphBuilder.roomsGraph(
                 onClickCameraButton = { roomId ->
                     navController.navigateToCamera(roomId)
                 },
-            )
-        }
-        composable(
-            route = "$cameraRoute/{$roomIdArg}",
-            arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
-        ) {
-            CameraScreen()
                 onBackClick = {
                     onBackClick()
                 },
@@ -73,6 +64,12 @@ fun NavGraphBuilder.roomsGraph(
                     onClickRoomSetting(it)
                 },
             )
+        }
+        composable(
+            route = "$cameraRoute/{$roomIdArg}",
+            arguments = listOf(navArgument(roomIdArg) { type = NavType.LongType }),
+        ) {
+            CameraScreen()
         }
     }
 }
