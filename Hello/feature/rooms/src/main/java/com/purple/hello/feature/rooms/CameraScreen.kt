@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Build
 import android.util.Log
-import android.util.Size
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.camera.core.*
@@ -16,7 +15,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -33,10 +31,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.*
 import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.icon.HiIcons
-import java.math.BigInteger
+import com.purple.hello.feature.rooms.viewmodel.CameraViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.Executor
@@ -47,22 +50,32 @@ import kotlin.coroutines.suspendCoroutine
 @RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun CameraScreen() {
+fun CameraScreen(
+    cameraViewModel: CameraViewModel = hiltViewModel(),
+    backToDetail: (roomId: Long) -> Unit,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(
         permission = Manifest.permission.CAMERA,
     )
+
+    val isCaptured = remember { mutableStateOf(false) }
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    var isError by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         cameraPermissionState.launchPermissionRequest()
     }
 
-    val isCaptured = remember { mutableStateOf(false) }
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    if (isError) {
+        Text(text = "업로드 실패.. 네트워크 확인바람")
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
     ) {
         if (!isCaptured.value) {
             when {
@@ -85,7 +98,21 @@ fun CameraScreen() {
                 WriteFeedScreen(
                     feedImageBitmap = it,
                     onClickBackButton = { isCaptured.value = false },
-                    onClickUploadButton = {}
+                    onClickUploadButton = {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            runCatching {
+                                cameraViewModel.uploadFeed(
+                                    bitmap.value!!.toFile(context),
+                                )
+                            }.onFailure {
+                                isError = true
+                            }.onSuccess {
+                                launch(Dispatchers.Main) {
+                                    backToDetail(cameraViewModel.roomId)
+                                }
+                            }
+                        }
+                    },
                 )
             }
         }
@@ -102,13 +129,10 @@ fun CameraCapture(
     onImageCaptured: (Bitmap) -> Unit,
 ) {
     val context = LocalContext.current
-    val screenSize = with(context.resources.displayMetrics) {
-        Size(widthPixels, heightPixels)
-    }
 
     Column(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.onBackground)
+            .background(MaterialTheme.colorScheme.onBackground),
     ) {
         val lifecycleOwner = LocalLifecycleOwner.current
         var previewUseCase by remember { mutableStateOf<UseCase>(Preview.Builder().build()) }
@@ -116,32 +140,32 @@ fun CameraCapture(
             mutableStateOf(
                 ImageCapture.Builder()
                     .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .build()
+                    .build(),
             )
         }
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CameraPreview(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(3 / 4f),
-                onUseCase = { previewUseCase = it }
+                onUseCase = { previewUseCase = it },
             )
             Surface(
                 onClick = {
                     imageCaptureUseCase.takePhoto(
                         executor = executor,
                         onImageCaptured = onImageCaptured,
-                        onError = {}
+                        onError = {},
                     )
                 },
                 modifier = Modifier.size(90.dp),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.background,
-                content = { }
+                content = { },
             )
         }
 
@@ -150,7 +174,10 @@ fun CameraCapture(
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    lifecycleOwner, cameraSelector, previewUseCase, imageCaptureUseCase
+                    lifecycleOwner,
+                    cameraSelector,
+                    previewUseCase,
+                    imageCaptureUseCase,
                 )
             } catch (ex: Exception) {
                 Log.e("CameraCapture", "Failed to bind camera use cases", ex)
@@ -163,11 +190,11 @@ fun CameraCapture(
 private fun ColumnScope.WriteFeedScreen(
     feedImageBitmap: Bitmap,
     onClickBackButton: () -> Unit,
-    onClickUploadButton: () -> Unit
+    onClickUploadButton: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         HiIconButton(
             onClick = onClickBackButton,
@@ -176,7 +203,7 @@ private fun ColumnScope.WriteFeedScreen(
                     imageVector = HiIcons.ArrowBack,
                     contentDescription = "카메라로 돌아가자...",
                 )
-            }
+            },
         )
         HiIconButton(
             onClick = onClickUploadButton,
@@ -185,14 +212,14 @@ private fun ColumnScope.WriteFeedScreen(
                     imageVector = Icons.Outlined.Send,
                     contentDescription = "피드 업로드",
                 )
-            }
+            },
         )
     }
 
     Image(
         bitmap = feedImageBitmap.asImageBitmap(),
         contentDescription = "",
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Fit,
     )
 }
 
@@ -201,7 +228,7 @@ private fun ColumnScope.WriteFeedScreen(
 private fun CameraPreview(
     modifier: Modifier = Modifier,
     scaleType: PreviewView.ScaleType = PreviewView.ScaleType.FIT_CENTER,
-    onUseCase: (UseCase) -> Unit = { }
+    onUseCase: (UseCase) -> Unit = { },
 ) {
     AndroidView(
         modifier = modifier.clipToBounds(),
@@ -209,18 +236,19 @@ private fun CameraPreview(
             val previewView = PreviewView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
                 )
                 this.scaleType = scaleType
             }
-            onUseCase(Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(previewView.surfaceProvider)
-                }
+            onUseCase(
+                Preview.Builder()
+                    .build()
+                    .also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    },
             )
             previewView
-        }
+        },
     )
 }
 
@@ -264,12 +292,18 @@ private fun imageProxyToBitmap(image: ImageProxy, degrees: Float): Bitmap {
     val bytes = ByteArray(buffer.remaining())
     buffer.get(bytes)
 
-    // Decode the byte array into a bitmap
     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    // Create a new matrix and rotate it by the specified number of degrees
     val matrix = Matrix()
     matrix.postRotate(degrees)
 
-    // Create a new bitmap by applying the matrix to the original bitmap
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+}
+
+private fun Bitmap.toFile(context: Context): File {
+    val file = File(context.cacheDir, "image.jpg")
+    val out = FileOutputStream(file)
+    compress(Bitmap.CompressFormat.JPEG, 50, out)
+    out.flush()
+    out.close()
+    return file
 }
