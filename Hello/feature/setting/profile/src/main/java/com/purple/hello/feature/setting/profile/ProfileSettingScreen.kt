@@ -1,7 +1,8 @@
 package com.purple.hello.feature.setting.profile
 
 import android.icu.util.Calendar
-import androidx.compose.foundation.Image
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,20 +18,49 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.purple.core.designsystem.component.HiDropDownTextField
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
+import com.purple.hello.feature.setting.profile.viewmodel.ProfileSettingViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileSettingRoute(
-    isFirst: Boolean,
+    profileSettingViewModel: ProfileSettingViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    onClickRooms: () -> Unit,
 ) {
+    val isFirst = profileSettingViewModel.isFirst
+
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+    val currentDay = Calendar.getInstance().get(Calendar.DATE)
+    val years = (1920..currentYear).toList().map { it.toString() }
+    var selectedYear by remember { mutableStateOf(currentYear) }
+    var selectedMonth by remember { mutableStateOf(currentMonth) }
+    var selectedDay by remember { mutableStateOf(currentDay) }
+    val days = (1..getDaysInMonth(selectedYear.toInt(), selectedMonth.toInt())).toList().map { it.toString() }
+
+    val selectedBirth = LocalDate.of(selectedYear, selectedMonth, selectedDay)
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+    // TODO : rooster -> 기존 url
+    val existedImageName =
+        if (!isFirst) coilUrl + "rooster.png" else ""
+    var selectedImageUrl by remember { mutableStateOf(existedImageName) }
+
     HiTheme {
         Column(
             modifier = Modifier
@@ -42,28 +72,59 @@ fun ProfileSettingRoute(
                     ),
                 ),
         ) {
-            ProfileSettingAppBar(isFirst = isFirst)
-            ProfileSettingScreen(isFirst = isFirst)
+            ProfileSettingAppBar(
+                isFirst = isFirst,
+                onClickSave = {
+                    profileSettingViewModel.setProfile(
+                        newProfileUrl = selectedImageUrl,
+                        newBirth = selectedBirth.format(dateFormatter),
+                    )
+                    onClickRooms()
+                },
+                onBackClick = onBackClick,
+            )
+            ProfileSettingScreen(
+                selectedImageUrl = selectedImageUrl,
+                changeSelectedImage = {
+                    selectedImageUrl = it
+                },
+                years = years,
+                days = days,
+                selectedYear = selectedYear,
+                selectedMonth = selectedMonth,
+                selectedDay = selectedDay,
+                changeYear = {
+                    selectedYear = it
+                },
+                changeMonth = {
+                    selectedMonth = it
+                },
+                changeDay = {
+                    selectedDay = it
+                },
+            )
         }
     }
 }
 
 @Composable
 private fun ProfileSettingScreen(
-    isFirst: Boolean,
+    selectedImageUrl: String,
+    changeSelectedImage: (String) -> Unit,
+    years: List<String>,
+    days: List<String>,
+    selectedYear: Int,
+    selectedMonth: Int,
+    selectedDay: Int,
+    changeYear: (Int) -> Unit,
+    changeMonth: (Int) -> Unit,
+    changeDay: (Int) -> Unit,
 ) {
     val gridItemList = listOf(
-        painterResource(id = R.drawable.cow), painterResource(id = R.drawable.dog),
-        painterResource(id = R.drawable.dragon), painterResource(id = R.drawable.horse),
-        painterResource(id = R.drawable.monkey), painterResource(id = R.drawable.pig),
-        painterResource(id = R.drawable.rabbit), painterResource(id = R.drawable.rat),
-        painterResource(id = R.drawable.rooster), painterResource(id = R.drawable.sheep),
-        painterResource(id = R.drawable.snake), painterResource(id = R.drawable.tiger),
+        coilUrl + "rat.png", coilUrl + "cow.png", coilUrl + "tiger.png", coilUrl + "rabbit.png",
+        coilUrl + "dragon.png", coilUrl + "snake.png", coilUrl + "horse.png", coilUrl + "sheep.png",
+        coilUrl + "monkey.png", coilUrl + "rooster.png", coilUrl + "dog.png", coilUrl + "pig.png",
     )
-
-    val existedImageId =
-        if (!isFirst) painterResource(id = R.drawable.rooster) else painterResource(id = R.drawable.none)
-    var selectedImageId by remember { mutableStateOf(existedImageId) }
     val scrollState = rememberLazyGridState()
 
     Column(
@@ -76,12 +137,27 @@ private fun ProfileSettingScreen(
                 .fillMaxWidth(0.5f)
                 .align(Alignment.CenterHorizontally),
         ) {
-            Image(
-                painter = selectedImageId,
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(selectedImageUrl)
+                    .placeholder(R.drawable.profile_placeholder)
+                    .error(R.drawable.profile_placeholder)
+                    .crossfade(true)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .build(),
                 contentDescription = "ProfileImage",
             )
         }
-        SelectBirth()
+        SelectBirth(
+            years = years,
+            days = days,
+            selectedYear = selectedYear,
+            selectedMonth = selectedMonth,
+            selectedDay = selectedDay,
+            changeYear = changeYear,
+            changeMonth = changeMonth,
+            changeDay = changeDay,
+        )
         Spacer(modifier = Modifier.padding(8.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -91,7 +167,7 @@ private fun ProfileSettingScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             content = {
                 items(gridItemList.size) { index ->
-                    val imageId = gridItemList[index]
+                    val imageUrl = gridItemList[index]
 
                     Card(
                         modifier = Modifier
@@ -104,14 +180,20 @@ private fun ProfileSettingScreen(
                             )
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
-                                selectedImageId = imageId
+                                changeSelectedImage(imageUrl)
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.background,
                         ),
                     ) {
-                        Image(
-                            painter = imageId,
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageUrl)
+                                .placeholder(R.drawable.profile_placeholder)
+                                .error(R.drawable.profile_placeholder)
+                                .crossfade(true)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .build(),
                             contentDescription = "",
                         )
                     }
@@ -122,18 +204,17 @@ private fun ProfileSettingScreen(
 }
 
 @Composable
-private fun SelectBirth() {
-    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
-    val currentDay = Calendar.getInstance().get(Calendar.DATE)
-    val years = (1920..currentYear).toList().map { it.toString() }
+private fun SelectBirth(
+    years: List<String>,
+    days: List<String>,
+    selectedYear: Int,
+    selectedMonth: Int,
+    selectedDay: Int,
+    changeYear: (Int) -> Unit,
+    changeMonth: (Int) -> Unit,
+    changeDay: (Int) -> Unit,
+) {
     val months = (1..12).toList().map { it.toString() }
-
-    var selectedYear by remember { mutableStateOf(currentYear) }
-    var selectedMonth by remember { mutableStateOf(currentMonth) }
-    var selectedDay by remember { mutableStateOf(currentDay) }
-    var days = (1..getDaysInMonth(selectedYear.toInt(), selectedMonth.toInt())).toList().map { it.toString() }
-
     var yearExpanded by remember { mutableStateOf(false) }
     var monthExpanded by remember { mutableStateOf(false) }
     var dayExpanded by remember { mutableStateOf(false) }
@@ -162,13 +243,13 @@ private fun SelectBirth() {
             ) {
                 HiDropDownTextField(
                     value = selectedYear.toString(),
-                    onValueChange = { selectedYear = it },
+                    onValueChange = { changeYear(it) },
                     iconClick = { yearExpanded = true },
                     expanded = yearExpanded,
                     onDismiss = { yearExpanded = false },
                     content = years,
                     itemClick = {
-                        selectedYear = it
+                        changeYear(it)
                         yearExpanded = false
                     },
                 )
@@ -182,13 +263,13 @@ private fun SelectBirth() {
             ) {
                 HiDropDownTextField(
                     value = selectedMonth.toString(),
-                    onValueChange = { selectedMonth = it },
+                    onValueChange = { changeMonth(it) },
                     iconClick = { monthExpanded = true },
                     expanded = monthExpanded,
                     onDismiss = { monthExpanded = false },
                     content = months,
                     itemClick = {
-                        selectedMonth = it
+                        changeMonth(it)
                         monthExpanded = false
                     },
                 )
@@ -202,13 +283,13 @@ private fun SelectBirth() {
             ) {
                 HiDropDownTextField(
                     value = selectedDay.toString(),
-                    onValueChange = { selectedDay = it },
+                    onValueChange = { changeDay(it) },
                     iconClick = { dayExpanded = true },
                     expanded = dayExpanded,
                     onDismiss = { dayExpanded = false },
                     content = days,
                     itemClick = {
-                        selectedDay = it
+                        changeDay(it)
                         dayExpanded = false
                     },
                 )
@@ -216,6 +297,8 @@ private fun SelectBirth() {
         }
     }
 }
+
+private const val coilUrl = "https://doeran.s3.ap-northeast-2.amazonaws.com/profile/zodiac/"
 
 private fun getDaysInMonth(year: Int, month: Int): Int {
     val calendar = Calendar.getInstance()
@@ -226,6 +309,8 @@ private fun getDaysInMonth(year: Int, month: Int): Int {
 @Composable
 private fun ProfileSettingAppBar(
     isFirst: Boolean,
+    onClickSave: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     HiTopAppBar(
         title = "프로필 설정",
@@ -236,17 +321,16 @@ private fun ProfileSettingAppBar(
                 modifier = Modifier
                     .background(Color.Unspecified)
                     .padding(all = 16.dp)
-                    .clickable {
-//                        TODO : 이미지, 생일 저장 후 페이지 이동 / isFirst->룸으로 이동? !isFirst->세팅으로 이동
-                    },
+                    .clickable { onClickSave() },
             ) { Text(text = "저장하기") }
         },
-        onNavigationClick = { /* TODO : 뒤로가기 */ },
+        onNavigationClick = { onBackClick() },
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun PreviewProfileSetting() {
-    ProfileSettingRoute(isFirst = true)
+    ProfileSettingRoute(onBackClick = {}, onClickRooms = {})
 }

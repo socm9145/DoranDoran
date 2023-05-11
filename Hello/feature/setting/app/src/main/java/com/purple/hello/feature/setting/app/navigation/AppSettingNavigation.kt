@@ -15,8 +15,13 @@ fun NavController.navigateToAppSetting(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.appSettingScreen(
     onBackClick: () -> Unit,
     clearNav: () -> Unit,
+    onClickProfileSetting: () -> Unit,
 ) {
     composable(route = appSettingNavigationRoute) {
-        AppSettingRoute(onBackClick = onBackClick, clearNav = clearNav)
+        AppSettingRoute(
+            onBackClick = onBackClick,
+            clearNav = clearNav,
+            onClickProfileSetting = onClickProfileSetting,
+        )
     }
 }
