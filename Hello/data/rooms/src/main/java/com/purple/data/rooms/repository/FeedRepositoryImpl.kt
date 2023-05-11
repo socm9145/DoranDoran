@@ -6,13 +6,18 @@ import com.purple.core.database.dao.FeedDao
 import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.entity.QuestionEntity
 import com.purple.core.database.entity.QuestionRoomCrossEntity
+import com.purple.core.database.model.FeedWithAuthor
+import com.purple.core.database.model.asExternalModel
+import com.purple.core.model.Feed
 import com.purple.data.rooms.datasource.RemoteFeedDataSource
 import com.purple.data.rooms.model.asFeedEntity
 import com.purple.hello.core.datastore.UserDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -23,10 +28,13 @@ class FeedRepositoryImpl @Inject constructor(
     private val remoteFeedDataSource: RemoteFeedDataSource,
 ) : FeedRepository {
 
-    override fun getQuestion(roomId: Long, date: Date): Flow<String> =
+    override fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String> =
         feedDao.getQuestionWithRoomIdAndDate(roomId, date)
 
-    override suspend fun updateQuestion(roomId: Long, date: Date): String {
+    override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> =
+        feedDao.getFeedWithRoomIdAndDate(roomId, date).map { it.map(FeedWithAuthor::asExternalModel) }
+
+    override suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String {
         val response = remoteFeedDataSource.getDateQuestion(roomId, date)
 
         if (response.isSuccessful) {

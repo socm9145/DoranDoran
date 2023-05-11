@@ -1,10 +1,11 @@
 package com.purple.data.rooms.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.purple.core.database.entity.MemberEntity
 import com.purple.core.database.entity.MemberRoomEntity
-import kotlinx.serialization.Contextual
+import com.purple.hello.core.network.utils.toLocalDateTime
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @Serializable
 data class MembersResponse(
@@ -15,7 +16,7 @@ data class MembersResponse(
 @Serializable
 data class MemberResponse(
     val name: String,
-    val birth: @Contextual Date?,
+    val birth: String?,
     val profileUrl: String?,
     val userId: Long,
     val userRoomRole: String,
@@ -28,8 +29,9 @@ fun MemberResponse.asMemberRoomEntity(roomId: Long) = MemberRoomEntity(
     role = userRoomRole,
 )
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun MemberResponse.asMemberEntity() = MemberEntity(
-    birth = birth,
+    birth = birth?.toLocalDateTime(),
     userId = userId,
     profileUrl = profileUrl,
 )

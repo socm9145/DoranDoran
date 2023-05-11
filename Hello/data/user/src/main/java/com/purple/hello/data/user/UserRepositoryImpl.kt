@@ -1,8 +1,11 @@
 package com.purple.hello.data.user
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.MemberEntity
 import com.purple.hello.core.datastore.UserDataStore
+import com.purple.hello.core.network.utils.toLocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -14,6 +17,7 @@ class UserRepositoryImpl @Inject constructor(
     private val userDataStore: UserDataStore,
 ) : UserRepository {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun fetchUserInfo() {
         runCatching {
             remoteUserDataSource.getUserInfo()
@@ -24,7 +28,7 @@ class UserRepositoryImpl @Inject constructor(
             withContext(Dispatchers.IO) {
                 userDao.insertMember(
                     MemberEntity(
-                        response.birth,
+                        response.birth?.toLocalDateTime(),
                         response.userId,
                         response.profileUrl,
                     ),

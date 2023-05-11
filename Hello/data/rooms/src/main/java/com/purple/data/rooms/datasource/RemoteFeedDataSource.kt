@@ -8,6 +8,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import java.io.File
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class RemoteFeedDataSource @Inject constructor(
     private val feedService: FeedService,
 ) : FeedDataSource {
 
-    override suspend fun getDateQuestion(roomId: Long, date: Date): Response<QuestionResponse> =
+    override suspend fun getDateQuestion(roomId: Long, date: LocalDateTime): Response<QuestionResponse> =
         feedService.getDateQuestion(roomId, date)
 
     override suspend fun postFeed(userRoomId: Long, image: File): Response<CreateFeedResponse> {

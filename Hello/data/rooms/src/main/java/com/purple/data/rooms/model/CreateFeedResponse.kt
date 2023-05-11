@@ -1,9 +1,11 @@
 package com.purple.data.rooms.model
 
-import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.purple.core.database.entity.FeedEntity
+import com.purple.hello.core.network.utils.toLocalDateTime
 import kotlinx.serialization.*
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 @Serializable
@@ -16,14 +18,11 @@ data class CreateFeedResponse(
     @SerialName("userRoomId") val userRoomId: Long,
 )
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun CreateFeedResponse.asFeedEntity(roomId: Long, userId: Long) = FeedEntity(
     roomId = roomId,
     userId = userId,
-    createAt = createdAt.toDate() as Date,
+    createAt = createdAt.toLocalDateTime() ?: LocalDateTime.now(),
     feedUrl = feedUrl,
     content = content,
 )
-
-@SuppressLint("SimpleDateFormat")
-fun String.toDate() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(this)
-

@@ -8,6 +8,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
+import java.time.LocalDateTime
 import java.util.*
 
 interface FeedService {
@@ -15,7 +16,7 @@ interface FeedService {
     @POST("room/date-question")
     suspend fun getDateQuestion(
         @Query("roomId") roomId: Long,
-        @Query("date") date: Date,
+        @Query("date") date: LocalDateTime,
     ): Response<QuestionResponse>
 
     @Multipart

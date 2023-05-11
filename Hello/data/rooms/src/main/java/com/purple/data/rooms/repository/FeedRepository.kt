@@ -1,14 +1,17 @@
 package com.purple.data.rooms.repository
 
+import com.purple.core.model.Feed
 import kotlinx.coroutines.flow.Flow
 import java.io.File
-import java.util.*
+import java.time.LocalDateTime
 
 interface FeedRepository {
 
-    fun getQuestion(roomId: Long, date: Date): Flow<String>
+    fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String>
 
-    suspend fun updateQuestion(roomId: Long, date: Date): String
+    fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>>
+
+    suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String
 
     suspend fun uploadFeed(roomId: Long, feedImage: File)
 }

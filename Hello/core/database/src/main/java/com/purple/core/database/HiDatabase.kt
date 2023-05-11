@@ -1,5 +1,7 @@
 package com.purple.core.database
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -8,7 +10,9 @@ import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.*
 import com.purple.core.database.utils.DateConverters
+import com.purple.core.database.utils.LocalDateTimeTypeConverter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Database(
     entities = [
         MemberRoomEntity::class,
@@ -23,7 +27,8 @@ import com.purple.core.database.utils.DateConverters
     exportSchema = false
 )
 @TypeConverters(
-    DateConverters::class
+    DateConverters::class,
+    LocalDateTimeTypeConverter::class
 )
 abstract class HiDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
