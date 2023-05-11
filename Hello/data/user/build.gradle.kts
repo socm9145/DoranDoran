@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain:model"))
     implementation(project(":core:model"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))

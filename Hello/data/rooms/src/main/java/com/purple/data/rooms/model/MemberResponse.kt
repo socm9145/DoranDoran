@@ -2,9 +2,8 @@ package com.purple.data.rooms.model
 
 import com.purple.core.database.entity.MemberEntity
 import com.purple.core.database.entity.MemberRoomEntity
-import kotlinx.serialization.Contextual
+import com.purple.hello.core.network.utils.birthToDate
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @Serializable
 data class MembersResponse(
@@ -15,7 +14,7 @@ data class MembersResponse(
 @Serializable
 data class MemberResponse(
     val name: String,
-    val birth: @Contextual Date?,
+    val birth: String?,
     val profileUrl: String?,
     val userId: Long,
     val userRoomRole: String,
@@ -29,7 +28,7 @@ fun MemberResponse.asMemberRoomEntity(roomId: Long) = MemberRoomEntity(
 )
 
 fun MemberResponse.asMemberEntity() = MemberEntity(
-    birth = birth,
+    birth = birth?.birthToDate(),
     userId = userId,
     profileUrl = profileUrl,
 )

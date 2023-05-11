@@ -1,14 +1,17 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    kotlin("android")
+    kotlin("kapt")
 }
 
 android {
-    namespace = "com.purple.hello.domain.account"
-    compileSdk = AppConfig.compileSdk
+    namespace = "com.purple.hello.domain.user"
+    compileSdk = 33
 
     defaultConfig {
         minSdk = AppConfig.minSdk
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -33,13 +36,17 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain:user"))
-    implementation(project(":data:account"))
+
     implementation(project(":data:user"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
-    implementation(Kotlin.KOTLIN_COROUTINES)
+
     implementation("javax.inject:javax.inject:1")
+    implementation(Kotlin.KOTLIN_COROUTINES)
+
+    implementation(Hilt.HILT_ANDROID)
+    kapt(Hilt.HILT_ANDROID_COMPILER)
 }
+

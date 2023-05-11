@@ -1,7 +1,7 @@
 package com.purple.hello.data.user.di
 
-import com.purple.hello.data.user.UserRepository
-import com.purple.hello.data.user.UserRepositoryImpl
+import com.purple.hello.data.user.repository.UserRepository
+import com.purple.hello.data.user.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
