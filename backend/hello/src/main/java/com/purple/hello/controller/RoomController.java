@@ -1,5 +1,6 @@
 package com.purple.hello.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
@@ -121,7 +122,7 @@ public class RoomController {
     @ApiOperation(value = "초대 링크 생성 API (v) vv",
                     notes = "해당 그룹방 초대 링크를 출력")
     @GetMapping("/code")
-    public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId) throws Exception{
+    public ResponseEntity<ReadRoomCodeOutDTO> readRoomCodeByRoomId(@RequestParam long roomId) throws JsonProcessingException {
         ReadRoomCodeOutDTO result = roomService.readRoomCodeByRoomId(roomId);
 
         if (result == null)

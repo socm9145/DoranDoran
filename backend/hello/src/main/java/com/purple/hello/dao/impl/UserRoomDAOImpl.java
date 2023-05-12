@@ -4,6 +4,7 @@ import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.CreateRoomOutDTO;
 import com.purple.hello.dto.out.CreateUserRoomJoinOutDTO;
+import com.purple.hello.dto.tool.HistoryTypeDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
@@ -18,9 +19,8 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
-import java.util.Optional;
-import java.util.List;
+import javax.persistence.Query;
+import java.util.*;
 
 @Component
 public class UserRoomDAOImpl implements UserRoomDAO {
@@ -260,5 +260,27 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .limit(limit)
                 .fetch();
         return userRooms;
+    }
+
+    @Override
+    public Map<Long, Integer> getMemberCount(List<Long> roomList) {
+        String jpql = "SELECT count(user_id) as memberCount, room_id " +
+                "FROM user_rooms " +
+                "WHERE room_id in (:roomList) " +
+                "group by room_id";
+        Query query = em.createNativeQuery(jpql);
+        query.setParameter("roomList", roomList);
+        List result = query.getResultList();
+
+        if(result.size() == 0) return null;
+
+        Map<Long, Integer> map = new HashMap<>();
+
+        for(Object o : result){
+            Object[] results = (Object[]) o;
+
+            map.put(Long.parseLong(results[0].toString()), Integer.parseInt(results[1].toString()));
+        }
+        return map;
     }
 }
