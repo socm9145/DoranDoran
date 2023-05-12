@@ -8,6 +8,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.purple.core.designsystem.theme.HiTheme
+import com.purple.hello.core.datastore.DeviceDataStore
 import com.purple.hello.domain.account.CheckLoggedInUseCase
 import com.purple.hello.login.LoginScreen
 import com.purple.hello.ui.HiApp
@@ -16,7 +17,9 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity @Inject constructor(
+    private val deviceDataStore: DeviceDataStore,
+) : ComponentActivity() {
 
     @Inject
     lateinit var checkLoggedInUseCase: CheckLoggedInUseCase
@@ -32,6 +35,10 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+        HiFirebaseNotificationManager(
+            activity = ComponentActivity(),
+            deviceDataStore = deviceDataStore,
+        )
     }
 }
 

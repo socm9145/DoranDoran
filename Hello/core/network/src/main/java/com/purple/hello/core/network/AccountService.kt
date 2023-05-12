@@ -9,11 +9,13 @@ interface AccountService {
     @GET("account/login/google")
     suspend fun loginWithGoogle(
         @Header("id-token") idToken: String,
+        @Header("device-token") deviceToken: String,
     ): Response<Void>
 
     @GET("account/login/kakao")
     suspend fun loginWithKakao(
         @Header("id-token") accessToken: String,
+        @Header("device-token") deviceToken: String,
     ): Response<Void>
 
     @GET("account/reissue")
