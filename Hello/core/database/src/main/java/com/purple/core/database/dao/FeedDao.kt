@@ -36,9 +36,7 @@ interface FeedDao {
             ON feed.roomId = user_room_cross.roomId
         INNER JOIN members
             ON user_room_cross.userId = members.userId
-        WHERE feed.roomId = :roomId AND 
-              strftime('%Y-%m-%d', feed.createAt / 1000, 'unixepoch') = 
-                  strftime('%Y-%m-%d', :date / 1000, 'unixepoch')
+        WHERE feed.roomId = :roomId AND DATE(createAt) = DATE(:date)
         ORDER BY feed.createAt DESC
         """,
     )
