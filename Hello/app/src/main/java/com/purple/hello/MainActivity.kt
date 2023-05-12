@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                 HiApp(
                     windowSizeClass = calculateWindowSizeClass(this),
                     checkLoggedInUseCase = checkLoggedInUseCase,
-                    getUserIdUseCase = getUserIdUseCase
+                    getUserIdUseCase = getUserIdUseCase,
                 )
             }
         }

@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 @Entity(
     tableName = "feed",
-    primaryKeys = ["roomId", "createAt"],
+    primaryKeys = ["feedId"],
     foreignKeys = [
         ForeignKey(
             entity = RoomEntity::class,
@@ -23,6 +23,7 @@ import java.time.LocalDateTime
     ],
 )
 data class FeedEntity(
+    val feedId: Long,
     val roomId: Long,
     val userId: Long,
     val createAt: LocalDateTime,

@@ -9,6 +9,7 @@ import com.purple.core.model.Feed
 import com.purple.core.model.Result
 import com.purple.core.model.Room
 import com.purple.core.model.asResult
+import com.purple.hello.domain.account.GetUserIdUseCase
 import com.purple.hello.domain.rooms.*
 import com.purple.hello.feature.rooms.navigation.roomIdArg
 import com.purple.hello.feature.rooms.state.FeedUiState
@@ -31,11 +32,17 @@ class RoomDetailViewModel @Inject constructor(
     getRoomCode: GetRoomCodeUseCase,
     getQuestionFlow: GetQuestionUseCase,
     getFeedFlow: GetDateFeedUseCase,
+    getUserIdFlow: GetUserIdUseCase,
     fetchRoomDetail: FetchRoomDetailUseCase,
-    private val fetchDateFeed: FetchDateFeedUseCase
+    private val fetchDateFeed: FetchDateFeedUseCase,
 ) : ViewModel() {
 
-    private val userId: Long = checkNotNull(savedStateHandle["userId"])
+//    private val userId = getUserIdFlow().stateIn(
+//        scope = viewModelScope,
+//        started = SharingStarted.Eagerly,
+//        initialValue = 0,
+//    )
+    private val userId = checkNotNull(savedStateHandle["userId"])
     private var selectedRoomId: Long = checkNotNull(savedStateHandle[roomIdArg])
     private val selectedDate = MutableSharedFlow<LocalDateTime>()
     val roomCode: MutableStateFlow<String> = MutableStateFlow("")
@@ -48,6 +55,7 @@ class RoomDetailViewModel @Inject constructor(
         getFeedFlow(roomId = selectedRoomId, date = it).asResult()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val roomDetailUiState: StateFlow<RoomDetailUiState> =
         selectedRoom.map {
             when (it) {
@@ -75,6 +83,7 @@ class RoomDetailViewModel @Inject constructor(
                 is Result.Success -> FeedUiState.Success(
                     feeds = it.data,
                     isPossibleToUpload = it.data.none { feed ->
+//                        feed.author.id == userId.value
                         feed.author.id == userId
                     },
                 )
@@ -97,7 +106,7 @@ class RoomDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             fetchDateFeed(
                 date = date,
-                roomId = selectedRoomId
+                roomId = selectedRoomId,
             )
         }
     }

@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
     implementation(project(":domain:rooms"))
+    implementation(project(":domain:account"))
 
     implementation(composeDependencies)
     implementation(imageLoadDependencies)

@@ -20,7 +20,7 @@ interface FeedService {
     @GET("room/date-feed")
     suspend fun getDateFeeds(
         @Query("roomId") roomId: Long,
-        @Query("date", encoded = true) date: String,
+        @Query("date") date: String,
     ): Response<List<DateFeedResponse>>
 
     @Multipart

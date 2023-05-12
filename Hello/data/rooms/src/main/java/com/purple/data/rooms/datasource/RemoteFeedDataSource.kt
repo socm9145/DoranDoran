@@ -12,7 +12,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import java.io.File
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
@@ -26,13 +25,10 @@ class RemoteFeedDataSource @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getDateFeed(roomId: Long, date: LocalDateTime): Response<List<DateFeedResponse>> =
-        run {
-            feedService.getDateFeeds(
-                roomId,
-                date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
-            )
-        }
-
+        feedService.getDateFeeds(
+            roomId,
+            date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+        )
 
     override suspend fun postFeed(userRoomId: Long, image: File): Response<CreateFeedResponse> {
         val requestFile = image.asRequestBody("application/octet-stream".toMediaTypeOrNull())

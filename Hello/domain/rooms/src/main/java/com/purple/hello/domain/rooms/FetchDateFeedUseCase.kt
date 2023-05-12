@@ -12,12 +12,11 @@ class FetchDateFeedUseCase @Inject constructor(
 ) {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend operator fun invoke(roomId: Long, date: LocalDateTime) {
-        if(date.toLocalDate() == LocalDate.now()) {
+        if (date.toLocalDate() == LocalDate.now()) {
             feedRepository.updateDateFeed(roomId, date)
         } else {
-            // TODO: check roomDB
-            // TODO: if exist -> none
-            // TODO: else -> fetch
+            if (feedRepository.isFeedExistByDate(roomId, date)) return
+            feedRepository.updateDateFeed(roomId, date)
         }
     }
 }

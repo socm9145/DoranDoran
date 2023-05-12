@@ -25,7 +25,7 @@ interface FeedDao {
     @Insert
     fun insertQuestionEntity(questionEntity: QuestionEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFeedEntity(feedEntity: FeedEntity)
 
     @Query(
@@ -43,4 +43,7 @@ interface FeedDao {
         """,
     )
     fun getFeedWithRoomIdAndDate(roomId: Long, date: LocalDateTime): Flow<List<FeedWithAuthor>>
+
+    @Query("SELECT COUNT(*) FROM feed WHERE roomId = :roomId AND DATE(createAt) = DATE(:date)")
+    fun getCountOfFeedByDate(roomId: Long, date: LocalDateTime): Int
 }

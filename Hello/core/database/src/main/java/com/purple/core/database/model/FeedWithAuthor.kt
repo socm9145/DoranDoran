@@ -17,6 +17,7 @@ data class FeedWithAuthor(
 )
 
 fun FeedWithAuthor.asExternalModel() = Feed(
+    feedId = feed.feedId,
     headerImageUrl = feed.feedUrl,
     content = feed.content,
     author = author.asExternalModel()

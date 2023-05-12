@@ -33,8 +33,9 @@ class FeedRepositoryImpl @Inject constructor(
     override fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String> =
         feedDao.getQuestionWithRoomIdAndDate(roomId, date)
 
-    override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> =
-        feedDao.getFeedWithRoomIdAndDate(roomId, date).map { it.map(FeedWithAuthor::asExternalModel) }
+    override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> {
+        return feedDao.getFeedWithRoomIdAndDate(roomId, date).map { it.map(FeedWithAuthor::asExternalModel) }
+    }
 
     override suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String {
         val response = remoteFeedDataSource.getDateQuestion(roomId, date)
@@ -68,22 +69,22 @@ class FeedRepositoryImpl @Inject constructor(
     override suspend fun updateDateFeed(roomId: Long, date: LocalDateTime) {
         runCatching {
             val response = remoteFeedDataSource.getDateFeed(roomId, date)
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 val feedList = response.body() ?: emptyList()
                 feedList.map { feed ->
                     feedDao.insertFeedEntity(
                         FeedEntity(
                             roomId = roomId,
                             userId = feed.userId,
+                            feedId = feed.feedId,
                             createAt = feed.createdAt.toLocalDateTime() ?: date,
                             feedUrl = feed.feedUrl,
-                            content = feed.content
-                        )
+                            content = feed.content,
+                        ),
                     )
                 }
             }
         }.getOrNull()
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -101,4 +102,7 @@ class FeedRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun isFeedExistByDate(roomId: Long, date: LocalDateTime): Boolean =
+        feedDao.getCountOfFeedByDate(roomId, date) != 0
 }
