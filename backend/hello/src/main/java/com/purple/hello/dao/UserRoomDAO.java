@@ -8,6 +8,7 @@ import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.enu.UserRoomRole;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserRoomDAO {
     CreateRoomOutDTO createUserRoom(CreateUserRoomInDTO createUserRoomInDTO, long roomId)throws Exception;
@@ -22,4 +23,5 @@ public interface UserRoomDAO {
     void updateUserRoomRoleByUserRoomId(long userRoomId, UserRoomRole userRoomRole);
     UserRoom readUserRoomByUserRoomId(long userRoomId) throws Exception;
     List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int userRoomLimit) throws Exception;
+    Map<Long, Integer> getMemberCount(List<Long> roomList);
 }

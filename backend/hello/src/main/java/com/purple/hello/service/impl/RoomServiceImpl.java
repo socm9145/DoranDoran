@@ -1,18 +1,15 @@
 package com.purple.hello.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.purple.hello.dao.HistoryDAO;
 import com.purple.hello.dao.QuestionDAO;
 import com.purple.hello.dao.RoomDAO;
+import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
-import com.purple.hello.dto.tool.AwsS3DTO;
-import com.purple.hello.dto.tool.CreateRoomDTO;
-import com.purple.hello.dto.tool.HistoryMinMaxDTO;
-import com.purple.hello.dto.tool.HistoryTypeDTO;
-import com.purple.hello.dto.tool.HistoryTypePythonDTO;
-import com.purple.hello.dto.tool.MemberDTO;
+import com.purple.hello.dto.tool.*;
 import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.entity.Room;
 import com.purple.hello.generator.RoomCode;
@@ -26,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -46,6 +41,8 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private final QuestionDAO questionDAO;
     @Autowired
+    private final UserRoomDAO userRoomDAO;
+    @Autowired
     private final QuestionRepo questionRepo;
     @Autowired
     private final PasswordEncoder passwordEncoder;
@@ -53,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
     private final PythonInterpreter interpreter;
     private final AwsS3Service awsS3Service;
 
-    public RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter, AwsS3Service awsS3Service){
+    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter, AwsS3Service awsS3Service, UserRoomDAO userRoomDAO){
         this.roomDAO = roomDAO;
         this.passwordEncoder = passwordEncoder;
         this.historyDAO = historyDAO;
@@ -61,6 +58,7 @@ public class RoomServiceImpl implements RoomService {
         this.questionDAO = questionDAO;
         this.interpreter = interpreter;
         this.awsS3Service = awsS3Service;
+        this.userRoomDAO = userRoomDAO;
     }
     @Override
     public List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception{
@@ -91,26 +89,16 @@ public class RoomServiceImpl implements RoomService {
         updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
         return this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
     }
-
-    public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) throws Exception{
+    public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) throws JsonProcessingException {
         String url = roomDAO.readRoomCodeByRoomId(roomId);
 
-        Instant currentTime = Instant.now();
         ReadRoomCodeOutDTO readRoomCodeOutDTO = new ReadRoomCodeOutDTO();
-        if(url != null && url.length() > 0){
-            String createdTimeString = roomCode.getTime(url);
-            Instant createdTime = Instant.parse(createdTimeString);
-            Duration duration = Duration.between(createdTime, currentTime);
-            if(duration.compareTo(Duration.ofSeconds(30)) > 0){
-                String newUrl = saveAndResult(roomId, currentTime);
-                readRoomCodeOutDTO.setRoomCode(newUrl);
-            }else{
-                readRoomCodeOutDTO.setRoomCode(url);
-            }
+        if(url == null){
+            String newUrl = saveAndResult(roomId);
+            readRoomCodeOutDTO.setRoomCode(newUrl);
             return readRoomCodeOutDTO;
         }
-        String newUrl = saveAndResult(roomId, currentTime);
-        readRoomCodeOutDTO.setRoomCode(newUrl);
+        readRoomCodeOutDTO.setRoomCode(url);
         return readRoomCodeOutDTO;
     }
 
@@ -118,12 +106,14 @@ public class RoomServiceImpl implements RoomService {
     public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO) {
         roomDAO.updateRoomCodeByRoomId(updateRoomCodeInDTO);
     }
-    private String saveAndResult(long roomId, Instant time) throws Exception{
-        String newUrl = roomCode.makeUrl(roomId, time);
+    private String saveAndResult(long roomId) throws JsonProcessingException {
+        String resultString = roomCode.makeUrl(roomId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(resultString);
+        String newUrl = String.valueOf(jsonNode.get("shortLink")).replaceAll("\"", "");
         UpdateRoomCodeInDTO updateRoomCodeInDTO = new UpdateRoomCodeInDTO();
         updateRoomCodeInDTO.setRoomId(roomId);
         updateRoomCodeInDTO.setRoomCode(newUrl);
-
         updateRoomCodeByRoomId(updateRoomCodeInDTO);
         return newUrl;
     }
@@ -172,25 +162,31 @@ public class RoomServiceImpl implements RoomService {
                 Map<Long, List<HistoryTypeDTO>> resultMapType = roomDAO.getHistoryTypeCount(roomListIdx);
                 // 각 방마다 daily, game, know 타입에 대해서 포스트가 몇 개 있는지 추출
                 Map<Long, List<HistoryTypeDTO>> resultMapFeed = roomDAO.getHistoryTypeFeedCount(roomListIdx);
-                // 각 방마다 타입에 최소 인덱스와 최대 인덱스 그리고 현재 인덱스를 출력한다.
-                Map<Long, List<HistoryMinMaxDTO>> resultMapMinMax = roomDAO.getHistoryMinMax(roomListIdx);
+                // 각 방마다 타입에 현재 인덱스를 출력한다.
+                Map<Long, List<HistoryCurrent>> resultCurrent = roomDAO.getHistoryCurrent(roomListIdx);
+                // 타입마다 최소인덱스, 최대인덱스를 출력한다.
+                Map<String, HistoryMinMaxDTO> resultMapMinMax = roomDAO.getHistoryMinMax();
+                // 각 방의 멤버 수를 불러온다.
+                Map<Long, Integer> memberCount = userRoomDAO.getMemberCount(roomListIdx);
 
-                Map<Long, HistoryTypePythonDTO> pyDTO = new HashMap<>();
+                Map<Long, HistoryTypePythonDTO> pyMap = new HashMap<>();
                 for(Long l : roomListIdx){
                     HistoryTypePythonDTO historyTypePythonDTO = HistoryTypePythonDTO.builder()
+                            .memberCount(memberCount.get(l))
                             .types(resultMapType.get(l))
                             .feeds(resultMapFeed.get(l))
-                            .minMaxCurrent(resultMapMinMax.get(l))
+                            .current(resultCurrent.get(l))
                             .build();
-                    pyDTO.put(l, historyTypePythonDTO);
+                    pyMap.put(l, historyTypePythonDTO);
                 }
                 ObjectMapper mapper = new ObjectMapper();
-                String json = mapper.writeValueAsString(pyDTO);
-                System.out.println(json);
+                String json = mapper.writeValueAsString(pyMap);
+                String minMaxJson = mapper.writeValueAsString(resultMapMinMax);
+                String result = "[" + minMaxJson + ", " + json + "]";
 
                 interpreter.execfile("src/main/java/com/purple/hello/python/test.py");
                 interpreter.exec("print('Hello, world!')");
-                PyObject jsonString = Py.java2py(json);
+                PyObject jsonString = Py.java2py(result);
                 PyObject resultHistory = interpreter.get("testFunc").__call__(jsonString);
                 Long resultRoomId = (Long) Py.tojava(resultHistory, Long.class);
             }

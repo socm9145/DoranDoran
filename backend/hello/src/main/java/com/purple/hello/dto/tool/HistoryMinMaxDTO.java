@@ -1,5 +1,6 @@
 package com.purple.hello.dto.tool;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class HistoryMinMaxDTO {
-    int questionId;
-    String questionType;
     int min;
     int max;
+
+    @Builder
+    public HistoryMinMaxDTO(int min, int max){
+        this.min = min;
+        this.max = max;
+    }
 }

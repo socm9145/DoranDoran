@@ -303,48 +303,76 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public Map<Long, List<HistoryMinMaxDTO>> getHistoryMinMax(List<Long> roomListIdx) {
-        String jpql = "SELECT h.room_id, no, q.question_type, q2.min, q2.max " +
+    public Map<String, HistoryMinMaxDTO> getHistoryMinMax() {
+        String jpql = "SELECT question_type, MIN(q.no) as min, MAX(q.no) as max " +
+                "    FROM questions q " +
+                "    GROUP BY question_type ";
+        Query query = em.createNativeQuery(jpql);
+        List result = query.getResultList();
+
+        if(result.size() == 0) return null;
+
+        Map<String, HistoryMinMaxDTO> map = new HashMap<>();
+
+        for(Object o : result){
+            Object[] results = (Object[]) o;
+            HistoryMinMaxDTO temp = HistoryMinMaxDTO.builder()
+                    .min(Integer.parseInt(results[1].toString()))
+                    .max(Integer.parseInt(results[2].toString()))
+                    .build();
+            map.put(String.valueOf(results[0]), temp);
+        }
+        return map;
+    }
+
+    public Map<Long, List<HistoryCurrent>> getHistoryCurrent(List<Long> roomListIdx){
+        Map<Long, List<HistoryCurrent>> map = new HashMap<>();
+        String jpql = "SELECT room_id, question_type, no " +
                 "FROM questions q " +
                 "JOIN ( " +
-                "    SELECT h.question_id, h.room_id " +
+                "    SELECT room_id, question_id FROM histories " +
+                "WHERE (room_id, history_id) in ( " +
+                "    SELECT room_id, MAX(history_id) as history_id " +
                 "    FROM histories h " +
-                "    JOIN ( " +
-                "      SELECT room_id, MAX(create_at) AS max_create_at " +
-                "      FROM histories " +
-                "      GROUP BY room_id " +
-                "    ) h2 ON h.room_id = h2.room_id AND h.create_at = h2.max_create_at " +
-                ") h " +
-                "ON h.question_id = q.question_id " +
-                "JOIN ( " +
-                "    SELECT question_type, MIN(q.no) as min, MAX(q.no) as max " +
-                "    FROM questions q " +
-                "    GROUP BY question_type " +
-                ") q2 " +
-                "ON q.question_type = q2.question_type " +
+                "    JOIN questions q ON h.question_id = q.question_id " +
+                "    GROUP BY room_id, question_type) " +
+                ") h ON h.question_id = q.question_id " +
                 "WHERE room_id in (:roomListIdx) ";
         Query query = em.createNativeQuery(jpql);
         query.setParameter("roomListIdx", roomListIdx);
         List result = query.getResultList();
 
-        if(result.size() == 0) return null;
-
-        Map<Long, List<HistoryMinMaxDTO>> map = new HashMap<>();
-
-        for(Object o : result){
+        for(Object o : result) {
             Object[] results = (Object[]) o;
-            HistoryMinMaxDTO temp = new HistoryMinMaxDTO();
-            temp.setMin(Integer.parseInt(results[3].toString()));
-            temp.setMax(Integer.parseInt(results[4].toString()));
-            temp.setQuestionId(Integer.parseInt(results[1].toString()));
-            temp.setQuestionType(String.valueOf(results[2]));
 
-            if(map.containsKey(Long.parseLong(results[0].toString()))){
-                map.get(Long.parseLong(results[0].toString())).add(temp);
-            }else{
-                List<HistoryMinMaxDTO> historyMinMaxDTOList = new ArrayList<>();
-                historyMinMaxDTOList.add(temp);
-                map.put(Long.parseLong(results[0].toString()), historyMinMaxDTOList);
+            if (map.containsKey(Long.parseLong(results[0].toString()))) {
+                switch (String.valueOf(results[1])) {
+                    case "GAME":
+                        map.get(Long.parseLong(results[0].toString())).get(0).setCurrentGame(Integer.parseInt(results[2].toString()));
+                        break;
+                    case "DAILY":
+                        map.get(Long.parseLong(results[0].toString())).get(0).setCurrentDaily(Integer.parseInt(results[2].toString()));
+                        break;
+                    case "KNOW":
+                        map.get(Long.parseLong(results[0].toString())).get(0).setCurrentKnow(Integer.parseInt(results[2].toString()));
+                        break;
+                }
+            } else {
+                HistoryCurrent historyCurrent = new HistoryCurrent();
+                switch (String.valueOf(results[1])) {
+                    case "GAME":
+                        historyCurrent.setCurrentGame(Integer.parseInt(results[2].toString()));
+                        break;
+                    case "DAILY":
+                        historyCurrent.setCurrentDaily(Integer.parseInt(results[2].toString()));
+                        break;
+                    case "KNOW":
+                        historyCurrent.setCurrentKnow(Integer.parseInt(results[2].toString()));
+                        break;
+                }
+                List<HistoryCurrent> historyCurrentList = new ArrayList<>();
+                historyCurrentList.add(historyCurrent);
+                map.put(Long.parseLong(results[0].toString()), historyCurrentList);
             }
         }
         return map;

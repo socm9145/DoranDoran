@@ -11,16 +11,16 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class HistoryTypePythonDTO {
-    Long roomID;
+    Integer memberCount;
     List<HistoryTypeDTO> types;
     List<HistoryTypeDTO> feeds;
-    List<HistoryMinMaxDTO> minMaxCurrent;
+    List<HistoryCurrent> current;
 
     @Builder
-    public HistoryTypePythonDTO(Long roomID, List<HistoryTypeDTO> types, List<HistoryTypeDTO> feeds, List<HistoryMinMaxDTO> minMaxCurrent){
-        this.roomID = roomID;
+    public HistoryTypePythonDTO(Integer memberCount, List<HistoryTypeDTO> types, List<HistoryTypeDTO> feeds, List<HistoryCurrent> current){
+        this.memberCount = memberCount;
         this.feeds = feeds;
         this.types = types;
-        this.minMaxCurrent = minMaxCurrent;
+        this.current = current;
     }
 }

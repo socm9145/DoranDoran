@@ -1,5 +1,6 @@
 package com.purple.hello.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
 import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
@@ -18,7 +19,7 @@ public interface RoomService {
     boolean comparePasswordByRoomCode(long roomId, String password) throws Exception;
     ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode)throws Exception;
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception;
-    ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId)throws Exception;
+    ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) throws JsonProcessingException;
     void createQuestion() throws Exception;
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     @Transactional
