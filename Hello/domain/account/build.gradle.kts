@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain:model"))
+    implementation(project(":domain:user"))
     implementation(project(":data:account"))
     implementation(project(":data:user"))
 

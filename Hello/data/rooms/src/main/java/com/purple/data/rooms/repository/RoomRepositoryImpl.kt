@@ -1,5 +1,7 @@
 package com.purple.data.rooms.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.RoomEntity
@@ -59,6 +61,7 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun fetchMembersInRoom(roomId: Long) {
         val response = remoteRoomDataSource.getMembersInRoom(roomId)
 

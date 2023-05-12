@@ -1,6 +1,6 @@
 package com.purple.hello.domain.account
 
-import com.purple.hello.data.user.UserRepository
+import com.purple.hello.data.user.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -30,6 +30,7 @@ fun AppSettingRoute(
     appSettingViewModel: AppSettingViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     clearNav: () -> Unit,
+    onClickProfileSetting: () -> Unit,
 ) {
     var shouldShowLogoutDialog by remember { mutableStateOf(false) }
 
@@ -51,7 +52,7 @@ fun AppSettingRoute(
                 onClick = { itemType ->
                     when (itemType) {
                         SettingItemType.PROFILE_SETTING -> {
-//                           // TODO : ProfileSettingScreen 으로 이동
+                            onClickProfileSetting()
                         }
                         SettingItemType.POLICY -> {
                             context.startActivity(policyIntent)
@@ -76,7 +77,7 @@ fun AppSettingRoute(
                     onDelete = {
                         appSettingViewModel.logout()
                         clearNav()
-                   },
+                    },
                 )
             }
         }
@@ -138,5 +139,5 @@ private fun AppSettingAppBar(
 @Preview
 @Composable
 private fun PreviewAppSettingScreen() {
-    AppSettingRoute(onBackClick = {}, clearNav= {})
+    AppSettingRoute(onBackClick = {}, clearNav = {}, onClickProfileSetting = {})
 }

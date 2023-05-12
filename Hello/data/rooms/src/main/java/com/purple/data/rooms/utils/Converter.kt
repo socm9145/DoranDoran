@@ -7,5 +7,5 @@ fun RoomCreationResponse.asRoomEntity() = RoomEntity(
     roomId = this.roomId,
     userRoomId = this.userRoomId,
     roomName = this.roomName,
-    recentVisitedTime = System.currentTimeMillis()
+    recentVisitedTime = System.currentTimeMillis(),
 )
