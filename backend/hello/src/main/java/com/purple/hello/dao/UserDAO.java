@@ -18,4 +18,6 @@ public interface UserDAO {
     boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws Exception;
 
     ReadUserInfoOutDTO readUserInfoByUserId(long userId);
+
+    void updateDeviceToken(User user);
 }

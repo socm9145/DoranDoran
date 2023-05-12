@@ -19,7 +19,7 @@ public class RoomCode {
 
         String requestBody = "{ " +
                 "\"dynamicLinkInfo\": { " +
-                "\"domainUriPrefix\": \"https://doeran.page.link\", " +
+                "\"domainUriPrefix\": \"https://doeran2.page.link\", " +
                 "\"link\": \"" + url + "\", " +
                 "\"androidInfo\": { " +
                 "\"androidPackageName\": \"com.purple.hello\" " +
