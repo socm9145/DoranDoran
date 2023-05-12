@@ -25,7 +25,7 @@ public interface RoomDAO {
     Map<Long, List<HistoryTypeDTO>> getHistoryTypeFeedCount(List<Long> roomListIdx);
     Map<String, HistoryMinMaxDTO> getHistoryMinMax();
     Map<Long, List<HistoryCurrent>> getHistoryCurrent(List<Long> roomListIdx);
-    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId);
+    ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception;
     List<MemberDTO> readMemberListByRoomId(long roomId, long userId);
     Integer readBeginTimeByRoomId(long roomId);
     Room readRoomByUserRoomId(long userRoomId);
