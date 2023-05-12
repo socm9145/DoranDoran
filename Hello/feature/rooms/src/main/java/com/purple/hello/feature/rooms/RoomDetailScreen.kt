@@ -1,18 +1,18 @@
 package com.purple.hello.feature.rooms
 
 import android.content.Intent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,13 +20,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOutlinedButton
+import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.model.Member
+import com.purple.hello.feature.rooms.state.FeedUiState
 import com.purple.hello.feature.rooms.state.RoomDetailUiState
 import com.purple.hello.feature.rooms.view.MemberProfileItem
 import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun RoomDetailRoute(
     roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
@@ -35,7 +41,18 @@ internal fun RoomDetailRoute(
     onBackClick: () -> Unit,
 ) {
     val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
+    val feedUiState by roomDetailViewModel.feedUiState.collectAsState()
     val roomCode by roomDetailViewModel.roomCode.collectAsState()
+
+    val currentDate = remember { mutableStateOf(LocalDateTime.now()) }
+
+    LaunchedEffect(currentDate) {
+        roomDetailViewModel.selectDate(currentDate.value)
+        roomDetailViewModel.fetchFeed(currentDate.value)
+    }
+    LaunchedEffect(roomCode) {
+        roomDetailViewModel.fetchFeed(currentDate.value)
+    }
 
     Column {
         RoomDetailScreen(
@@ -45,7 +62,21 @@ internal fun RoomDetailRoute(
                 onClickRoomSetting(it)
             },
             roomCode = roomCode,
-            onClickCameraButton = onClickCameraButton,
+        )
+        if (
+            roomDetailUiState is RoomDetailUiState.Success &&
+            feedUiState is FeedUiState.Success &&
+            currentDate.value.toLocalDate() == LocalDate.now() &&
+            (feedUiState as FeedUiState.Success).isPossibleToUpload
+        ) {
+            OpenCameraButton(
+                onClick = {
+                    onClickCameraButton((roomDetailUiState as RoomDetailUiState.Success).roomDetail.roomId)
+                },
+            )
+        }
+        RoomFeedScreen(
+            feedUiState = feedUiState,
         )
     }
 }
@@ -56,7 +87,6 @@ private fun RoomDetailScreen(
     onBackClick: () -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
     roomCode: String,
-    onClickCameraButton: (roomId: Long) -> Unit,
 ) {
     when (roomDetailUiState) {
         is RoomDetailUiState.Success -> {
@@ -72,13 +102,31 @@ private fun RoomDetailScreen(
                     roomCode = roomCode,
                 )
                 MembersViewInGroup(roomDetailUiState.roomDetail.members)
-                OpenCameraButton(
-                    onClick = { onClickCameraButton(roomDetailUiState.roomDetail.roomId) },
-                )
             }
         }
         is RoomDetailUiState.Error -> Unit
-        is RoomDetailUiState.Loading -> Unit
+        is RoomDetailUiState.Loading -> {
+            AnimatedVisibility(
+                visible = true,
+                enter = slideInVertically(
+                    initialOffsetY = { fullHeight -> -fullHeight },
+                ) + fadeIn(),
+                exit = slideOutVertically(
+                    targetOffsetY = { fullHeight -> -fullHeight },
+                ) + fadeOut(),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                ) {
+                    HiOverlayLoadingWheel(
+                        contentDesc = "loading",
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -125,6 +173,25 @@ private fun RoomDetailAppBar(
             )
         },
     )
+}
+
+@Composable
+private fun RoomFeedScreen(
+    feedUiState: FeedUiState,
+) {
+    when (feedUiState) {
+        is FeedUiState.Error -> {
+        }
+        is FeedUiState.Loading -> {
+        }
+        is FeedUiState.Success -> {
+            LazyColumn() {
+                items(feedUiState.feeds, key = { it.feedId }) {
+                    Text(text = it.author.nickName)
+                }
+            }
+        }
+    }
 }
 
 @Composable

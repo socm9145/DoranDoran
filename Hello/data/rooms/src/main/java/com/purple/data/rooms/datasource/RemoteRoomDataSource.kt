@@ -1,8 +1,8 @@
 package com.purple.data.rooms.datasource
 
-import com.purple.data.rooms.model.MembersResponse
-import com.purple.data.rooms.model.RoomCodeResponse
-import com.purple.data.rooms.model.RoomListResponse
+import com.purple.data.rooms.model.response.MembersResponse
+import com.purple.data.rooms.model.response.RoomCodeResponse
+import com.purple.data.rooms.model.response.RoomListResponse
 import com.purple.data.rooms.model.request.*
 import com.purple.data.rooms.service.RoomService
 import retrofit2.Response

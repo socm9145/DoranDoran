@@ -1,5 +1,6 @@
 package com.purple.hello.feature.rooms
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -49,11 +50,13 @@ internal fun RoomsRoute(
 
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
+            Log.d("fetchRooms", "fetchRooms")
             roomsViewModel.fetchRoom()
         }
     }
 
     Column {
+        Log.d("RoomsScreen", "RoomsScreen")
         RoomsAppBar(onClickAppSetting = onClickAppSetting)
         Box(
             modifier = Modifier.fillMaxSize(),

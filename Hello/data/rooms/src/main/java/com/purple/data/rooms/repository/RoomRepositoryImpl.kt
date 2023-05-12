@@ -1,5 +1,7 @@
 package com.purple.data.rooms.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.RoomEntity
@@ -7,9 +9,9 @@ import com.purple.core.database.model.RoomWithMembers
 import com.purple.core.database.model.asExternalModel
 import com.purple.core.model.Room
 import com.purple.data.rooms.datasource.RemoteRoomDataSource
-import com.purple.data.rooms.model.asMemberEntity
-import com.purple.data.rooms.model.asMemberRoomEntity
-import com.purple.data.rooms.model.asRoomEntity
+import com.purple.data.rooms.model.response.asMemberEntity
+import com.purple.data.rooms.model.response.asMemberRoomEntity
+import com.purple.data.rooms.model.response.asRoomEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -59,6 +61,7 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun fetchMembersInRoom(roomId: Long) {
         val response = remoteRoomDataSource.getMembersInRoom(roomId)
 

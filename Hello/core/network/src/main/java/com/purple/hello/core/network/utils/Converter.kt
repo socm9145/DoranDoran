@@ -1,9 +1,31 @@
 package com.purple.hello.core.network.utils
 
-import android.annotation.SuppressLint
-import java.text.SimpleDateFormat
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
-@SuppressLint("SimpleDateFormat")
-fun String.toDate() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(this)
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.toLocalDateTime(): LocalDateTime? {
+    return try {
+        val offsetDateTime = OffsetDateTime.parse(this)
+        val zoneOffset = ZoneOffset.ofTotalSeconds(offsetDateTime.offset.totalSeconds)
+        offsetDateTime.toLocalDateTime().atOffset(zoneOffset).toLocalDateTime()
+    } catch (e: DateTimeParseException) {
+        Log.d("parsing Error", e.message ?: "")
+        null
+    }
+}
 
-fun String.birthToDate() = SimpleDateFormat("yyyy-MM-dd").parse(this)
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.toLocalDateTime(datePattern: String): LocalDateTime? {
+    return try {
+        LocalDateTime.parse(this, DateTimeFormatter.ofPattern(datePattern))
+    } catch (e: DateTimeParseException) {
+        null
+    }
+}

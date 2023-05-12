@@ -1,15 +1,16 @@
 package com.purple.hello.feature.rooms.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.purple.core.model.Feed
 import com.purple.core.model.Result
 import com.purple.core.model.Room
 import com.purple.core.model.asResult
-import com.purple.hello.domain.rooms.FetchRoomDetailUseCase
-import com.purple.hello.domain.rooms.GetQuestionUseCase
-import com.purple.hello.domain.rooms.GetRoomCodeUseCase
-import com.purple.hello.domain.rooms.GetSelectedRoomUseCase
+import com.purple.hello.domain.account.GetUserIdUseCase
+import com.purple.hello.domain.rooms.*
 import com.purple.hello.feature.rooms.navigation.roomIdArg
 import com.purple.hello.feature.rooms.state.FeedUiState
 import com.purple.hello.feature.rooms.state.RoomDetailUiState
@@ -17,7 +18,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -28,18 +31,31 @@ class RoomDetailViewModel @Inject constructor(
     getRoomFlow: GetSelectedRoomUseCase,
     getRoomCode: GetRoomCodeUseCase,
     getQuestionFlow: GetQuestionUseCase,
+    getFeedFlow: GetDateFeedUseCase,
+    getUserIdFlow: GetUserIdUseCase,
     fetchRoomDetail: FetchRoomDetailUseCase,
+    private val fetchDateFeed: FetchDateFeedUseCase,
 ) : ViewModel() {
 
+//    private val userId = getUserIdFlow().stateIn(
+//        scope = viewModelScope,
+//        started = SharingStarted.Eagerly,
+//        initialValue = 0,
+//    )
+    private val userId = checkNotNull(savedStateHandle["userId"])
     private var selectedRoomId: Long = checkNotNull(savedStateHandle[roomIdArg])
-    private val selectedDate = MutableSharedFlow<Date>()
+    private val selectedDate = MutableSharedFlow<LocalDateTime>()
     val roomCode: MutableStateFlow<String> = MutableStateFlow("")
 
-    private var selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId).asResult()
+    private val selectedRoom: Flow<Result<Room>> = getRoomFlow(selectedRoomId).asResult()
     private val dateQuestion: Flow<Result<String>> = selectedDate.flatMapLatest {
         getQuestionFlow(roomId = selectedRoomId, date = it).asResult()
     }
+    private val dateFeedList: Flow<Result<List<Feed>>> = selectedDate.flatMapLatest {
+        getFeedFlow(roomId = selectedRoomId, date = it).asResult()
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val roomDetailUiState: StateFlow<RoomDetailUiState> =
         selectedRoom.map {
             when (it) {
@@ -59,14 +75,17 @@ class RoomDetailViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = RoomDetailUiState.Loading,
             )
+
     val feedUiState: StateFlow<FeedUiState> =
-        dateQuestion.map {
+        dateFeedList.map {
             when (it) {
                 is Result.Loading -> FeedUiState.Loading
                 is Result.Success -> FeedUiState.Success(
-                    date = Date(),
-                    feeds = emptyList(),
-                    question = it.data,
+                    feeds = it.data,
+                    isPossibleToUpload = it.data.none { feed ->
+//                        feed.author.id == userId.value
+                        feed.author.id == userId
+                    },
                 )
                 is Result.Error -> FeedUiState.Error(it.exception)
             }
@@ -75,4 +94,20 @@ class RoomDetailViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = FeedUiState.Loading,
         )
+
+    fun selectDate(date: LocalDateTime) {
+        viewModelScope.launch(Dispatchers.IO) {
+            selectedDate.emit(date)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun fetchFeed(date: LocalDateTime) {
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchDateFeed(
+                date = date,
+                roomId = selectedRoomId,
+            )
+        }
+    }
 }
