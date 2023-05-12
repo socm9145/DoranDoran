@@ -104,4 +104,10 @@ public class UserServiceImpl implements UserService {
     public ReadUserInfoOutDTO readUserInfoByUserId(long userId) {
         return userDAO.readUserInfoByUserId(userId);
     }
+
+    @Override
+    @Transactional
+    public void updateDeviceToken(User user) {
+        userDAO.updateDeviceToken(user);
+    }
 }

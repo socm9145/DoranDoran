@@ -75,4 +75,12 @@ public class UserDAOImpl implements UserDAO {
                 .fetchOne();
         return readUserInfoOutDTO;
     }
+
+    @Override
+    public void updateDeviceToken(User user) {
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUser);
+        jpaUpdateClause.set(qUser.deviceToken, user.getDeviceToken())
+                .where(qUser.userId.eq(user.getUserId()))
+                .execute();
+    }
 }

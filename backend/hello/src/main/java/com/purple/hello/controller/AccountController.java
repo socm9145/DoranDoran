@@ -1,6 +1,7 @@
 package com.purple.hello.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.util.NullValue;
 import com.purple.hello.dto.in.OauthUserInputDTO;
 import com.purple.hello.entity.User;
 import com.purple.hello.jwt.JwtTokenProvider;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,12 +39,12 @@ public class AccountController {
     }
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<String> loginKakao(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse)throws Exception{
+    public ResponseEntity<String> loginKakao(@RequestHeader("id-token") String token, @RequestHeader(value = "device-token", required = false) String deviceToken, HttpServletResponse httpServletResponse)throws Exception{
         ResponseEntity<String> response = userService.getKakaoUserInfoWithAccessToken(token);
         JSONObject jsonObject = new JSONObject(response.getBody());
         String oauthId = jsonObject.get("id").toString();
 
-        String[] tokens = loginLogic(oauthId);
+        String[] tokens = loginLogic(oauthId, deviceToken);
         httpServletResponse.addHeader("Access-Token", tokens[0]);
         httpServletResponse.addHeader("Refresh-Token", tokens[1]);
 
@@ -50,12 +52,12 @@ public class AccountController {
     }
 
     @GetMapping("/login/google")
-    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, HttpServletResponse httpServletResponse) throws Exception {
+    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, @RequestHeader("device-token") String deviceToken, HttpServletResponse httpServletResponse) throws Exception {
         Payload payload = userService.googleIdTokenVerify(token);
         if(payload != null){
             String oauthId = payload.getSubject();
 
-            String[] tokens = loginLogic(oauthId);
+            String[] tokens = loginLogic(oauthId, deviceToken);
             httpServletResponse.addHeader("Access-Token", tokens[0]);
             httpServletResponse.addHeader("Refresh-Token", tokens[1]);
 
@@ -107,7 +109,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body("LOGOUT SUCCESS");
     }
 
-    private String[] loginLogic(String oauthId)throws Exception{
+    private String[] loginLogic(String oauthId, String deviceToken)throws Exception{
         String[] answer = new String[2];
         User user = userService.readUserByOauthId(oauthId);
 
@@ -115,6 +117,8 @@ public class AccountController {
             OauthUserInputDTO oauthUserInputDTO = new OauthUserInputDTO(oauthId);
             user = userService.insertUser(oauthUserInputDTO);
         }
+        user.setDeviceToken(deviceToken);
+        userService.updateDeviceToken(user);
 
         final String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getUserId()));
         final String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getUserId()));

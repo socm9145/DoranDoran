@@ -21,4 +21,5 @@ public interface UserService {
     User isValidRefreshToken(String refreshToken);
     boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws Exception;
     ReadUserInfoOutDTO readUserInfoByUserId(long userId);
+    void updateDeviceToken(User user);
 }
