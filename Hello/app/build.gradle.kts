@@ -5,6 +5,7 @@ plugins {
     kotlin("kapt")
     id("com.android.application")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -63,6 +64,8 @@ dependencies {
     implementation(composeDependencies)
     implementation(appDependencies)
     implementation(navDependencies)
+    implementation("com.google.firebase:firebase-dynamic-links-ktx:21.1.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
 
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)

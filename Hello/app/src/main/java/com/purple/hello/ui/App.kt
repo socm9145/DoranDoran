@@ -1,5 +1,7 @@
 package com.purple.hello.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -12,6 +14,7 @@ import com.purple.hello.loading.LoadingScreen
 import com.purple.hello.login.LoginScreen
 import com.purple.hello.navigation.HiNavHost
 
+@RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HiApp(

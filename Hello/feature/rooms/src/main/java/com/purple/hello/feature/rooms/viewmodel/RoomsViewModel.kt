@@ -1,6 +1,5 @@
 package com.purple.hello.feature.rooms.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.purple.core.model.Result
@@ -26,18 +25,9 @@ class RoomsViewModel @Inject constructor(
     val roomsUiState: StateFlow<RoomsUiState> =
         rooms.map {
             when (it) {
-                is Result.Success -> {
-                    Log.d("roomsUiState", "Success")
-                    RoomsUiState.Success(it.data)
-                }
-                is Result.Loading -> {
-                    Log.d("roomsUiState", "Loading")
-                    RoomsUiState.Loading
-                }
-                is Result.Error -> {
-                    Log.d("roomsUiState", it.exception.toString())
-                    RoomsUiState.Error(it.exception)
-                }
+                is Result.Success -> { RoomsUiState.Success(it.data) }
+                is Result.Loading -> { RoomsUiState.Loading }
+                is Result.Error -> { RoomsUiState.Error(it.exception) }
             }
         }.stateIn(
             scope = viewModelScope,
