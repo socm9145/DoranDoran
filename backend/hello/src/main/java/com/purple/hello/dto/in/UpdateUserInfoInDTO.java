@@ -13,12 +13,12 @@ import java.util.Date;
 public class UpdateUserInfoInDTO {
     long userId;
     Date birth;
-    String userProfileUrl;
+    String profileURL;
 
     @Builder
-    UpdateUserInfoInDTO(long userId, Date birth, String userProfileUrl){
+    UpdateUserInfoInDTO(long userId, Date birth, String profileURL){
         this.userId = userId;
         this.birth = birth;
-        this.userProfileUrl = userProfileUrl;
+        this.profileURL = profileURL;
     }
 }
