@@ -60,7 +60,7 @@ public class UserDAOImpl implements UserDAO {
     public boolean updateUserInfo(UpdateUserInfoInDTO updateUserInfoInDTO) throws Exception {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUser);
         jpaUpdateClause.set(qUser.birth, updateUserInfoInDTO.getBirth())
-                .set(qUser.userProfileUrl, updateUserInfoInDTO.getUserProfileUrl())
+                .set(qUser.userProfileUrl, updateUserInfoInDTO.getProfileURL())
                 .where(qUser.userId.eq(updateUserInfoInDTO.getUserId()))
                 .execute();
         return true;
