@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import androidx.activity.ComponentActivity
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
@@ -12,9 +12,10 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.purple.hello.core.datastore.DeviceDataStore
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class HiFirebaseNotificationManager(
-    private val activity: ComponentActivity,
+class HiFirebaseNotificationManager @Inject constructor(
+    private val activity: MainActivity,
     private val deviceDataStore: DeviceDataStore,
 ) {
     init {
@@ -36,10 +37,8 @@ class HiFirebaseNotificationManager(
     private val requestPermissionLauncher = activity.registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
-        } else {
-            // TODO: Inform user that that your app will not show notifications.
+        if (!isGranted) {
+            Toast.makeText(activity, "알림 수신 비동의 완료", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -17,8 +17,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.purple.hello.core.datastore.DeviceDataStore
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class HiFirebaseMessagingService(
+class HiFirebaseMessagingService @Inject constructor(
     private val deviceDataStore: DeviceDataStore,
 ) : FirebaseMessagingService() {
     // [START receive_message]

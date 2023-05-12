@@ -17,12 +17,13 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @AndroidEntryPoint
-class MainActivity @Inject constructor(
-    private val deviceDataStore: DeviceDataStore,
-) : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var checkLoggedInUseCase: CheckLoggedInUseCase
+
+    @Inject
+    lateinit var deviceDataStore: DeviceDataStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,7 @@ class MainActivity @Inject constructor(
             }
         }
         HiFirebaseNotificationManager(
-            activity = ComponentActivity(),
+            activity = this,
             deviceDataStore = deviceDataStore,
         )
     }
