@@ -1,4 +1,4 @@
-package com.purple.hello.domain.rooms
+package com.purple.hello.domain.rooms.feed
 
 import com.purple.data.rooms.repository.FeedRepository
 import java.io.File

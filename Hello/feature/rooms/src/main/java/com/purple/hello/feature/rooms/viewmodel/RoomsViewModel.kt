@@ -1,21 +1,25 @@
 package com.purple.hello.feature.rooms.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.purple.core.model.Result
-import com.purple.core.model.Room
-import com.purple.core.model.asResult
+import com.purple.core.model.*
+import com.purple.core.model.type.InputDialogType
 import com.purple.hello.domain.rooms.CreateRoomUseCase
 import com.purple.hello.domain.rooms.FetchRoomsUseCase
+import com.purple.hello.domain.rooms.GetJoinInfoUseCase
 import com.purple.hello.domain.rooms.GetRoomListUseCase
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RoomsViewModel @Inject constructor(
     getRoomListFlow: GetRoomListUseCase,
+    private val getJoinInfoUseCase: GetJoinInfoUseCase,
     private val fetchRoomsUseCase: FetchRoomsUseCase,
     private val createRoomUseCase: CreateRoomUseCase,
 ) : ViewModel() {
@@ -47,4 +51,6 @@ class RoomsViewModel @Inject constructor(
     }
 
     suspend fun fetchRoom() = fetchRoomsUseCase()
+
+    suspend fun getJoinData(joinRoomId: Long) = getJoinInfoUseCase(joinRoomId)
 }

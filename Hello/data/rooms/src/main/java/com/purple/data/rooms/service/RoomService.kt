@@ -1,10 +1,7 @@
 package com.purple.data.rooms.service
 
-import com.purple.data.rooms.model.response.MembersResponse
-import com.purple.data.rooms.model.response.RoomCodeResponse
-import com.purple.data.rooms.model.response.RoomCreationResponse
-import com.purple.data.rooms.model.response.RoomListResponse
 import com.purple.data.rooms.model.request.*
+import com.purple.data.rooms.model.response.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -27,6 +24,11 @@ interface RoomService {
     suspend fun getRoomCode(
         @Query("roomId") roomId: Long,
     ): Response<RoomCodeResponse>
+
+    @GET("room/join-info")
+    suspend fun getJoinInfo(
+        @Query("roomId") roomId: Long,
+    ): Response<RoomJoinInfoResponse>
 
     @PUT("room/name")
     suspend fun updateRoomName(

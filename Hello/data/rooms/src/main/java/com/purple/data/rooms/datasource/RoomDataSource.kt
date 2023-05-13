@@ -1,9 +1,6 @@
 package com.purple.data.rooms.datasource
 
-import com.purple.data.rooms.model.response.MembersResponse
-import com.purple.data.rooms.model.response.RoomCodeResponse
-import com.purple.data.rooms.model.response.RoomCreationResponse
-import com.purple.data.rooms.model.response.RoomListResponse
+import com.purple.data.rooms.model.response.*
 import retrofit2.Response
 
 interface RoomDataSource {
@@ -22,6 +19,8 @@ interface RoomDataSource {
     ): Response<MembersResponse>
 
     suspend fun getRoomCode(roomId: Long): Response<RoomCodeResponse>
+
+    suspend fun getJoinInfo(roomId: Long): Response<RoomJoinInfoResponse>
 
     suspend fun updateRoomName(
         userRoomId: Long,

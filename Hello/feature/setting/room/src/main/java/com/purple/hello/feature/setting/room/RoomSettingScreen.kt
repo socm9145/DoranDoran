@@ -15,14 +15,14 @@ import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.component.SettingItem
 import com.purple.core.designsystem.dialog.HiAlertDialog
 import com.purple.core.designsystem.dialog.HiInputDialog
-import com.purple.core.designsystem.dialog.createInputDataByInputType
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.model.DeleteDialogType
-import com.purple.core.model.InputDialogType
-import com.purple.core.model.SettingItemType
-import com.purple.core.model.SettingItemType.Companion.getItemsForHost
-import com.purple.core.model.SettingItemType.Companion.getItemsForUser
+import com.purple.core.model.createInputDataByInputType
+import com.purple.core.model.type.DeleteDialogType
+import com.purple.core.model.type.InputDialogType
+import com.purple.core.model.type.SettingItemType
+import com.purple.core.model.type.SettingItemType.Companion.getItemsForHost
+import com.purple.core.model.type.SettingItemType.Companion.getItemsForUser
 import com.purple.hello.feature.setting.room.viewmodel.RoomSettingViewModel
 
 @Composable
