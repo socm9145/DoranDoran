@@ -1,12 +1,12 @@
 plugins {
-    id("com.android.library")
-    id("com.google.dagger.hilt.android")
     kotlin("android")
     kotlin("kapt")
+    id("com.android.library")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
-    namespace = "com.purple.hello.sync.work"
+    namespace = "com.purple.hello.feature.notification"
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
@@ -30,19 +30,28 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = KotlinOptions.jvmTarget
+        jvmTarget = "1.8"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = ComposeOptions.kotlinCompilerExtensionVersion
     }
 }
 
 dependencies {
-    implementation(project(":core:database"))
+    implementation(project(":core:designsystem"))
 
+    implementation(composeDependencies)
+    implementation(imageLoadDependencies)
     implementation(appDependencies)
-    testImplementation(defaultUnitTest)
-    androidTestImplementation(defaultAndroidTest)
-    implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation(navDependencies)
+
     implementation(Hilt.HILT_ANDROID)
     kapt(Hilt.HILT_ANDROID_COMPILER)
 
-    implementation(WorkmanagerKotlin.WORKMANAGER_KOTLIN)
+    debugImplementation(composeDebug)
+    testImplementation(defaultUnitTest)
+    androidTestImplementation(defaultAndroidTest)
 }

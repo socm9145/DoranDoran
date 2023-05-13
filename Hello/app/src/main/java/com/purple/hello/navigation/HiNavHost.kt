@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.purple.hello.feature.notification.navigation.navigateToNotification
+import com.purple.hello.feature.notification.navigation.notificationScreen
 import com.purple.hello.feature.rooms.navigation.roomsGraph
 import com.purple.hello.feature.rooms.navigation.roomsListRoute
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
@@ -16,7 +18,7 @@ import com.purple.hello.feature.setting.room.navigation.navigateToRoomSetting
 import com.purple.hello.feature.setting.room.navigation.roomSettingScreen
 import com.purple.hello.ui.AppState
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun HiNavHost(
     appState: AppState.LoggedIn,
@@ -40,6 +42,9 @@ fun HiNavHost(
             },
             onClickRoomSetting = {
                 navController.navigateToRoomSetting(roomId = it)
+            },
+            onClickAlarm = {
+                navController.navigateToNotification()
             },
         )
         appSettingScreen(
@@ -67,6 +72,11 @@ fun HiNavHost(
                     route = roomsListRoute,
                     inclusive = true,
                 )
+            },
+        )
+        notificationScreen(
+            onBackClick = {
+                navController.popBackStack()
             },
         )
     }

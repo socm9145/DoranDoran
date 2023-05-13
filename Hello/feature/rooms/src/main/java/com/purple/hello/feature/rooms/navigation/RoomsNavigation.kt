@@ -34,6 +34,7 @@ fun NavGraphBuilder.roomsGraph(
     onBackClick: () -> Unit,
     onClickAppSetting: () -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
+    onClickAlarm: () -> Unit,
 ) {
     navigation(
         startDestination = roomsListRoute,
@@ -46,6 +47,9 @@ fun NavGraphBuilder.roomsGraph(
                 },
                 onClickAppSetting = {
                     onClickAppSetting()
+                },
+                onClickAlarm = {
+                    onClickAlarm()
                 },
             )
         }

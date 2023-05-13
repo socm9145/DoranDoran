@@ -56,10 +56,12 @@ dependencies {
     implementation(project(":feature:setting:app"))
     implementation(project(":feature:setting:room"))
     implementation(project(":feature:setting:profile"))
+    implementation(project(":feature:notification"))
     implementation(project(":core:designsystem"))
     implementation(project(":domain:account"))
     implementation(project(":core:datastore"))
     implementation(project(":core:model"))
+    implementation(project(":sync:work"))
 
     implementation(composeDependencies)
     implementation(appDependencies)

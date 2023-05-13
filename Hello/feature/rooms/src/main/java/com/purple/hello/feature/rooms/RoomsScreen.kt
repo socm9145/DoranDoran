@@ -39,6 +39,7 @@ internal fun RoomsRoute(
     roomsViewModel: RoomsViewModel = hiltViewModel(),
     onClickRoom: (roomId: Long) -> Unit,
     onClickAppSetting: () -> Unit,
+    onClickNotification: () -> Unit,
 ) {
     val uiState by roomsViewModel.roomsUiState.collectAsState()
     val isRoomsLoading = uiState is RoomsUiState.Loading
@@ -54,7 +55,10 @@ internal fun RoomsRoute(
     }
 
     Column {
-        RoomsAppBar(onClickAppSetting = onClickAppSetting)
+        RoomsAppBar(
+            onClickAppSetting = onClickAppSetting,
+            onClickNotification = onClickNotification,
+        )
         Box(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -127,6 +131,7 @@ internal fun RoomsRoute(
 @Composable
 private fun RoomsAppBar(
     onClickAppSetting: () -> Unit,
+    onClickNotification: () -> Unit,
 ) {
     HiTopAppBar(
         title = "도란도란",
@@ -134,7 +139,7 @@ private fun RoomsAppBar(
         navigationIconContentDescription = "",
         actions = {
             HiIconButton(
-                onClick = { /*TODO*/ },
+                onClick = { onClickNotification() },
                 icon = {
                     Icon(
                         imageVector = HiIcons.Notifications,

@@ -1,4 +1,4 @@
-package com.purple.hello.feature.alarm
+package com.purple.hello.feature.notification
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,7 @@ import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 
 @Composable
-fun AlarmRoute(
+fun NotificationRoute(
     onBackClick: () -> Unit,
 ) {
     HiTheme {
@@ -21,14 +21,14 @@ fun AlarmRoute(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            AlarmAppBar(onBackClick = onBackClick)
-            AlarmScreen()
+            NotificationAppBar(onBackClick = onBackClick)
+            NotificationScreen()
         }
     }
 }
 
 @Composable
-private fun AlarmScreen() {
+private fun NotificationScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -40,7 +40,7 @@ private fun AlarmScreen() {
 }
 
 @Composable
-private fun AlarmAppBar(
+private fun NotificationAppBar(
     onBackClick: () -> Unit,
 ) {
     HiTopAppBar(
@@ -54,6 +54,6 @@ private fun AlarmAppBar(
 
 @Preview
 @Composable
-private fun PreviewAlarmScreen() {
-    AlarmRoute(onBackClick = {})
+private fun PreviewNotificationScreen() {
+    NotificationRoute(onBackClick = {})
 }

@@ -1,4 +1,5 @@
 package com.purple.hello
+
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,14 +10,15 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.purple.hello.core.datastore.DeviceDataStore
+import com.purple.hello.sync.work.SaveNotificationWorker
 import kotlinx.coroutines.runBlocking
+import java.util.*
 import javax.inject.Inject
 
 class HiFirebaseMessagingService @Inject constructor(
@@ -34,7 +36,7 @@ class HiFirebaseMessagingService @Inject constructor(
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob()
+                scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
             } else {
                 // Handle message within 10 seconds
                 handleNow()
@@ -68,9 +70,15 @@ class HiFirebaseMessagingService @Inject constructor(
     }
     // [END on_new_token]
 
-    private fun scheduleJob() {
+    private fun scheduleJob(title: String, body: String) {
         // [START dispatch_job]
-        val work = OneTimeWorkRequest.Builder(MyWorker::class.java)
+        val inputData = Data.Builder()
+            .putString(SaveNotificationWorker.KEY_TITLE, title)
+            .putString(SaveNotificationWorker.KEY_BODY, body)
+            .putLong(SaveNotificationWorker.KEY_TIMESTAMP, System.currentTimeMillis())
+            .build()
+        val work = OneTimeWorkRequest.Builder(SaveNotificationWorker::class.java)
+            .setInputData(inputData)
             .build()
         WorkManager.getInstance(this)
             .beginWith(work)
@@ -121,18 +129,10 @@ class HiFirebaseMessagingService @Inject constructor(
             )
             notificationManager.createNotificationChannel(channel)
         }
-
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
 
     companion object {
         private const val TAG = "MyFirebaseMsgService"
-    }
-
-    internal class MyWorker(appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
-        override fun doWork(): Result {
-            // TODO(developer): add long running task here.
-            return Result.success()
-        }
     }
 }
