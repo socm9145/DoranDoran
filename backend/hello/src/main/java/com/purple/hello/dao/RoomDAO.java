@@ -4,7 +4,6 @@ import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.*;
 import com.purple.hello.entity.Room;
-import com.purple.hello.entity.Room;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +13,7 @@ public interface RoomDAO {
     List<ReadRoomOutDTO> readRoomByUserId(long userId)throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO)throws Exception;
     String comparePasswordByRoomCode(long roomId) throws Exception;
-    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) throws Exception;
+    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomId(long roomId) throws Exception;
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO)  throws Exception;
     String readRoomCodeByRoomId(long roomId);
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);

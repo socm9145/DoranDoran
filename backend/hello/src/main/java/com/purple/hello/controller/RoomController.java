@@ -6,7 +6,6 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
-import com.purple.hello.generator.RoomCode;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +66,8 @@ public class RoomController {
             value = "그룹방 입장 정보 출력 API (v) vv",
             notes = "그룹방 코드를 입력할 경우 다이얼로그에 사용할 정보를 출력해주는 API")
     @GetMapping("/join-info")
-    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam("code") String roomCode)throws Exception{
-        ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomCode(roomCode);
+    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam long roomId)throws Exception{
+        ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomId(roomId);
 
         if (readUserRoomJoinOutDTO == null)
             throw new IllegalArgumentException();

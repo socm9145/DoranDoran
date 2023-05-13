@@ -79,8 +79,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) throws Exception{
-        return this.roomDAO.readUserRoomJoinByRoomCode(roomCode);
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomId(long roomId) throws Exception{
+        return this.roomDAO.readUserRoomJoinByRoomId(roomId);
     }
 
     @Override
