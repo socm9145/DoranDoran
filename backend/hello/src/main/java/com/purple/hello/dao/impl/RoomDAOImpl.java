@@ -164,14 +164,14 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode) throws Exception {
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomId(long roomId) throws Exception {
 
         List<ReadUserRoomJoinOutDTO> readUserRoomJoinOutDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadUserRoomJoinOutDTO.class, qRoom.roomId, qUserRoom.roomName, qRoom.roomQuestion))
                 .from(qRoom)
                 .join(qUserRoom)
                 .on(qRoom.roomId.eq(qUserRoom.room.roomId))
-                .where(qRoom.roomCode.eq(roomCode))
+                .where(qRoom.roomId.eq(roomId))
                 .where(qUserRoom.userRoomRole.eq(UserRoomRole.ROLE1))
                 .fetch();
 

@@ -17,7 +17,7 @@ public interface RoomService {
     List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception;
     CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception;
     boolean comparePasswordByRoomCode(long roomId, String password) throws Exception;
-    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomCode(String roomCode)throws Exception;
+    ReadUserRoomJoinOutDTO readUserRoomJoinByRoomId(long roomId)throws Exception;
     boolean updateRoomPassword(UpdateRoomPasswordInDTO updateRoomPasswordInDTO) throws Exception;
     ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) throws JsonProcessingException;
     void createQuestion() throws Exception;

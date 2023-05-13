@@ -11,7 +11,6 @@ import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.dto.tool.MemberDTO;
 import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.enu.UserRoomRole;
-import com.purple.hello.generator.RoomCode;
 import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.service.impl.AwsS3ServiceImpl;
 import com.purple.hello.service.impl.RoomServiceImpl;
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mockito;
 import org.python.util.PythonInterpreter;
 
@@ -215,11 +213,11 @@ class RoomServiceTest {
                 .build();
 
         // given
-        Mockito.when(roomDAO.readUserRoomJoinByRoomCode(any(String.class)))
+        Mockito.when(roomDAO.readUserRoomJoinByRoomId(any(String.class)))
                 .thenReturn(initReadUserRoomJoinOutDTO);
 
         // when
-        ReadUserRoomJoinOutDTO whenReadUserRoomJoinOutDTO = roomService.readUserRoomJoinByRoomCode("test_roomCode");
+        ReadUserRoomJoinOutDTO whenReadUserRoomJoinOutDTO = roomService.readUserRoomJoinByRoomId("test_roomCode");
 
         // then
         assertEquals(whenReadUserRoomJoinOutDTO.getRoomId(), initReadUserRoomJoinOutDTO.getRoomId());
@@ -232,12 +230,12 @@ class RoomServiceTest {
         // init
 
         // given
-        Mockito.when(roomDAO.readUserRoomJoinByRoomCode(any(String.class)))
+        Mockito.when(roomDAO.readUserRoomJoinByRoomId(any(String.class)))
                 .thenThrow(new IllegalArgumentException());
 
         // when - then
         assertThrows(IllegalArgumentException.class, () -> {
-            roomService.readUserRoomJoinByRoomCode("test_roomCode");
+            roomService.readUserRoomJoinByRoomId("test_roomCode");
         });
     }
 

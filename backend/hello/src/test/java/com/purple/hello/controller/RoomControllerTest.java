@@ -1,13 +1,11 @@
 package com.purple.hello.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.purple.hello.dto.in.CreateFeedInDTO;
 import com.purple.hello.dto.in.CreateRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.enu.BoolAlarm;
-import com.purple.hello.enu.FeedType;
 import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.UserRoomRepo;
 import com.purple.hello.service.impl.*;
@@ -204,7 +202,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomCode(any(String.class)))
+        given(roomService.readUserRoomJoinByRoomId(any(String.class)))
                 .willReturn(ReadUserRoomJoinOutDTO.builder()
                         .roomId(1)
                         .roomName("test_roomName")
@@ -225,7 +223,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomCode(any()))
+        given(roomService.readUserRoomJoinByRoomId(any()))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
@@ -243,7 +241,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomCode(any()))
+        given(roomService.readUserRoomJoinByRoomId(any()))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
@@ -265,7 +263,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomCode(any()))
+        given(roomService.readUserRoomJoinByRoomId(any()))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
