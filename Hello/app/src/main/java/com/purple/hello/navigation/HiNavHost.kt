@@ -43,7 +43,7 @@ fun HiNavHost(
             onClickRoomSetting = {
                 navController.navigateToRoomSetting(roomId = it)
             },
-            onClickAlarm = {
+            onClickNotification = {
                 navController.navigateToNotification()
             },
         )
