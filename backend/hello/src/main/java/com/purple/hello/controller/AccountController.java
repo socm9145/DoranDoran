@@ -52,7 +52,7 @@ public class AccountController {
     }
 
     @GetMapping("/login/google")
-    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, @RequestHeader("device-token") String deviceToken, HttpServletResponse httpServletResponse) throws Exception {
+    public ResponseEntity<String> loginGoogle(@RequestHeader("id-token") String token, @RequestHeader(value = "device-token", required = false) String deviceToken, HttpServletResponse httpServletResponse) throws Exception {
         Payload payload = userService.googleIdTokenVerify(token);
         if(payload != null){
             String oauthId = payload.getSubject();

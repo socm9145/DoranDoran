@@ -31,10 +31,6 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User readUserByOauthId(String oauthId) throws Exception{
         Optional<User> isUser = userRepo.findByOauthId(oauthId);
-
-        if (isUser.isEmpty())
-            throw new IllegalArgumentException();
-
         return isUser.orElse(null);
     }
 
