@@ -15,6 +15,11 @@ interface RoomService {
         @Body requestForCreate: RoomCreationRequest,
     ): Response<RoomCreationResponse>
 
+    @POST("room/join")
+    suspend fun joinRoom(
+        @Body requestForJoin: RoomJoinRequest,
+    ): Response<RoomJoinResponse>
+
     @GET("room/user-list")
     suspend fun getMembersInRoom(
         @Query("roomId") roomId: Long,

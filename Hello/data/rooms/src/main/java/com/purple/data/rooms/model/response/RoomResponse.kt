@@ -25,3 +25,23 @@ data class RoomCreationResponse(
     val userRoomRole: String,
 )
 
+@Serializable
+data class RoomJoinResponse(
+    @SerialName("createAt")
+    val createAt: String,
+    @SerialName("dayAlarm")
+    val dayAlarm: String,
+    @SerialName("moveAlarm")
+    val moveAlarm: String,
+    @SerialName("roomName")
+    val roomName: String,
+    @SerialName("safeAlarm")
+    val safeAlarm: String,
+    @SerialName("userName")
+    val userName: String,
+    @SerialName("userRoomId")
+    val userRoomId: Long,
+    @SerialName("userRoomRole")
+    val userRoomRole: String,
+)
+

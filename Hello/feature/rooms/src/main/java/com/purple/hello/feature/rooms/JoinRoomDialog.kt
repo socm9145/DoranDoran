@@ -9,6 +9,7 @@ import com.purple.core.model.InputData
 import com.purple.core.model.JoinRoomInputValue
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -16,8 +17,10 @@ import kotlinx.coroutines.launch
 internal fun JoinRoomDialog(
     roomsViewModel: RoomsViewModel = hiltViewModel(),
     joinRoomId: Long,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     var joinData by remember { mutableStateOf<JoinRoomInputValue?>(null) }
 
     LaunchedEffect(joinRoomId) {
@@ -35,6 +38,18 @@ internal fun JoinRoomDialog(
             ),
             onDismiss = onDismiss,
             onConfirm = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    when(roomsViewModel.joinRoom(joinRoomId, joinData!!)) {
+                        "Password Error" -> {
+                            joinData!!.password.supportingText = "비밀번호가 틀렸습니다."
+                            joinData!!.password.inputValue = ""
+                        }
+                        "Success" -> {
+                            launch(Dispatchers.Main) { onConfirm() }
+                        }
+                        else -> {}
+                    }
+                }
                 Log.d("roomName", joinData!!.roomName.inputValue)
                 Log.d("nickName", joinData!!.nickName.inputValue)
                 Log.d("password", joinData!!.password.inputValue)

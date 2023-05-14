@@ -5,7 +5,7 @@ import com.purple.core.model.type.InputDialogType
 data class InputData(
     var question: String,
     val placeHolder: String,
-    val supportingText: String,
+    var supportingText: String,
     var inputValue: String,
 ) {
     constructor(question: String, placeHolder: String, supportingText: String) : this(

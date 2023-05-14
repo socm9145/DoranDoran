@@ -14,6 +14,7 @@ import com.purple.core.model.Room
 import com.purple.core.model.createInputDataByInputType
 import com.purple.core.model.type.InputDialogType
 import com.purple.data.rooms.datasource.RemoteRoomDataSource
+import com.purple.data.rooms.model.request.RoomJoinRequest
 import com.purple.data.rooms.model.response.RoomJoinInfoResponse
 import com.purple.data.rooms.model.response.asMemberEntity
 import com.purple.data.rooms.model.response.asMemberRoomEntity
@@ -118,8 +119,40 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun joinRoom(roomCode: Int) {
-        TODO("Not yet implemented")
+    override suspend fun joinRoom(roomId: Long, joinRoomInputValue: JoinRoomInputValue): String {
+        return runCatching {
+            remoteRoomDataSource.joinRoom(
+                RoomJoinRequest(
+                    roomId = roomId,
+                    roomName = joinRoomInputValue.roomName.inputValue,
+                    roomPassword = joinRoomInputValue.password.inputValue,
+                    userName = joinRoomInputValue.nickName.inputValue
+                )
+            )
+        }
+        .onFailure {
+
+        }.getOrThrow().let {
+            if(it.isSuccessful) {
+                val response = checkNotNull(it.body())
+
+                roomDao.insertRoom(
+                    RoomEntity(
+                        roomId = roomId,
+                        userRoomId = response.userRoomId,
+                        roomName = response.roomName,
+                        recentVisitedTime = System.currentTimeMillis()
+                    )
+                )
+
+                "Success"
+            }else {
+                when(it.code()) {
+                    400 -> "Password Error"
+                    else -> "Error"
+                }
+            }
+        }
     }
 
     override suspend fun getRoomSettings(roomId: Long) {

@@ -18,6 +18,8 @@ class RemoteRoomDataSource @Inject constructor(
             RoomCreationRequest(roomName, userName, roomQuestion, roomPassword),
         )
 
+    override suspend fun joinRoom(roomJoinRequest: RoomJoinRequest) = roomService.joinRoom(roomJoinRequest)
+
     override suspend fun getRoomList(): Response<List<RoomListResponse>> =
         roomService.getRoomList()
 

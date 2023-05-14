@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.purple.core.model.*
 import com.purple.core.model.type.InputDialogType
-import com.purple.hello.domain.rooms.CreateRoomUseCase
-import com.purple.hello.domain.rooms.FetchRoomsUseCase
-import com.purple.hello.domain.rooms.GetJoinInfoUseCase
-import com.purple.hello.domain.rooms.GetRoomListUseCase
+import com.purple.hello.domain.rooms.*
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RoomsViewModel @Inject constructor(
     getRoomListFlow: GetRoomListUseCase,
+    private val joinRoomUseCase: JoinRoomUseCase,
     private val getJoinInfoUseCase: GetJoinInfoUseCase,
     private val fetchRoomsUseCase: FetchRoomsUseCase,
     private val createRoomUseCase: CreateRoomUseCase,
@@ -49,6 +47,8 @@ class RoomsViewModel @Inject constructor(
         val roomId = createRoomUseCase(roomName, userName, question, password)
         onRoomCreate(roomId)
     }
+
+    suspend fun joinRoom(roomId: Long, joinRoomData: JoinRoomInputValue) = joinRoomUseCase(roomId, joinRoomData)
 
     suspend fun fetchRoom() = fetchRoomsUseCase()
 

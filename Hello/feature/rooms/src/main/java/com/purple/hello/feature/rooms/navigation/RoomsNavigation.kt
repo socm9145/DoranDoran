@@ -66,7 +66,7 @@ fun NavGraphBuilder.roomsGraph(
             )
         ) {
             val joinRoomId = it.arguments?.getLong("joinRoomId") ?: 0L
-            val showDialog = remember { mutableStateOf(joinRoomId != 0L) }
+            val showDialog = remember(joinRoomId) { mutableStateOf(joinRoomId != 0L) }
 
             Log.d(TAG, joinRoomId.toString())
 
@@ -75,7 +75,10 @@ fun NavGraphBuilder.roomsGraph(
                 if(showDialog.value) {
                     JoinRoomDialog(
                         onDismiss = { showDialog.value = false },
-                        joinRoomId = joinRoomId
+                        joinRoomId = joinRoomId,
+                        onConfirm = {
+                            navController.navigateRoomDetail(joinRoomId)
+                        }
                     )
                 }
             }

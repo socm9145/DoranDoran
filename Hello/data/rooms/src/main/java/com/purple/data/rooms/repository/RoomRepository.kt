@@ -20,7 +20,7 @@ interface RoomRepository {
         roomId: Long,
     )
     suspend fun fetchRooms()
-    fun joinRoom(roomCode: Int)
+    suspend fun joinRoom(roomId: Long, joinRoomInputValue: JoinRoomInputValue): String
 
     suspend fun getRoomSettings(roomId: Long)
     suspend fun updateUserName(userRoomId: Long, userName: String)
