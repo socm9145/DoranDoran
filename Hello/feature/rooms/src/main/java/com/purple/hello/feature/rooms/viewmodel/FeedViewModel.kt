@@ -1,6 +1,7 @@
 package com.purple.hello.feature.rooms.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -47,12 +48,14 @@ class FeedViewModel @Inject constructor(
         dateFeedList.map {
             when (it) {
                 is Result.Loading -> FeedUiState.Loading
-                is Result.Success -> FeedUiState.Success(
-                    feeds = it.data,
-                    isPossibleToUpload = it.data.none { feed ->
-                        feed.author.id == userId
-                    },
-                )
+                is Result.Success -> {
+                    FeedUiState.Success(
+                        feeds = it.data,
+                        isPossibleToUpload = it.data.none { feed ->
+                            feed.author.id == userId
+                        },
+                    )
+                }
                 is Result.Error -> FeedUiState.Error(it.exception)
             }
         }.stateIn(

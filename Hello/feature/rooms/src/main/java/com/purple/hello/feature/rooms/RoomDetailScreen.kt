@@ -2,6 +2,7 @@ package com.purple.hello.feature.rooms
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.model.Member
 import com.purple.core.model.Room
 import com.purple.hello.feature.rooms.state.FeedUiState
+import com.purple.hello.feature.rooms.view.FeedItem
 import com.purple.hello.feature.rooms.view.MemberProfileItem
 import com.purple.hello.feature.rooms.viewmodel.FeedViewModel
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
@@ -45,7 +47,7 @@ internal fun RoomDetailRoute(
     val roomCode by roomsViewModel.roomCode.collectAsState()
     val feedUiState by feedViewModel.feedUiState.collectAsState()
 
-    val currentDate = remember { mutableStateOf(LocalDateTime.now()) }
+    val currentDate = remember { mutableStateOf(LocalDateTime.of(2023, 5, 14,0, 0)) }
 
     if(selectedRoom != null) {
         LaunchedEffect(currentDate) {
@@ -54,6 +56,7 @@ internal fun RoomDetailRoute(
         }
 
         LaunchedEffect(selectedRoom) {
+            currentDate.value = LocalDateTime.now()
             feedViewModel.fetchFeed(selectedRoom!!.roomId, currentDate.value)
             roomsViewModel.fetchRoomDetail()
         }
@@ -170,7 +173,7 @@ private fun RoomFeedScreen(
         is FeedUiState.Success -> {
             LazyColumn() {
                 items(feedUiState.feeds, key = { it.feedId }) {
-                    Text(text = it.author.nickName)
+                    FeedItem(feed = it)
                 }
             }
         }
