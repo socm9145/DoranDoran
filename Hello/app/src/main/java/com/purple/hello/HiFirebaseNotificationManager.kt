@@ -27,7 +27,7 @@ class HiFirebaseNotificationManager @Inject constructor(
                     return@OnCompleteListener
                 }
                 val token = task.result
-                Log.d(ContentValues.TAG, token)
+                Log.d(ContentValues.TAG, "fcm-token: $token")
                 // Datastore 에 저장
                 runBlocking { deviceDataStore.setDeviceToken(token) }
             },
@@ -39,6 +39,8 @@ class HiFirebaseNotificationManager @Inject constructor(
     ) { isGranted: Boolean ->
         if (!isGranted) {
             Toast.makeText(activity, "알림 수신 비동의 완료", Toast.LENGTH_SHORT).show()
+        } else {
+            // TODO: Inform user that that your app will not show notifications.
         }
     }
 

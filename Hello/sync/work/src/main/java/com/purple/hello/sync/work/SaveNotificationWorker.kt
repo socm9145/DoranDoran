@@ -1,6 +1,7 @@
 package com.purple.hello.sync.work
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.purple.core.database.dao.NotificationDao
@@ -14,6 +15,8 @@ class SaveNotificationWorker @Inject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
+        Log.d(TAG, "do work")
+
         val title = inputData.getString("title") ?: ""
         val body = inputData.getString("body") ?: ""
         val time = inputData.getLong("time", 0L)
@@ -24,6 +27,7 @@ class SaveNotificationWorker @Inject constructor(
     }
 
     private suspend fun saveNotificationToDatabase(title: String, body: String, time: Long) {
+        Log.d(TAG, "message: $title")
         notificationDao.insertNotificationEntity(
             NotificationEntity(
                 title = title,
@@ -37,5 +41,6 @@ class SaveNotificationWorker @Inject constructor(
         const val KEY_TITLE = "title"
         const val KEY_BODY = "body"
         const val KEY_TIMESTAMP = "time"
+        private const val TAG = "WorkManager"
     }
 }

@@ -21,10 +21,11 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 import javax.inject.Inject
 
-class HiFirebaseMessagingService @Inject constructor(
-    private val deviceDataStore: DeviceDataStore,
-) : FirebaseMessagingService() {
-    // [START receive_message]
+class HiFirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var deviceDataStore: DeviceDataStore
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
@@ -47,6 +48,7 @@ class HiFirebaseMessagingService @Inject constructor(
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
             sendNotification(remoteMessage.notification?.title, remoteMessage.notification!!.body!!)
+            scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -133,6 +135,6 @@ class HiFirebaseMessagingService @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "MyFirebaseMsgService"
+        private const val TAG = "HiFirebaseMsgService"
     }
 }

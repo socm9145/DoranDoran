@@ -1,12 +1,10 @@
 plugins {
-    kotlin("android")
-    kotlin("kapt")
     id("com.android.library")
-    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "com.purple.hello.feature.notification"
+    namespace = "com.purple.hello.domain.notification"
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
@@ -30,30 +28,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = ComposeOptions.kotlinCompilerExtensionVersion
+        jvmTarget = KotlinOptions.jvmTarget
     }
 }
 
 dependencies {
-    implementation(project(":core:designsystem"))
+    implementation(project(":data:notification"))
     implementation(project(":core:model"))
-    implementation(project(":domain:notification"))
 
-    implementation(composeDependencies)
-    implementation(imageLoadDependencies)
     implementation(appDependencies)
-    implementation(navDependencies)
-
-    implementation(Hilt.HILT_ANDROID)
-    kapt(Hilt.HILT_ANDROID_COMPILER)
-
-    debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)
     androidTestImplementation(defaultAndroidTest)
+    implementation(Kotlin.KOTLIN_COROUTINES)
+    implementation("javax.inject:javax.inject:1")
 }
