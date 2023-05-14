@@ -53,11 +53,9 @@ internal fun RoomsRoute(
         }
     }
 
-    Column {
+    Column(Modifier.fillMaxSize()) {
         RoomsAppBar(onClickAppSetting = onClickAppSetting)
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
+        Box {
             LazyVerticalGrid(
                 columns = Adaptive(300.dp),
                 contentPadding = PaddingValues(16.dp),

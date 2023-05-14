@@ -1,11 +1,13 @@
 package com.purple.hello.ui
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.*
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.purple.hello.domain.account.CheckLoggedInUseCase
 import com.purple.hello.domain.account.GetUserIdUseCase
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
@@ -13,10 +15,11 @@ import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
 import kotlinx.coroutines.flow.first
 import kotlin.properties.Delegates
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun rememberAppState(
     windowSizeClass: WindowSizeClass,
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberAnimatedNavController(),
     checkLoggedInUseCase: CheckLoggedInUseCase,
     getUserIdUseCase: GetUserIdUseCase,
 ): MutableState<AppState> {

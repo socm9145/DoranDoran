@@ -3,6 +3,7 @@ val composeDependencies = listOf(
     Compose.PREVIEW,
     Compose.MATERIAL3,
     Compose.MATERIAL3_WINDOW_SIZE,
+    Compose.ANIMATION
 )
 
 val composeDebug = listOf(
@@ -23,7 +24,8 @@ val appDependencies = listOf(
 
 val navDependencies = listOf(
     Hilt.HILT_NAV_COMPOSE,
-    Androidx.NAVIGATION_COMPOSE
+    Androidx.NAVIGATION_COMPOSE,
+    Compose.NAVIGATION,
 )
 
 val androidLibraryDependencies = listOf(
