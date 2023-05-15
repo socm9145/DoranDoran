@@ -20,7 +20,6 @@ class HiApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-
         // Kakao SDK 초기화
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_KEY)
     }

@@ -1,7 +1,7 @@
 package com.purple.data.rooms.utils
 
 import com.purple.core.database.entity.RoomEntity
-import com.purple.data.rooms.model.RoomCreationResponse
+import com.purple.data.rooms.model.response.RoomCreationResponse
 
 fun RoomCreationResponse.asRoomEntity() = RoomEntity(
     roomId = this.roomId,

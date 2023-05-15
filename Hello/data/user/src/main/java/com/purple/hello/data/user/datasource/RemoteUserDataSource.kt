@@ -4,7 +4,6 @@ import com.purple.hello.data.user.model.ProfileSettingRequest
 import com.purple.hello.data.user.model.UserResponse
 import com.purple.hello.data.user.service.UserService
 import retrofit2.Response
-import java.util.*
 import javax.inject.Inject
 
 class RemoteUserDataSource @Inject constructor(
@@ -15,7 +14,5 @@ class RemoteUserDataSource @Inject constructor(
         userService.getUserInfo()
 
     override suspend fun setProfile(profileUrl: String, birth: String) =
-        userService.setProfile(
-            ProfileSettingRequest(profileUrl, birth),
-        )
+        userService.setProfile(ProfileSettingRequest(profileUrl, birth))
 }

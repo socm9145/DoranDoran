@@ -1,14 +1,14 @@
 package com.purple.core.database.entity
 
 import androidx.room.Entity
-import java.util.Date
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "members",
     primaryKeys = ["userId"],
 )
 data class MemberEntity(
-    val birth: Date?,
+    val birth: LocalDateTime?,
     val userId: Long,
     val profileUrl: String?,
 )

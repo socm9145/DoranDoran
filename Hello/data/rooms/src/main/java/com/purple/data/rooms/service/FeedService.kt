@@ -1,22 +1,27 @@
 package com.purple.data.rooms.service
 
-import com.purple.data.rooms.model.CreateFeedResponse
-import com.purple.data.rooms.model.QuestionResponse
+import com.purple.data.rooms.model.response.QuestionResponse
+import com.purple.data.rooms.model.response.feed.CreateFeedResponse
+import com.purple.data.rooms.model.response.feed.DateFeedResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Query
+import retrofit2.http.*
+import java.time.LocalDate
 import java.util.*
 
 interface FeedService {
 
-    @POST("room/date-question")
+    @GET("room/date-question")
     suspend fun getDateQuestion(
         @Query("roomId") roomId: Long,
-        @Query("date") date: Date,
+        @Query("date") date: LocalDate,
     ): Response<QuestionResponse>
+
+    @GET("room/date-feed")
+    suspend fun getDateFeeds(
+        @Query("roomId") roomId: Long,
+        @Query("date") date: String,
+    ): Response<List<DateFeedResponse>>
 
     @Multipart
     @POST("room/feed")

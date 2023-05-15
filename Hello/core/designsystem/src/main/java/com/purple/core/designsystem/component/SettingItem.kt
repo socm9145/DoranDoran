@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.HiTypography
-import com.purple.core.model.SettingItemType
+import com.purple.core.model.type.SettingItemType
 
 @Composable
 fun SettingItem(

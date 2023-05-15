@@ -1,19 +1,21 @@
 package com.purple.hello.ui
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.*
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.purple.hello.domain.account.CheckLoggedInUseCase
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun rememberAppState(
     windowSizeClass: WindowSizeClass,
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberAnimatedNavController(),
     checkLoggedInUseCase: CheckLoggedInUseCase,
 ): MutableState<AppState> {
     val appState = remember(navController, windowSizeClass) {
@@ -23,7 +25,9 @@ fun rememberAppState(
     LaunchedEffect(checkLoggedInUseCase) {
         checkLoggedInUseCase().collect { isLoggedIn ->
             appState.value = when (isLoggedIn) {
-                true -> AppState.LoggedIn(navController, windowSizeClass)
+                true -> {
+                    AppState.LoggedIn(navController, windowSizeClass)
+                }
                 false -> AppState.LoggedOut(windowSizeClass)
             }
         }

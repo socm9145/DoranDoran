@@ -1,7 +1,8 @@
 package com.purple.hello.feature.setting.room.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.*
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import com.purple.hello.feature.setting.room.RoomSettingRoute
 
 internal const val roomIdArg = "roomId"
@@ -11,6 +12,7 @@ fun NavController.navigateToRoomSetting(navOptions: NavOptions? = null, roomId: 
     this.navigate("$roomSettingNavigationRoute/$roomId", navOptions)
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.roomSettingScreen(
     onBackClick: () -> Unit,
 ) {

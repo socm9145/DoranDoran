@@ -44,12 +44,14 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
     implementation(project(":domain:rooms"))
+    implementation(project(":domain:account"))
 
     implementation(composeDependencies)
     implementation(imageLoadDependencies)
     implementation(appDependencies)
     implementation(navDependencies)
     implementation(cameraDependencies)
+    implementation(calendarLibrary)
     implementation(Compose.PERMISSION)
 
     implementation(Hilt.HILT_ANDROID)

@@ -23,13 +23,14 @@ import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.dialog.HiInputDialog
-import com.purple.core.designsystem.dialog.createInputDataByInputType
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
 import com.purple.core.designsystem.utils.multipleEventsCutter
-import com.purple.core.model.InputDialogType
+import com.purple.core.model.createInputDataByInputType
+import com.purple.core.model.type.InputDialogType
 import com.purple.hello.feature.rooms.state.RoomsUiState
+import com.purple.hello.feature.rooms.view.RoomItem
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,14 +55,12 @@ internal fun RoomsRoute(
         }
     }
 
-    Column {
+    Column(Modifier.fillMaxSize()) {
         RoomsAppBar(
             onClickAppSetting = onClickAppSetting,
             onClickNotification = onClickNotification,
         )
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
+        Box {
             LazyVerticalGrid(
                 columns = Adaptive(300.dp),
                 contentPadding = PaddingValues(16.dp),

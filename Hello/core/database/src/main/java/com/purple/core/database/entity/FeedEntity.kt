@@ -2,11 +2,11 @@ package com.purple.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import java.util.*
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "feed",
-    primaryKeys = ["roomId", "userId", "createAt"],
+    primaryKeys = ["feedId"],
     foreignKeys = [
         ForeignKey(
             entity = RoomEntity::class,
@@ -14,12 +14,19 @@ import java.util.*
             childColumns = ["roomId"],
             onDelete = ForeignKey.CASCADE,
         ),
+        ForeignKey(
+            entity = MemberEntity::class,
+            parentColumns = ["userId"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.NO_ACTION,
+        ),
     ],
 )
 data class FeedEntity(
+    val feedId: Long,
     val roomId: Long,
     val userId: Long,
-    val createAt: Date,
+    val createAt: LocalDateTime,
     val feedUrl: String?,
     val content: String?,
 )

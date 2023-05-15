@@ -2,7 +2,6 @@ package com.purple.hello.data.user.datasource
 
 import com.purple.hello.data.user.model.UserResponse
 import retrofit2.Response
-import java.util.*
 
 interface UserDataSource {
 

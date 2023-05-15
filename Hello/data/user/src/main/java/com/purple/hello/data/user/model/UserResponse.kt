@@ -9,3 +9,9 @@ data class UserResponse(
     val userId: Long,
     @SerialName("profileURL") val profileUrl: String?,
 )
+
+@Serializable
+data class ProfileSetResponse(
+    @SerialName("birth") val birth: String?,
+    @SerialName("profileURL") val profileUrl: String?,
+)
