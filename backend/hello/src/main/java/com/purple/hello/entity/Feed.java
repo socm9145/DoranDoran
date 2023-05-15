@@ -18,7 +18,7 @@ public class Feed {
     long feedId;
     String feedUrl;
     String content;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
     Date createAt;
     @Enumerated(EnumType.STRING)
     FeedType feedType;

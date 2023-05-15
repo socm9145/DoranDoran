@@ -10,16 +10,21 @@ import com.purple.hello.dto.tool.UserIdDateDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.repo.FeedRepo;
 import com.purple.hello.repo.UserRoomRepo;
+import com.purple.hello.util.DateUtils;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +45,10 @@ public class FeedDAOImpl implements FeedDAO {
 
     @Override
     public List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date) throws Exception{
+        DateTemplate feedCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", feedCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
+        Date dateKST = DateUtils.addHours(date, 9);
+        String dateString = DateUtils.format(dateKST, "yyyy-MM-dd");
         // 특정 그룹방에서 특정 날짜에 피드를 올린 유저의 ID를 반환
         List<UserIdDateDTO> userIdDateDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(UserIdDateDTO.class, qUser.userId, qFeed.createAt))
@@ -51,6 +60,7 @@ public class FeedDAOImpl implements FeedDAO {
                 .join(qFeed)
                 .on(qFeed.userRoom.userRoomId.eq(qUserRoom.userRoomId))
                 .where(qRoom.roomId.eq(roomId))
+                .where(feedCreateAt.eq(dateString))
                 .fetch();
 
         if (userIdDateDTOs.isEmpty())
@@ -59,10 +69,7 @@ public class FeedDAOImpl implements FeedDAO {
         List<UserIdDTO> userIdDTOs = new ArrayList<>();
 
         for (UserIdDateDTO userIdDateDTO : userIdDateDTOs){
-            if (userIdDateDTO.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                    .equals(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())){
-                userIdDTOs.add(new UserIdDTO(userIdDateDTO.getUserId()));
-            }
+            userIdDTOs.add(new UserIdDTO(userIdDateDTO.getUserId()));
         }
 
         // 특정 그룹방의 모든 회원을 반환
@@ -121,7 +128,7 @@ public class FeedDAOImpl implements FeedDAO {
                 .content(rFeed.getContent())
                 .feedType(rFeed.getFeedType())
                 .feedUrl(rFeed.getFeedUrl())
-                .createAt(new Date())
+                .createAt(rFeed.getCreateAt())
                 .userRoomId(userRoom.getUserRoomId())
                 .build();
 
@@ -131,6 +138,10 @@ public class FeedDAOImpl implements FeedDAO {
 
     @Override
     public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) {
+        DateTemplate feedCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", feedCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
+        Date dateKST = DateUtils.addHours(date, 9);
+        String dateString = DateUtils.format(dateKST, "yyyy-MM-dd");
         List<ReadFeedOutDTO> readFeedOutDTOs = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadFeedOutDTO.class, qFeed.feedId, qFeed.feedUrl, qFeed.content, qUser.userId, qFeed.createAt))
                 .from(qUser)
@@ -141,16 +152,9 @@ public class FeedDAOImpl implements FeedDAO {
                 .join(qFeed)
                 .on(qFeed.userRoom.userRoomId.eq(qUserRoom.userRoomId))
                 .where(qRoom.roomId.eq(roomId))
+                .where(feedCreateAt.eq(dateString))
                 .fetch();
 
-        List<ReadFeedOutDTO> rReadFeedOutDTOs = new ArrayList<>();
-
-        for (ReadFeedOutDTO readFeedOutDTO : readFeedOutDTOs){
-            if (readFeedOutDTO.getCreateAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                    .equals(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
-                rReadFeedOutDTOs.add(readFeedOutDTO);
-        }
-
-        return rReadFeedOutDTOs;
+        return readFeedOutDTOs;
     }
 }

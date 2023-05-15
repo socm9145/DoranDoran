@@ -1,5 +1,7 @@
 package com.purple.hello.dto.out;
 
+import com.purple.hello.util.DateUtils;
+import jnr.constants.platform.Local;
 import lombok.*;
 
 import java.util.Date;
@@ -20,6 +22,6 @@ public class ReadFeedOutDTO {
         this.feedUrl = feedUrl;
         this.content = content;
         this.userId = userId;
-        this.createAt = createAt;
+        this.createAt = DateUtils.addHours(createAt, 9);
     }
 }
