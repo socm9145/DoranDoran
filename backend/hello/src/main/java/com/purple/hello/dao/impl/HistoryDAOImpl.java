@@ -105,6 +105,18 @@ public class HistoryDAOImpl implements HistoryDAO {
     }
 
     @Override
+    public void createFirstHistory(Long roomId) {
+        Room room = roomRepo.findById(roomId).get();
+        Question question = questionRepo.findById(1L).get();
+        History history = History.builder()
+                .room(room)
+                .question(question)
+                .createAt(new Date())
+                .build();
+        historyRepo.save(history);
+    }
+
+    @Override
     public ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date date) throws IOException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         StringTemplate dateStringTemplate = Expressions.stringTemplate("DATE_FORMAT({0}, {1})",qHistory.createAt, ConstantImpl.create("%Y-%m-%d"));
