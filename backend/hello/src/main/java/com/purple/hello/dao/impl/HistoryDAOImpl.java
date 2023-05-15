@@ -7,8 +7,11 @@ import com.purple.hello.entity.*;
 import com.purple.hello.repo.HistoryRepo;
 import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.repo.RoomRepo;
+import com.purple.hello.util.DateUtils;
+import com.querydsl.core.Fetchable;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -47,9 +50,10 @@ public class HistoryDAOImpl implements HistoryDAO {
 
     @Override
     public List<DeviceWithQuestionDTO> readDevicesWithDailyQuestionByBeginTime(int beginTime) throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", qHistory.createAt, ConstantImpl.create("%Y-%m-%d"));
-        String currentDate = simpleDateFormat.format(new Date());
+        DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", historyCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
+        Date currentDateKST = DateUtils.addHours(new Date(), 9);
+        String currentDateString = DateUtils.format(currentDateKST, "yyyy-MM-dd");
         return new JPAQuery<>(em)
                 .select(Projections.constructor(DeviceWithQuestionDTO.class, qRoom.roomId, qUserRoom.roomName, qUser.deviceToken, qHistory.question.content))
                 .distinct()
@@ -61,17 +65,19 @@ public class HistoryDAOImpl implements HistoryDAO {
                 .join(qHistory)
                 .on(qRoom.roomId.eq(qHistory.room.roomId))
                 .where(qRoom.beginTime.eq(beginTime))
-                .where(historyCreateAt.eq(currentDate))
+                .where(historyCreateAt.eq(currentDateString))
                 .where(qUser.deviceToken.isNotNull())
                 .fetch();
     }
 
     @Override
     public List<DeviceWithQuestionDTO> readDevicesNotUploadedByBeginTime(int beginTime) throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", qHistory.createAt, ConstantImpl.create("%Y-%m-%d"));
-        StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", qFeed.createAt, ConstantImpl.create("%Y-%m-%d"));
-        String currentDate = simpleDateFormat.format(new Date());
+        DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", historyCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
+        DateTemplate feedCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", feedCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
+        Date currentDateKST = DateUtils.addHours(new Date(), 9);
+        String currentDateString = DateUtils.format(currentDateKST, "yyyy-MM-dd");
         return new JPAQuery<>(em)
                 .select(Projections.constructor(DeviceWithQuestionDTO.class, qRoom.roomId, qUserRoom.roomName, qUser.deviceToken, qHistory.question.content))
                 .distinct()
@@ -83,7 +89,7 @@ public class HistoryDAOImpl implements HistoryDAO {
                 .join(qHistory)
                 .on(qRoom.roomId.eq(qHistory.room.roomId))
                 .where(qRoom.beginTime.eq(beginTime))
-                .where(historyCreateAt.eq(currentDate))
+                .where(historyCreateAt.eq(currentDateString))
                 .where(qUser.deviceToken.isNotNull())
                 .where(qUserRoom.userRoomId.notIn(new JPAQuery<>(em)
                         .select(qUserRoom.userRoomId)
@@ -92,7 +98,7 @@ public class HistoryDAOImpl implements HistoryDAO {
                         .on(qUser.userId.eq(qUserRoom.user.userId))
                         .join(qFeed)
                         .on(qUserRoom.userRoomId.eq(qFeed.userRoom.userRoomId))
-                        .where(feedCreateAt.eq(currentDate))
+                        .where(feedCreateAt.eq(currentDateString))
                         .fetch())
                 )
                 .fetch();
