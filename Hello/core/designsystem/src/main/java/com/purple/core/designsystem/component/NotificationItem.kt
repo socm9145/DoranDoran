@@ -24,7 +24,6 @@ fun NotificationItem(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp)
                 .background(Color.Unspecified)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
@@ -39,21 +38,33 @@ fun NotificationItem(
                         .fillMaxHeight(),
                     Arrangement.SpaceBetween,
                 ) {
-                    Box(contentAlignment = Alignment.CenterStart) {
+                    Box(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
                         Text(
                             text = titleContent,
                             color = MaterialTheme.colorScheme.onSurface,
                             style = HiTypography.bodyMedium,
                         )
                     }
-                    Box(contentAlignment = Alignment.CenterStart) {
+                    Box(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
                         Text(
                             text = bodyContent,
                             color = MaterialTheme.colorScheme.onSurface,
                             style = HiTypography.bodyLarge,
                         )
                     }
-                    Box(contentAlignment = Alignment.CenterStart) {
+                    Box(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
                         Text(
                             text = timeContent,
                             color = MaterialTheme.colorScheme.outline,
