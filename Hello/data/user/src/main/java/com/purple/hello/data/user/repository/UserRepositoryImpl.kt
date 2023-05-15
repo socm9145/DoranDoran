@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -70,7 +69,7 @@ class UserRepositoryImpl @Inject constructor(
         return userDao.getProfileUrl(userId).map {
             Profile(
                 profileUrl = it.profileUrl,
-                birth = LocalDateTime.now(),
+                birth = it.birth,
             )
         }
     }
