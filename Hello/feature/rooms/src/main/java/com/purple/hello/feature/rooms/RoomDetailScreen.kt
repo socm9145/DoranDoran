@@ -70,7 +70,9 @@ internal fun RoomDetailRoute(
 
         LaunchedEffect(selectedRoom) {
             currentDate.value = LocalDateTime.now()
+            roomsViewModel.fetchRoomDetail()
         }
+
         LaunchedEffect(refreshing) {
             if (refreshing) {
                 feedViewModel.fetchFeed(currentDate.value)
