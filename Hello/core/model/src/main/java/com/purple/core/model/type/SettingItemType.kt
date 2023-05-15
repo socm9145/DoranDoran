@@ -1,4 +1,4 @@
-package com.purple.core.model
+package com.purple.core.model.type
 
 enum class SettingItemType(
     val mainText: String,

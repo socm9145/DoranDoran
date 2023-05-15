@@ -4,30 +4,33 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOutlinedButton
-import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.model.Member
+import com.purple.core.model.Room
 import com.purple.hello.feature.rooms.state.FeedUiState
-import com.purple.hello.feature.rooms.state.RoomDetailUiState
+import com.purple.hello.feature.rooms.view.FeedItem
 import com.purple.hello.feature.rooms.view.MemberProfileItem
-import com.purple.hello.feature.rooms.viewmodel.RoomDetailViewModel
+import com.purple.hello.feature.rooms.viewmodel.FeedViewModel
+import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -35,98 +38,88 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun RoomDetailRoute(
-    roomDetailViewModel: RoomDetailViewModel = hiltViewModel(),
+    feedViewModel: FeedViewModel = hiltViewModel(),
+    roomsViewModel: RoomsViewModel = hiltViewModel(),
     onClickCameraButton: (roomId: Long) -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val roomDetailUiState by roomDetailViewModel.roomDetailUiState.collectAsState()
-    val feedUiState by roomDetailViewModel.feedUiState.collectAsState()
-    val roomCode by roomDetailViewModel.roomCode.collectAsState()
+    val selectedRoom by roomsViewModel.selectedRoom.collectAsState()
+    val roomCode by roomsViewModel.roomCode.collectAsState()
+    val feedUiState by feedViewModel.feedUiState.collectAsState()
 
     val currentDate = remember { mutableStateOf(LocalDateTime.now()) }
 
-    LaunchedEffect(currentDate) {
-        roomDetailViewModel.selectDate(currentDate.value)
-        roomDetailViewModel.fetchFeed(currentDate.value)
-    }
-    LaunchedEffect(roomCode) {
-        roomDetailViewModel.fetchFeed(currentDate.value)
+    if (selectedRoom != null) {
+        LaunchedEffect(currentDate) {
+            feedViewModel.selectDate(currentDate.value)
+            feedViewModel.fetchFeed(selectedRoom!!.roomId, currentDate.value)
+        }
+
+        LaunchedEffect(selectedRoom) {
+            currentDate.value = LocalDateTime.now()
+            feedViewModel.fetchFeed(selectedRoom!!.roomId, currentDate.value)
+            roomsViewModel.fetchRoomDetail()
+        }
     }
 
-    Column {
-        RoomDetailScreen(
-            roomDetailUiState = roomDetailUiState,
-            onBackClick = onBackClick,
-            onClickRoomSetting = {
-                onClickRoomSetting(it)
-            },
-            roomCode = roomCode,
-        )
-        if (
-            roomDetailUiState is RoomDetailUiState.Success &&
-            feedUiState is FeedUiState.Success &&
-            currentDate.value.toLocalDate() == LocalDate.now() &&
-            (feedUiState as FeedUiState.Success).isPossibleToUpload
-        ) {
-            OpenCameraButton(
-                onClick = {
-                    onClickCameraButton((roomDetailUiState as RoomDetailUiState.Success).roomDetail.roomId)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        if (selectedRoom != null) {
+            RoomDetailScreen(
+                roomDetail = selectedRoom!!,
+                onBackClick = onBackClick,
+                onClickRoomSetting = {
+                    onClickRoomSetting(it)
                 },
+                roomCode = roomCode,
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.LightGray),
+            )
+            if (
+                feedUiState is FeedUiState.Success &&
+                currentDate.value.toLocalDate() == LocalDate.now() &&
+                (feedUiState as FeedUiState.Success).isPossibleToUpload
+            ) {
+                OpenCameraButton(
+                    onClick = {
+                        onClickCameraButton(selectedRoom!!.roomId)
+                    },
+                )
+            }
+            RoomFeedScreen(
+                feedUiState = feedUiState,
             )
         }
-        RoomFeedScreen(
-            feedUiState = feedUiState,
-        )
     }
 }
 
 @Composable
 private fun RoomDetailScreen(
-    roomDetailUiState: RoomDetailUiState,
+    roomDetail: Room,
     onBackClick: () -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
     roomCode: String,
 ) {
-    when (roomDetailUiState) {
-        is RoomDetailUiState.Success -> {
-            Column {
-                RoomDetailAppBar(
-                    onBackClick = onBackClick,
-                    onClickRoomSetting = {
-                        onClickRoomSetting(
-                            roomDetailUiState.roomDetail.roomId,
-                        )
-                    },
-                    roomName = roomDetailUiState.roomDetail.roomName,
-                    roomCode = roomCode,
+    Column {
+        RoomDetailAppBar(
+            onBackClick = onBackClick,
+            onClickRoomSetting = {
+                onClickRoomSetting(
+                    roomDetail.roomId,
                 )
-                MembersViewInGroup(roomDetailUiState.roomDetail.members)
-            }
-        }
-        is RoomDetailUiState.Error -> Unit
-        is RoomDetailUiState.Loading -> {
-            AnimatedVisibility(
-                visible = true,
-                enter = slideInVertically(
-                    initialOffsetY = { fullHeight -> -fullHeight },
-                ) + fadeIn(),
-                exit = slideOutVertically(
-                    targetOffsetY = { fullHeight -> -fullHeight },
-                ) + fadeOut(),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    HiOverlayLoadingWheel(
-                        contentDesc = "loading",
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                }
-            }
-        }
+            },
+            roomName = roomDetail.roomName,
+            roomCode = roomCode,
+        )
+        MembersViewInGroup(roomDetail.members)
     }
 }
 
@@ -179,15 +172,19 @@ private fun RoomDetailAppBar(
 private fun RoomFeedScreen(
     feedUiState: FeedUiState,
 ) {
+    val state = rememberLazyListState()
+
     when (feedUiState) {
         is FeedUiState.Error -> {
         }
         is FeedUiState.Loading -> {
         }
         is FeedUiState.Success -> {
-            LazyColumn() {
+            LazyColumn(
+                state = state,
+            ) {
                 items(feedUiState.feeds, key = { it.feedId }) {
-                    Text(text = it.author.nickName)
+                    FeedItem(feed = it)
                 }
             }
         }
@@ -199,7 +196,8 @@ private fun MembersViewInGroup(
     members: List<Member>,
 ) {
     LazyRow(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         items(members, key = { it.id }) { member ->

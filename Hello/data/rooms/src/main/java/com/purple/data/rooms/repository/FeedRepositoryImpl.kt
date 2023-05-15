@@ -34,7 +34,9 @@ class FeedRepositoryImpl @Inject constructor(
         feedDao.getQuestionWithRoomIdAndDate(roomId, date)
 
     override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> {
-        return feedDao.getFeedWithRoomIdAndDate(roomId, date).map { it.map(FeedWithAuthor::asExternalModel) }
+        return feedDao.getFeedWithRoomIdAndDate(roomId, date).map {
+            it.map(FeedWithAuthor::asExternalModel)
+        }
     }
 
     override suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String {
@@ -67,7 +69,7 @@ class FeedRepositoryImpl @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun updateDateFeed(roomId: Long, date: LocalDateTime) {
-        runCatching {
+        run {
             val response = remoteFeedDataSource.getDateFeed(roomId, date)
             if (response.isSuccessful) {
                 val feedList = response.body() ?: emptyList()
@@ -84,18 +86,18 @@ class FeedRepositoryImpl @Inject constructor(
                     )
                 }
             }
-        }.getOrNull()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun uploadFeed(roomId: Long, feedImage: File) {
         val userRoomId = roomDao.getRoom(roomId).userRoomId
         val response = remoteFeedDataSource.postFeed(userRoomId, feedImage)
+        val userId = runBlocking { userDataStore.userId.first() }
 
         if (response.isSuccessful) {
             val feed = response.body()
             if (feed != null) {
-                val userId = runBlocking { userDataStore.userId.first() }
                 feedDao.insertFeedEntity(
                     feed.asFeedEntity(roomId, userId),
                 )

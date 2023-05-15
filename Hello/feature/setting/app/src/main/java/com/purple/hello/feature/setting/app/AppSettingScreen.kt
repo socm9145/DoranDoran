@@ -13,16 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.component.SettingItem
 import com.purple.core.designsystem.dialog.HiAlertDialog
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.model.DeleteDialogType
-import com.purple.core.model.SettingItemType
-import com.purple.core.model.SettingItemType.Companion.getItemsForApp
+import com.purple.core.model.type.DeleteDialogType
+import com.purple.core.model.type.SettingItemType
+import com.purple.core.model.type.SettingItemType.Companion.getItemsForApp
 import com.purple.hello.feature.setting.app.viewmodel.AppSettingViewModel
 
 @Composable

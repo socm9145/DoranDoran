@@ -1,14 +1,21 @@
 package com.purple.data.rooms.repository
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.RoomEntity
 import com.purple.core.database.model.RoomWithMembers
 import com.purple.core.database.model.asExternalModel
+import com.purple.core.model.InputData
+import com.purple.core.model.JoinRoomInputValue
 import com.purple.core.model.Room
+import com.purple.core.model.createInputDataByInputType
+import com.purple.core.model.type.InputDialogType
 import com.purple.data.rooms.datasource.RemoteRoomDataSource
+import com.purple.data.rooms.model.request.RoomJoinRequest
+import com.purple.data.rooms.model.response.RoomJoinInfoResponse
 import com.purple.data.rooms.model.response.asMemberEntity
 import com.purple.data.rooms.model.response.asMemberRoomEntity
 import com.purple.data.rooms.model.response.asRoomEntity
@@ -34,6 +41,25 @@ class RoomRepositoryImpl @Inject constructor(
             throw it
         }.getOrThrow().let {
             return it.body()?.roomCode ?: ""
+        }
+    }
+
+    override suspend fun getJoinRoomData(roomId: Long): JoinRoomInputValue {
+        runCatching {
+            remoteRoomDataSource.getJoinInfo(roomId)
+        }.onFailure {
+            Log.e("RoomRepository", it.stackTraceToString())
+        }.getOrNull()?.body().let {
+            return JoinRoomInputValue(
+                roomName = createInputDataByInputType(InputDialogType.ROOM_NAME, it?.roomName ?: ""),
+                nickName = createInputDataByInputType(InputDialogType.NAME, ""),
+                password = InputData(
+                    question = it?.roomQuestion ?: "",
+                    placeHolder = "",
+                    supportingText = "비밀번호를 입력해주세요",
+                    inputValue = "",
+                )
+            )
         }
     }
 
@@ -74,6 +100,7 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun fetchRooms() {
         runCatching {
             remoteRoomDataSource.getRoomList()
@@ -92,8 +119,40 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun joinRoom(roomCode: Int) {
-        TODO("Not yet implemented")
+    override suspend fun joinRoom(roomId: Long, joinRoomInputValue: JoinRoomInputValue): String {
+        return runCatching {
+            remoteRoomDataSource.joinRoom(
+                RoomJoinRequest(
+                    roomId = roomId,
+                    roomName = joinRoomInputValue.roomName.inputValue,
+                    roomPassword = joinRoomInputValue.password.inputValue,
+                    userName = joinRoomInputValue.nickName.inputValue
+                )
+            )
+        }
+        .onFailure {
+
+        }.getOrThrow().let {
+            if(it.isSuccessful) {
+                val response = checkNotNull(it.body())
+
+                roomDao.insertRoom(
+                    RoomEntity(
+                        roomId = roomId,
+                        userRoomId = response.userRoomId,
+                        roomName = response.roomName,
+                        recentVisitedTime = System.currentTimeMillis()
+                    )
+                )
+
+                "Success"
+            }else {
+                when(it.code()) {
+                    400 -> "Password Error"
+                    else -> "Error"
+                }
+            }
+        }
     }
 
     override suspend fun getRoomSettings(roomId: Long) {

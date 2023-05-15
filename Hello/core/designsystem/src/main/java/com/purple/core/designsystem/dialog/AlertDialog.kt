@@ -11,7 +11,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.purple.core.designsystem.component.HiFilledButton
 import com.purple.core.designsystem.component.HiOutlinedButton
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.model.DeleteDialogType
+import com.purple.core.model.type.DeleteDialogType
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

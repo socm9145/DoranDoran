@@ -1,4 +1,4 @@
-package com.purple.hello.domain.rooms
+package com.purple.hello.domain.rooms.feed
 
 import android.os.Build
 import androidx.annotation.RequiresApi

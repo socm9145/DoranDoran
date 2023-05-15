@@ -1,6 +1,5 @@
 package com.purple.hello.feature.rooms
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,12 +23,12 @@ import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOverlayLoadingWheel
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.dialog.HiInputDialog
-import com.purple.core.designsystem.dialog.createInputDataByInputType
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.designsystem.theme.LocalGradientColors
 import com.purple.core.designsystem.utils.multipleEventsCutter
-import com.purple.core.model.InputDialogType
+import com.purple.core.model.createInputDataByInputType
+import com.purple.core.model.type.InputDialogType
 import com.purple.hello.feature.rooms.state.RoomsUiState
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -50,17 +49,13 @@ internal fun RoomsRoute(
 
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
-            Log.d("fetchRooms", "fetchRooms")
             roomsViewModel.fetchRoom()
         }
     }
 
-    Column {
-        Log.d("RoomsScreen", "RoomsScreen")
+    Column(Modifier.fillMaxSize()) {
         RoomsAppBar(onClickAppSetting = onClickAppSetting)
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
+        Box {
             LazyVerticalGrid(
                 columns = Adaptive(300.dp),
                 contentPadding = PaddingValues(16.dp),

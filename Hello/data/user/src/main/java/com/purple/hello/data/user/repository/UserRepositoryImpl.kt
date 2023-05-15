@@ -36,8 +36,8 @@ class UserRepositoryImpl @Inject constructor(
                         response.profileUrl,
                     ),
                 )
+                userDataStore.setUserId(response.userId)
             }
-            userDataStore.setUserId(response.userId)
         }
     }
     override fun getUserId(): Flow<Long> = userDataStore.userId

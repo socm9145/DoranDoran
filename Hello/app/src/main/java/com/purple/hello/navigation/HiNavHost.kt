@@ -2,10 +2,11 @@ package com.purple.hello.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.NavHost
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
 import com.purple.hello.feature.rooms.navigation.roomsGraph
 import com.purple.hello.feature.rooms.navigation.roomsNavigationRoute
@@ -17,6 +18,7 @@ import com.purple.hello.feature.setting.room.navigation.navigateToRoomSetting
 import com.purple.hello.feature.setting.room.navigation.roomSettingScreen
 import com.purple.hello.ui.AppState
 
+@OptIn(ExperimentalAnimationApi::class)
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun HiNavHost(
@@ -25,15 +27,13 @@ fun HiNavHost(
     startDestination: String = roomsNavigationRoute,
 ) {
     val navController = appState.navController
-    val userId = appState.userId
 
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
         roomsGraph(
-            userId = userId,
             navController = navController,
             onBackClick = {
                 navController.popBackStack()
