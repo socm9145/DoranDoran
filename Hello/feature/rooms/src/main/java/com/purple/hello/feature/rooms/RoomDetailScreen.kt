@@ -105,7 +105,6 @@ internal fun RoomDetailRoute(
             )
             Divider()
             Question(feedUiState, currentDate.value)
-            Divider()
             OpenCameraButton(
                 feedUiState = feedUiState,
                 onClick = {
@@ -113,6 +112,7 @@ internal fun RoomDetailRoute(
                 },
                 date = currentDate.value,
             )
+            Divider()
             RoomFeedScreen(
                 feedUiState = feedUiState,
                 refreshing = refreshing,
@@ -300,7 +300,7 @@ private fun OpenCameraButton(
         ) {
             HiOutlinedButton(
                 onClick = onClick,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = {
                     Text(
                         text = "사진 찍어서 올리기",
