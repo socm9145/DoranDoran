@@ -20,8 +20,9 @@ class RemoteFeedDataSource @Inject constructor(
     private val feedService: FeedService,
 ) : FeedDataSource {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getDateQuestion(roomId: Long, date: LocalDateTime): Response<QuestionResponse> =
-        feedService.getDateQuestion(roomId, date)
+        feedService.getDateQuestion(roomId, date.toLocalDate())
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getDateFeed(roomId: Long, date: LocalDateTime): Response<List<DateFeedResponse>> =

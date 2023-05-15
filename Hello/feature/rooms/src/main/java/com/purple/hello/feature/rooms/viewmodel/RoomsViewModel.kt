@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.purple.core.model.*
-import com.purple.core.model.type.InputDialogType
 import com.purple.hello.domain.rooms.*
 import com.purple.hello.feature.rooms.navigation.roomIdArg
 import com.purple.hello.feature.rooms.state.RoomsUiState
@@ -51,9 +50,9 @@ class RoomsViewModel @Inject constructor(
             when(it) {
                 is Result.Success -> {
                     it.data.filter { it.roomId == selectedRoomId.value }.let { selectedRoom ->
-                        if(selectedRoom.isEmpty()) {
+                        if (selectedRoom.isEmpty()) {
                             null
-                        }else {
+                        } else {
                             selectedRoom.first()
                         }
                     }

@@ -1,4 +1,4 @@
-package com.purple.hello.feature.rooms
+package com.purple.hello.feature.rooms.view
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -22,8 +22,6 @@ import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.model.Member
 import com.purple.hello.feature.groups.R
 import com.purple.hello.feature.rooms.fake.FakeFactory
-
-const val DEFAULT_PROFILE = ""
 
 @Composable
 fun RoomItem(

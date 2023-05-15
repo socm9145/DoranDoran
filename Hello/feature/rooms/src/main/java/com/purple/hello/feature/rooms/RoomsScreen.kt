@@ -30,6 +30,7 @@ import com.purple.core.designsystem.utils.multipleEventsCutter
 import com.purple.core.model.createInputDataByInputType
 import com.purple.core.model.type.InputDialogType
 import com.purple.hello.feature.rooms.state.RoomsUiState
+import com.purple.hello.feature.rooms.view.RoomItem
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

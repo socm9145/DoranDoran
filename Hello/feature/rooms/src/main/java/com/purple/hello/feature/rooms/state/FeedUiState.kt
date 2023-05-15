@@ -7,6 +7,7 @@ sealed interface FeedUiState {
 
     data class Success(
         val feeds: List<Feed>,
+        val question: String?,
         val isPossibleToUpload: Boolean,
     ) : FeedUiState
 

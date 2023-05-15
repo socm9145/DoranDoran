@@ -30,7 +30,7 @@ class FeedRepositoryImpl @Inject constructor(
     private val remoteFeedDataSource: RemoteFeedDataSource,
 ) : FeedRepository {
 
-    override fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String> =
+    override fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String?> =
         feedDao.getQuestionWithRoomIdAndDate(roomId, date)
 
     override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> {
@@ -39,7 +39,8 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String {
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun updateQuestion(roomId: Long, date: LocalDateTime) {
         val response = remoteFeedDataSource.getDateQuestion(roomId, date)
 
         if (response.isSuccessful) {
@@ -58,12 +59,7 @@ class FeedRepositoryImpl @Inject constructor(
                         content = question.content,
                     ),
                 )
-                return question.content
-            } else {
-                return "아직 질문이 없어요"
             }
-        } else {
-            return "네트워크 문제가 발생했습니다.."
         }
     }
 

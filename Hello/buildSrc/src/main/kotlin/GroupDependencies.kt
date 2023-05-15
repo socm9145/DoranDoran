@@ -3,7 +3,8 @@ val composeDependencies = listOf(
     Compose.PREVIEW,
     Compose.MATERIAL3,
     Compose.MATERIAL3_WINDOW_SIZE,
-    Compose.ANIMATION
+    Compose.ANIMATION,
+    Compose.MATERIAL,
 )
 
 val composeDebug = listOf(

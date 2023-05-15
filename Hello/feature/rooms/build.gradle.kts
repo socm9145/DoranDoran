@@ -51,6 +51,7 @@ dependencies {
     implementation(appDependencies)
     implementation(navDependencies)
     implementation(cameraDependencies)
+    implementation(calendarLibrary)
     implementation(Compose.PERMISSION)
 
     implementation(Hilt.HILT_ANDROID)

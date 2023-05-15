@@ -39,7 +39,7 @@ class FeedViewModel @Inject constructor(
     private var selectedRoomId: Long = checkNotNull(savedStateHandle[roomIdArg])
     private val selectedDate = MutableSharedFlow<LocalDateTime>()
 
-    private val dateQuestion: Flow<Result<String>> = selectedDate.flatMapLatest {
+    private val dateQuestion: Flow<Result<String?>> = selectedDate.flatMapLatest {
         getQuestionFlow(roomId = selectedRoomId, date = it).asResult()
     }
     private val dateFeedList: Flow<Result<List<Feed>>> = selectedDate.flatMapLatest {
@@ -47,20 +47,28 @@ class FeedViewModel @Inject constructor(
     }
 
     val feedUiState: StateFlow<FeedUiState> =
-        dateFeedList.map {
-            when (it) {
+        combine(
+            dateQuestion,
+            dateFeedList,
+        ) { question, feedList ->
+            when (feedList) {
                 is Result.Loading -> FeedUiState.Loading
                 is Result.Success -> {
                     val userId = runBlocking { getUserIdUseCase().first() }
                     FeedUiState.Success(
-                        feeds = it.data,
-                        isPossibleToUpload = it.data.none { feed ->
+                        feeds = feedList.data,
+                        isPossibleToUpload = feedList.data.none { feed ->
                             Log.d("Feed check", "author id = ${feed.author.id}, userId = $userId")
                             feed.author.id == userId
                         },
+                        question = when (question) {
+                            is Result.Loading -> "로딩중..."
+                            is Result.Success -> question.data
+                            is Result.Error -> "질문을 가져오지 못했습니다.."
+                        },
                     )
                 }
-                is Result.Error -> FeedUiState.Error(it.exception)
+                is Result.Error -> FeedUiState.Error(feedList.exception)
             }
         }.stateIn(
             scope = viewModelScope,
@@ -75,11 +83,11 @@ class FeedViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun fetchFeed(roomId: Long, date: LocalDateTime) {
+    fun fetchFeed(date: LocalDateTime) {
         viewModelScope.launch(Dispatchers.IO) {
             fetchDateFeed(
                 date = date,
-                roomId = roomId,
+                roomId = selectedRoomId,
             )
         }
     }

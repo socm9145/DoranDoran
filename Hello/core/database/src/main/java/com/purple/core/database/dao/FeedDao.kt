@@ -25,7 +25,7 @@ interface FeedDao {
     @Insert
     fun insertQuestionEntity(questionEntity: QuestionEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFeedEntity(feedEntity: FeedEntity)
 
     @Query(

@@ -7,11 +7,11 @@ import java.time.LocalDateTime
 
 interface FeedRepository {
 
-    fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String>
+    fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String?>
 
     fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>>
 
-    suspend fun updateQuestion(roomId: Long, date: LocalDateTime): String
+    suspend fun updateQuestion(roomId: Long, date: LocalDateTime)
 
     suspend fun updateDateFeed(roomId: Long, date: LocalDateTime)
 
