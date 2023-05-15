@@ -4,6 +4,7 @@ import com.purple.hello.dto.tool.NotificationDTO;
 import com.purple.hello.service.HistoryService;
 import com.purple.hello.service.NotificationService;
 import com.purple.hello.service.RoomService;
+import com.purple.hello.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -27,10 +28,10 @@ public class Scheduler {
     }
 
 //    @Scheduled(cron = "0 * * * * ?")
-//    @Scheduled(cron = "0 0 8,9,10,11 * * ?")
+//    @Scheduled(cron = "0 0 23,0,1,2 * * ?")
     public void createQuestionAlarm() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        int beginTime = localDateTime.getHour();
+        int beginTime = localDateTime.plusHours(9).getHour();
         try {
             List<NotificationDTO> notificationDTOS = historyService.createNewQuestionNotificationsByBeginTime(beginTime);
             int notificationCount = notificationService.sendCommonNotifications(notificationDTOS);
@@ -41,10 +42,10 @@ public class Scheduler {
     }
 
 //    @Scheduled(cron = "30 * * * * ?")
-//    @Scheduled(cron = "0 0 19,20,21,22 * * ?")
+//    @Scheduled(cron = "0 0 10,11,12,13 * * ?")
     public void remindQuestionAlarm() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        int beginTime = localDateTime.getHour() - EXPIRATION_PERIOD + 1;
+        int beginTime = localDateTime.plusHours(9).getHour() - EXPIRATION_PERIOD + 1;
         try {
             List<NotificationDTO> notificationDTOS = historyService.createRemindQuestionNotificationsByBeginTime(beginTime);
             int notificationCount = notificationService.sendCommonNotifications(notificationDTOS);
@@ -54,7 +55,7 @@ public class Scheduler {
         }
     }
 
-//    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(cron = "0 0 15 * * ?")
     public void createQuestion() {
         try {
             roomService.createQuestion();

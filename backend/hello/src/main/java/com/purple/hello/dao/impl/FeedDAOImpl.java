@@ -12,7 +12,6 @@ import com.purple.hello.repo.FeedRepo;
 import com.purple.hello.repo.UserRoomRepo;
 import com.purple.hello.util.DateUtils;
 import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -20,11 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.text.SimpleDateFormat;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
