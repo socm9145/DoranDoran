@@ -85,8 +85,8 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
             .setInitialDelay(1, TimeUnit.SECONDS)
             .build()
         WorkManager.getInstance(this)
-//            .beginWith(work)
-            .enqueue(work)
+            .beginWith(work)
+            .enqueue()
         // [END dispatch_job]
     }
 
