@@ -15,8 +15,9 @@ class FetchDateFeedUseCase @Inject constructor(
         if (date.toLocalDate() == LocalDate.now()) {
             feedRepository.updateDateFeed(roomId, date)
         } else {
-            if (feedRepository.isFeedExistByDate(roomId, date)) return
-            feedRepository.updateDateFeed(roomId, date)
+            if (!feedRepository.isFeedExistByDate(roomId, date)) {
+                feedRepository.updateDateFeed(roomId, date)
+            }
         }
     }
 }

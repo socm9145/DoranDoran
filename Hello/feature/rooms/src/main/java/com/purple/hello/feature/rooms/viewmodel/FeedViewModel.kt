@@ -83,11 +83,11 @@ class FeedViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun fetchFeed(roomId: Long, date: LocalDateTime) {
+    fun fetchFeed(date: LocalDateTime) {
         viewModelScope.launch(Dispatchers.IO) {
             fetchDateFeed(
                 date = date,
-                roomId = roomId,
+                roomId = selectedRoomId,
             )
         }
     }

@@ -3,6 +3,7 @@ object Versions {
     // Androidx
     const val WINDOW_MANAGER = "1.0.0"
     const val NAVIGATION_COMPOSE = "2.5.3"
+    const val COMPOSE_MATERIAL = "1.4.0-beta01"
 
     // Ktx
     const val CORE = "1.9.0"
@@ -78,6 +79,7 @@ object Compose {
     const val PERMISSION = "com.google.accompanist:accompanist-permissions:${Versions.ACCOMPANIST}"
     const val NAVIGATION = "com.google.accompanist:accompanist-navigation-animation:${Versions.ACCOMPANIST}"
     const val ANIMATION = "androidx.compose.animation:animation:${Versions.COMPOSE}"
+    const val MATERIAL = "androidx.compose.material:material:${Versions.COMPOSE_MATERIAL}"
 }
 
 object Coil {

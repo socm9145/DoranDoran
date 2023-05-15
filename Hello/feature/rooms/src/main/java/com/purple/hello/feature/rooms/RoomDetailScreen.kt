@@ -10,6 +10,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -54,8 +58,10 @@ internal fun RoomDetailRoute(
     val selectedRoom by roomsViewModel.selectedRoom.collectAsState()
     val roomCode by roomsViewModel.roomCode.collectAsState()
     val feedUiState by feedViewModel.feedUiState.collectAsState()
-    val isShowCalendar = remember { mutableStateOf(false) }
     val currentDate = remember { mutableStateOf(LocalDateTime.now()) }
+
+    val isShowCalendar = remember { mutableStateOf(false) }
+    var refreshing by remember { mutableStateOf(false) }
 
     if (selectedRoom != null) {
         LaunchedEffect(currentDate.value) {
@@ -64,6 +70,12 @@ internal fun RoomDetailRoute(
 
         LaunchedEffect(selectedRoom) {
             currentDate.value = LocalDateTime.now()
+        }
+        LaunchedEffect(refreshing) {
+            if (refreshing) {
+                feedViewModel.fetchFeed(currentDate.value)
+                refreshing = false
+            }
         }
     }
 
@@ -103,6 +115,10 @@ internal fun RoomDetailRoute(
             )
             RoomFeedScreen(
                 feedUiState = feedUiState,
+                refreshing = refreshing,
+                onRefreshing = {
+                    refreshing = true
+                },
             )
         }
     }
@@ -220,11 +236,15 @@ private fun RoomDetailAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun RoomFeedScreen(
     feedUiState: FeedUiState,
+    refreshing: Boolean,
+    onRefreshing: () -> Unit,
 ) {
     val state = rememberLazyListState()
+    val pullRefreshState = rememberPullRefreshState(refreshing, { onRefreshing() })
 
     when (feedUiState) {
         is FeedUiState.Error -> {
@@ -232,12 +252,19 @@ private fun RoomFeedScreen(
         is FeedUiState.Loading -> {
         }
         is FeedUiState.Success -> {
-            LazyColumn(
-                state = state,
+            Box(
+                Modifier
+                    .pullRefresh(pullRefreshState),
             ) {
-                items(feedUiState.feeds, key = { it.feedId }) {
-                    FeedItem(feed = it)
+                LazyColumn(
+                    modifier = Modifier.pullRefresh(pullRefreshState),
+                    state = state,
+                ) {
+                    items(feedUiState.feeds, key = { it.feedId }) {
+                        FeedItem(feed = it)
+                    }
                 }
+                PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
             }
         }
     }
