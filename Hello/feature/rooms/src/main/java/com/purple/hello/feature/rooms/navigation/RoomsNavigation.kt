@@ -51,29 +51,29 @@ fun NavGraphBuilder.roomsGraph(
             deepLinks = listOf(
                 navDeepLink {
                     uriPattern = "https://doeran.kr/room/{joinRoomId}"
-                }
+                },
             ),
             arguments = listOf(
                 navArgument("joinRoomId") {
                     type = NavType.LongType
                     defaultValue = 0
-                }
+                },
             ),
             enterTransition = { slideInHorizontally(animationSpec = tween(500)) },
-            exitTransition = { slideOutHorizontally(animationSpec = tween(500)) }
+            exitTransition = { slideOutHorizontally(animationSpec = tween(500)) },
         ) {
             val joinRoomId = it.arguments?.getLong("joinRoomId") ?: 0L
             val showDialog = remember(joinRoomId) { mutableStateOf(joinRoomId != 0L) }
 
-            if(joinRoomId != 0L) {
+            if (joinRoomId != 0L) {
                 it.arguments!!.remove("joinRoomId")
-                if(showDialog.value) {
+                if (showDialog.value) {
                     JoinRoomDialog(
                         onDismiss = { showDialog.value = false },
                         joinRoomId = joinRoomId,
                         onConfirm = {
                             navController.navigateRoomDetail(joinRoomId)
-                        }
+                        },
                     )
                 }
             }
@@ -93,22 +93,26 @@ fun NavGraphBuilder.roomsGraph(
             ),
             enterTransition = {
                 slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(500)
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(500),
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(500)
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(500),
                 )
             },
             popEnterTransition = {
                 slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(500)
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(500),
                 )
             },
             popExitTransition = {
                 slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(500)
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(500),
                 )
             },
         ) {
