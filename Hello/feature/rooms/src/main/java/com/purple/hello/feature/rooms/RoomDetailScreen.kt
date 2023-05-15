@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -77,25 +78,51 @@ internal fun RoomDetailRoute(
                 },
                 roomCode = roomCode,
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.LightGray),
+            Divider()
+            Question(feedUiState, currentDate.value)
+            Divider()
+            OpenCameraButton(
+                feedUiState = feedUiState,
+                onClick = {
+                    onClickCameraButton(selectedRoom!!.roomId)
+                },
+                date = currentDate.value,
             )
-            if (
-                feedUiState is FeedUiState.Success &&
-                currentDate.value.toLocalDate() == LocalDate.now() &&
-                (feedUiState as FeedUiState.Success).isPossibleToUpload
-            ) {
-                OpenCameraButton(
-                    onClick = {
-                        onClickCameraButton(selectedRoom!!.roomId)
-                    },
-                )
-            }
             RoomFeedScreen(
                 feedUiState = feedUiState,
+            )
+        }
+    }
+}
+
+@Composable
+private fun Divider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(0.5.dp)
+            .background(Color.LightGray),
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun Question(feedUiState: FeedUiState, date: LocalDateTime) {
+    if (feedUiState is FeedUiState.Success) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 8.dp),
+                text = "${date.monthValue}월 ${date.dayOfMonth}일의 질문",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = feedUiState.question ?: "아직 질문이 올라오지 않았어요",
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     }
@@ -206,18 +233,29 @@ private fun MembersViewInGroup(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun OpenCameraButton(
+    feedUiState: FeedUiState,
+    date: LocalDateTime,
     onClick: () -> Unit,
 ) {
-    HiOutlinedButton(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        text = {
-            Text(
-                text = "사진 찍어서 올리기",
-                style = MaterialTheme.typography.bodyMedium,
+    if (feedUiState is FeedUiState.Success) {
+        if (
+            date.toLocalDate() == LocalDate.now() &&
+            feedUiState.isPossibleToUpload &&
+            feedUiState.question != null
+        ) {
+            HiOutlinedButton(
+                onClick = onClick,
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = "사진 찍어서 올리기",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                },
             )
-        },
-    )
+        }
+    }
 }
