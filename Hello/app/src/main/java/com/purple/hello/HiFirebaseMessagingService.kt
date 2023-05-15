@@ -17,11 +17,13 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.purple.hello.core.datastore.DeviceDataStore
 import com.purple.hello.sync.work.SaveNotificationWorker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class HiFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject

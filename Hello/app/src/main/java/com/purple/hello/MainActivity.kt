@@ -36,9 +36,7 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-        HiFirebaseNotificationManager(
-            activity = this,
-            deviceDataStore = deviceDataStore,
-        )
+        val firebaseNotification = HiFirebaseNotificationManager(activity = this, deviceDataStore)
+        firebaseNotification.init()
     }
 }

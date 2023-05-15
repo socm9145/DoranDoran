@@ -16,9 +16,9 @@ import javax.inject.Inject
 
 class HiFirebaseNotificationManager @Inject constructor(
     private val activity: MainActivity,
-    private val deviceDataStore: DeviceDataStore,
+    private val deviceDataStore: DeviceDataStore
 ) {
-    init {
+    fun init() {
         askNotificationPermission()
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
             OnCompleteListener { task ->

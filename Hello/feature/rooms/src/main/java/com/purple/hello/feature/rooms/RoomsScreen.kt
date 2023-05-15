@@ -60,7 +60,17 @@ internal fun RoomsRoute(
             onClickAppSetting = onClickAppSetting,
             onClickNotification = onClickNotification,
         )
-        Box {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(LocalGradientColors.current.top, LocalGradientColors.current.bottom),
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY,
+                    ),
+                ),
+        ) {
             LazyVerticalGrid(
                 columns = Adaptive(300.dp),
                 contentPadding = PaddingValues(16.dp),
