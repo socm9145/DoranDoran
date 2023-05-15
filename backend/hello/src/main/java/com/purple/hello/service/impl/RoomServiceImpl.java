@@ -1,6 +1,7 @@
 package com.purple.hello.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.purple.hello.dao.HistoryDAO;
@@ -11,24 +12,28 @@ import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.*;
 import com.purple.hello.encoder.PasswordEncoder;
+import com.purple.hello.entity.History;
+import com.purple.hello.entity.Question;
 import com.purple.hello.entity.Room;
+import com.purple.hello.entity.UserRoom;
 import com.purple.hello.generator.RoomCode;
+import com.purple.hello.repo.HistoryRepo;
 import com.purple.hello.repo.QuestionRepo;
+import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.service.AwsS3Service;
 import com.purple.hello.service.RoomService;
-import org.python.core.Py;
-import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -39,47 +44,50 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private final HistoryDAO historyDAO;
     @Autowired
-    private final QuestionDAO questionDAO;
-    @Autowired
     private final UserRoomDAO userRoomDAO;
     @Autowired
     private final QuestionRepo questionRepo;
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private final HistoryRepo historyRepo;
     @Autowired
-    private final PythonInterpreter interpreter;
+    private final RoomRepo roomRepo;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+    @Value("${server_addr}")
+    private String url;
     private final AwsS3Service awsS3Service;
 
-    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, QuestionDAO questionDAO, PythonInterpreter interpreter, AwsS3Service awsS3Service, UserRoomDAO userRoomDAO){
+    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, AwsS3Service awsS3Service, UserRoomDAO userRoomDAO, HistoryRepo historyRepo, RoomRepo roomRepo) {
         this.roomDAO = roomDAO;
         this.passwordEncoder = passwordEncoder;
         this.historyDAO = historyDAO;
         this.questionRepo = questionRepo;
-        this.questionDAO = questionDAO;
-        this.interpreter = interpreter;
         this.awsS3Service = awsS3Service;
         this.userRoomDAO = userRoomDAO;
+        this.historyRepo = historyRepo;
+        this.roomRepo = roomRepo;
     }
+
     @Override
-    public List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception{
+    public List<ReadRoomOutDTO> readRoomByUserId(long userId) throws Exception {
         return this.roomDAO.readRoomByUserId(userId);
     }
 
     @Override
-    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception{
+    public CreateRoomDTO createRoom(CreateUserRoomInDTO createUserRoomInDTO) throws Exception {
         createUserRoomInDTO.setRoomPassword(passwordEncoder.encode(createUserRoomInDTO.getRoomPassword()));
         return this.roomDAO.createRoom(createUserRoomInDTO);
     }
 
     @Override
-    public boolean comparePasswordByRoomCode(long roomId, String password) throws Exception{
+    public boolean comparePasswordByRoomCode(long roomId, String password) throws Exception {
         String storedPassword = this.roomDAO.comparePasswordByRoomCode(roomId);
 
         return passwordEncoder.matches(password, storedPassword);
     }
 
     @Override
-    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomId(long roomId) throws Exception{
+    public ReadUserRoomJoinOutDTO readUserRoomJoinByRoomId(long roomId) throws Exception {
         return this.roomDAO.readUserRoomJoinByRoomId(roomId);
     }
 
@@ -89,11 +97,12 @@ public class RoomServiceImpl implements RoomService {
         updateRoomPasswordInDTO.setRoomPassword(passwordEncoder.encode(updateRoomPasswordInDTO.getRoomPassword()));
         return this.roomDAO.updateRoomPassword(updateRoomPasswordInDTO);
     }
+
     public ReadRoomCodeOutDTO readRoomCodeByRoomId(long roomId) throws JsonProcessingException {
         String url = roomDAO.readRoomCodeByRoomId(roomId);
 
         ReadRoomCodeOutDTO readRoomCodeOutDTO = new ReadRoomCodeOutDTO();
-        if(url == null){
+        if (url == null) {
             String newUrl = saveAndResult(roomId);
             readRoomCodeOutDTO.setRoomCode(newUrl);
             return readRoomCodeOutDTO;
@@ -106,6 +115,7 @@ public class RoomServiceImpl implements RoomService {
     public void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO) {
         roomDAO.updateRoomCodeByRoomId(updateRoomCodeInDTO);
     }
+
     private String saveAndResult(long roomId) throws JsonProcessingException {
         String resultString = roomCode.makeUrl(roomId);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -117,27 +127,27 @@ public class RoomServiceImpl implements RoomService {
         updateRoomCodeByRoomId(updateRoomCodeInDTO);
         return newUrl;
     }
-    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception{
+
+    public boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception {
         boolean isDeleted = this.roomDAO.deleteRoom(deleteRoomInDTO);
-        if(isDeleted){
+        if (isDeleted) {
             String dirName = "feed/" + deleteRoomInDTO.getRoomId();
             awsS3Service.removeDirectory(dirName);
         }
         return isDeleted;
     }
 
-    public void createQuestion() throws Exception{
+    public void createQuestion() throws Exception {
         List<Room> roomList = roomDAO.getRoom();
-        try{
-            if(roomList.size() == 0)
+        try {
+            if (roomList.size() == 0)
                 throw new NullPointerException("Don't Created Room");
 
-
             LocalDate currentDate = LocalDate.now();
-            CreateQuestionInDTO createQuestionInDTO;
-            List<Long> roomListIdx = new ArrayList<>();
+            List<Long> roomListIdxUpper = new ArrayList<>();
+            List<QuestionIdRoomIdDTO> roomListIdxLower = new ArrayList<>();
 
-            for(Room room : roomList) {
+            for (Room room : roomList) {
                 LocalDate createdAt = room.getCreateAt().toInstant()
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate();
@@ -147,30 +157,35 @@ public class RoomServiceImpl implements RoomService {
                     long totalQuestion = questionRepo.count() - 1;
                     long questionId = (result % totalQuestion) + 2;
 
-                    createQuestionInDTO = CreateQuestionInDTO.builder()
-                            .roomId(room.getRoomId())
-                            .no(questionId)
+                    QuestionIdRoomIdDTO questionIdRoomIdDTO = QuestionIdRoomIdDTO.builder()
+                            .questionID(questionId)
+                            .roomID(room.getRoomId())
                             .build();
-                    historyDAO.createHistory(createQuestionInDTO);
+                    roomListIdxLower.add(questionIdRoomIdDTO);
                 } else {              // 방이 생선된지 10일 이후
-                    roomListIdx.add(room.getRoomId());
+                    roomListIdxUpper.add(room.getRoomId());
                 }
             }
+            // 10일 이전 이면
+            if(roomListIdxLower.size() != 0){
+                List<History> history = makeData(roomListIdxLower, true);
+                historyRepo.saveAll(history);
+            }
             // 10일 이후 이면
-            if(roomListIdx.size() != 0){
+            if (roomListIdxUpper.size() != 0) {
                 // 각 방마다 daily, game, know 타입이 몇 개 있는지
-                Map<Long, List<HistoryTypeDTO>> resultMapType = roomDAO.getHistoryTypeCount(roomListIdx);
+                Map<Long, List<HistoryTypeDTO>> resultMapType = roomDAO.getHistoryTypeCount(roomListIdxUpper);
                 // 각 방마다 daily, game, know 타입에 대해서 포스트가 몇 개 있는지 추출
-                Map<Long, List<HistoryTypeDTO>> resultMapFeed = roomDAO.getHistoryTypeFeedCount(roomListIdx);
+                Map<Long, List<HistoryTypeDTO>> resultMapFeed = roomDAO.getHistoryTypeFeedCount(roomListIdxUpper);
                 // 각 방마다 타입에 현재 인덱스를 출력한다.
-                Map<Long, List<HistoryCurrent>> resultCurrent = roomDAO.getHistoryCurrent(roomListIdx);
+                Map<Long, List<HistoryCurrent>> resultCurrent = roomDAO.getHistoryCurrent(roomListIdxUpper);
                 // 타입마다 최소인덱스, 최대인덱스를 출력한다.
                 Map<String, HistoryMinMaxDTO> resultMapMinMax = roomDAO.getHistoryMinMax();
                 // 각 방의 멤버 수를 불러온다.
-                Map<Long, Integer> memberCount = userRoomDAO.getMemberCount(roomListIdx);
+                Map<Long, Integer> memberCount = userRoomDAO.getMemberCount(roomListIdxUpper);
 
                 Map<Long, HistoryTypePythonDTO> pyMap = new HashMap<>();
-                for(Long l : roomListIdx){
+                for (Long l : roomListIdxUpper) {
                     HistoryTypePythonDTO historyTypePythonDTO = HistoryTypePythonDTO.builder()
                             .memberCount(memberCount.get(l))
                             .types(resultMapType.get(l))
@@ -184,33 +199,62 @@ public class RoomServiceImpl implements RoomService {
                 String minMaxJson = mapper.writeValueAsString(resultMapMinMax);
                 String result = "[" + minMaxJson + ", " + json + "]";
 
-                interpreter.execfile("src/main/java/com/purple/hello/python/test.py");
-                interpreter.exec("print('Hello, world!')");
-                PyObject jsonString = Py.java2py(result);
-                PyObject resultHistory = interpreter.get("testFunc").__call__(jsonString);
-                Long resultRoomId = (Long) Py.tojava(resultHistory, Long.class);
+                // Python Flask API
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                HttpEntity<String> requestEntity = new HttpEntity<>(result, headers);
+
+                RestTemplate restTemplate = new RestTemplateBuilder().build();
+                ResponseEntity<String> data = restTemplate.postForEntity(url, requestEntity, String.class);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                List<QuestionIdRoomIdDTO> pythonList = objectMapper.readValue(data.getBody(), new TypeReference<List<QuestionIdRoomIdDTO>>() {});
+
+                List<History> history = makeData(pythonList, false);
+
+                historyRepo.saveAll(history);
             }
 
-        }catch (NullPointerException e){
-            System.out.println(e.getMessage());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception{
+    public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception {
         return roomDAO.readRoomQuestionByRoomIdAndUserId(roomId, userId);
     }
 
     @Override
-    public ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId) throws Exception{
+    public ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId) throws Exception {
         List<MemberDTO> memberDTOS = roomDAO.readMemberListByRoomId(roomId, userId);
-        if(memberDTOS == null) {
+        if (memberDTOS == null) {
             throw new IllegalArgumentException();
-        }else {
+        } else {
             ReadMemberListOutDTO readMemberListOutDTO = new ReadMemberListOutDTO(roomId, memberDTOS);
             return readMemberListOutDTO;
         }
+    }
+
+    private List<History> makeData(List<QuestionIdRoomIdDTO> data, boolean type){
+        List<History> result = new ArrayList<>();
+        for(QuestionIdRoomIdDTO questionIdRoomIdDTO : data){
+            Room room = roomRepo.findById(questionIdRoomIdDTO.getRoomID()).get();
+            Question question;
+            if(type) question = questionRepo.findById(questionIdRoomIdDTO.getQuestionID()).get();
+            else question = questionRepo.findByNo(questionIdRoomIdDTO.getQuestionID()).get();
+
+            History history = History.builder()
+                            .room(room)
+                            .question(question)
+                            .createAt(new Date())
+                            .build();
+            result.add(history);
+        }
+        return result;
     }
 }
