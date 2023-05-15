@@ -67,3 +67,10 @@ val cameraDependencies = listOf(
     Camera.CAMERA_CORE,
     Camera.CAMERA_LIFECYCLE
 )
+
+val firebaseDependencies = listOf(
+    Firebase.FIREBASE_BOM,
+    Firebase.FIREBASE_ANAYTICS,
+    Firebase.FIREBASE_MESSAGING,
+    Firebase.FIREBASE_MESSAGING_DIRECTBOOT,
+)

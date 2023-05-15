@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.purple.hello.feature.notification.navigation.navigateToNotification
+import com.purple.hello.feature.notification.navigation.notificationScreen
 import androidx.navigation.NavOptions
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
@@ -44,6 +46,9 @@ fun HiNavHost(
             onClickRoomSetting = {
                 navController.navigateToRoomSetting(roomId = it)
             },
+            onClickNotification = {
+                navController.navigateToNotification()
+            },
         )
         appSettingScreen(
             onBackClick = {
@@ -71,6 +76,11 @@ fun HiNavHost(
                         .setPopUpTo(roomsNavigationRoute, true)
                         .build(),
                 )
+            },
+        )
+        notificationScreen(
+            onBackClick = {
+                navController.popBackStack()
             },
         )
     }

@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.purple.core.designsystem.theme.HiTheme
+import com.purple.hello.core.datastore.DeviceDataStore
 import com.purple.hello.domain.account.CheckLoggedInUseCase
 import com.purple.hello.ui.HiApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +20,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var checkLoggedInUseCase: CheckLoggedInUseCase
+
+    @Inject
+    lateinit var deviceDataStore: DeviceDataStore
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,5 +36,9 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+        HiFirebaseNotificationManager(
+            activity = this,
+            deviceDataStore = deviceDataStore,
+        )
     }
 }

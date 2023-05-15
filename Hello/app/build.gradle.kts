@@ -5,6 +5,7 @@ plugins {
     kotlin("kapt")
     id("com.android.application")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -55,10 +56,12 @@ dependencies {
     implementation(project(":feature:setting:app"))
     implementation(project(":feature:setting:room"))
     implementation(project(":feature:setting:profile"))
+    implementation(project(":feature:notification"))
     implementation(project(":core:designsystem"))
     implementation(project(":domain:account"))
     implementation(project(":core:datastore"))
     implementation(project(":core:model"))
+    implementation(project(":sync:work"))
 
     implementation(composeDependencies)
     implementation(appDependencies)
@@ -74,6 +77,12 @@ dependencies {
     implementation(Datastore.DATASTORE)
 
     implementation(socialLogin)
+
+    implementation(firebaseDependencies)
+    implementation(WorkmanagerKotlin.WORKMANAGER_KOTLIN)
+
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
 }
 
 fun getApiKey(propertyKey: String): String {

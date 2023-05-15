@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.purple.hello.core.datastore.AccountData
-import com.purple.hello.core.datastore.AccountDataSerializer
-import com.purple.hello.core.datastore.UserInfoData
-import com.purple.hello.core.datastore.UserInfoDataSerializer
+import com.purple.hello.core.datastore.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,5 +43,18 @@ object DataStoreModule {
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
         ) {
             context.dataStoreFile("user_info_data.pb")
+        }
+
+    @Provides
+    @Singleton
+    fun providesDeviceInfoPreferencesDataStore(
+        @ApplicationContext context: Context,
+        deviceDataSerializer: DeviceDataSerializer,
+    ): DataStore<DeviceData> =
+        DataStoreFactory.create(
+            serializer = deviceDataSerializer,
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+        ) {
+            context.dataStoreFile("device_data.pb")
         }
 }

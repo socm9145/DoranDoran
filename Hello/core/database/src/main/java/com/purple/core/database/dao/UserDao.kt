@@ -3,9 +3,12 @@ package com.purple.core.database.dao
 import androidx.room.*
 import com.purple.core.database.entity.MemberEntity
 import com.purple.core.database.entity.MemberRoomEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
+    @Query("SELECT * FROM members WHERE userId = :userId")
+    fun getProfileUrl(userId: Long): Flow<MemberEntity>
 
     @Query("SELECT * FROM user_room_cross WHERE roomId = :roomId AND userId = :userId")
     fun getUserInRoom(userId: Long, roomId: Long): MemberRoomEntity

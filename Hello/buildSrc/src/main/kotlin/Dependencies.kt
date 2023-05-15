@@ -63,6 +63,18 @@ object Versions {
 
     // Camera
     const val CAMERA_X = "1.2.1"
+
+    // Firebase bom
+    const val FIREBASE_BOM = "32.0.0"
+
+    // Firebase Messaging
+    const val FIREBASE_MESSAGING = "23.1.2"
+
+    // Firebase Analytics
+    const val FIREBAE_ANALYTICS = "21.2.2"
+
+    // Workmanager Kotlin
+    const val WORKMANAGER_KOTLIN = "2.8.0"
 }
 
 object KTX {
@@ -159,4 +171,15 @@ object Camera {
     const val CAMERA_CORE = "androidx.camera:camera-core:${Versions.CAMERA_X}"
     const val CAMERA2 = "androidx.camera:camera-camera2:${Versions.CAMERA_X}"
     const val CAMERA_LIFECYCLE = "androidx.camera:camera-lifecycle:${Versions.CAMERA_X}"
+}
+
+object Firebase {
+    const val FIREBASE_BOM = "com.google.firebase:firebase-bom:${Versions.FIREBASE_BOM}"
+    const val FIREBASE_MESSAGING = "com.google.firebase:firebase-messaging:${Versions.FIREBASE_MESSAGING}"
+    const val FIREBASE_MESSAGING_DIRECTBOOT = "com.google.firebase:firebase-messaging:${Versions.FIREBASE_MESSAGING}"
+    const val FIREBASE_ANAYTICS = "com.google.firebase:firebase-analytics-ktx:${Versions.FIREBAE_ANALYTICS}"
+}
+
+object WorkmanagerKotlin {
+    const val WORKMANAGER_KOTLIN = "androidx.work:work-runtime-ktx:${Versions.WORKMANAGER_KOTLIN}"
 }
