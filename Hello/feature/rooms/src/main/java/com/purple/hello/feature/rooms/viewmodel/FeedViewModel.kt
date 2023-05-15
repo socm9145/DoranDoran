@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.purple.core.model.Feed
 import com.purple.core.model.Result
 import com.purple.core.model.asResult
+import com.purple.hello.domain.account.GetUserIdUseCase
 import com.purple.hello.domain.rooms.*
 import com.purple.hello.domain.rooms.feed.FetchDateFeedUseCase
 import com.purple.hello.domain.rooms.feed.GetDateFeedUseCase
@@ -20,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -30,10 +32,10 @@ class FeedViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getQuestionFlow: GetQuestionUseCase,
     getFeedFlow: GetDateFeedUseCase,
+    getUserIdUseCase: GetUserIdUseCase,
     private val fetchDateFeed: FetchDateFeedUseCase,
 ) : ViewModel() {
 
-    private val userId = checkNotNull(savedStateHandle["userId"])
     private var selectedRoomId: Long = checkNotNull(savedStateHandle[roomIdArg])
     private val selectedDate = MutableSharedFlow<LocalDateTime>()
 
@@ -49,9 +51,11 @@ class FeedViewModel @Inject constructor(
             when (it) {
                 is Result.Loading -> FeedUiState.Loading
                 is Result.Success -> {
+                    val userId = runBlocking { getUserIdUseCase().first() }
                     FeedUiState.Success(
                         feeds = it.data,
                         isPossibleToUpload = it.data.none { feed ->
+                            Log.d("Feed check", "author id = ${feed.author.id}, userId = $userId")
                             feed.author.id == userId
                         },
                     )

@@ -3,13 +3,9 @@ package com.purple.hello.feature.rooms.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.*
 import com.google.accompanist.navigation.animation.composable
 import com.purple.hello.feature.rooms.CameraScreen
@@ -41,7 +37,6 @@ fun NavController.navigateToCamera(roomId: Long, navOptions: NavOptions? = null)
 @OptIn(ExperimentalAnimationApi::class)
 @RequiresApi(Build.VERSION_CODES.R)
 fun NavGraphBuilder.roomsGraph(
-    userId: Long,
     navController: NavController,
     onBackClick: () -> Unit,
     onClickAppSetting: () -> Unit,
@@ -95,7 +90,6 @@ fun NavGraphBuilder.roomsGraph(
             route = "$roomDetailRoute/{$roomIdArg}",
             arguments = listOf(
                 navArgument(roomIdArg) { type = NavType.LongType },
-                navArgument("userId") { defaultValue = userId; type = NavType.LongType },
             ),
             enterTransition = {
                 slideIntoContainer(

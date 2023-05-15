@@ -6,7 +6,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.NavHost
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.purple.hello.feature.rooms.navigation.navigateToRooms
 import com.purple.hello.feature.rooms.navigation.roomsGraph
@@ -28,7 +27,6 @@ fun HiNavHost(
     startDestination: String = roomsNavigationRoute,
 ) {
     val navController = appState.navController
-    val userId = appState.userId
 
     AnimatedNavHost(
         navController = navController,
@@ -36,7 +34,6 @@ fun HiNavHost(
         modifier = modifier,
     ) {
         roomsGraph(
-            userId = userId,
             navController = navController,
             onBackClick = {
                 navController.popBackStack()

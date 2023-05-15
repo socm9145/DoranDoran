@@ -1,7 +1,6 @@
 package com.purple.data.rooms.repository
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.FeedDao
 import com.purple.core.database.dao.RoomDao
@@ -36,11 +35,6 @@ class FeedRepositoryImpl @Inject constructor(
 
     override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> {
         return feedDao.getFeedWithRoomIdAndDate(roomId, date).map {
-            it.forEach() { feed ->
-                Log.d("Feed - output", feed.toString())
-            }
-            // TODO: feed query 수정 -> 2개가 나옴
-            // TODO: createAt 날짜가 다름 (시차) -> 서버에서 오는게 다른건지 여기서 바꿀 때 맞춰야하는지 확인 필요
             it.map(FeedWithAuthor::asExternalModel)
         }
     }
@@ -79,8 +73,6 @@ class FeedRepositoryImpl @Inject constructor(
             val response = remoteFeedDataSource.getDateFeed(roomId, date)
             if (response.isSuccessful) {
                 val feedList = response.body() ?: emptyList()
-                Log.d("Feed", feedList.first().toString())
-                Log.d("Feed", feedList.first().createdAt.toLocalDateTime().toString())
                 feedList.map { feed ->
                     feedDao.insertFeedEntity(
                         FeedEntity(
@@ -101,11 +93,11 @@ class FeedRepositoryImpl @Inject constructor(
     override suspend fun uploadFeed(roomId: Long, feedImage: File) {
         val userRoomId = roomDao.getRoom(roomId).userRoomId
         val response = remoteFeedDataSource.postFeed(userRoomId, feedImage)
+        val userId = runBlocking { userDataStore.userId.first() }
 
         if (response.isSuccessful) {
             val feed = response.body()
             if (feed != null) {
-                val userId = runBlocking { userDataStore.userId.first() }
                 feedDao.insertFeedEntity(
                     feed.asFeedEntity(roomId, userId),
                 )

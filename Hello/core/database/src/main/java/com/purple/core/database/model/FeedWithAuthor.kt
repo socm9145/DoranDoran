@@ -9,8 +9,8 @@ import com.purple.core.model.Feed
 data class FeedWithAuthor(
     @Embedded val feed: FeedEntity,
     @Relation(
-        parentColumn = "roomId",
-        entityColumn = "roomId",
+        parentColumn = "userId",
+        entityColumn = "userId",
         entity = MemberRoomEntity::class,
     )
     val author: MemberInRoom

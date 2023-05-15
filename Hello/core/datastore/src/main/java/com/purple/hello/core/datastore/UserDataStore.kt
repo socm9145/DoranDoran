@@ -10,7 +10,9 @@ import javax.inject.Inject
 class UserDataStore @Inject constructor(
     private val userProtoDataStore: DataStore<UserInfoData>,
 ) {
-    val userId: Flow<Long> = userProtoDataStore.data.map { it.userId }
+    val userId: Flow<Long> = userProtoDataStore.data.map {
+        it.userId
+    }
 
     suspend fun setUserId(userId: Long) {
         try {

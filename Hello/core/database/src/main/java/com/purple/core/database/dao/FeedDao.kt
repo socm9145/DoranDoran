@@ -32,12 +32,11 @@ interface FeedDao {
         """
         SELECT *
         FROM feed
-        INNER JOIN user_room_cross
-            ON feed.roomId = user_room_cross.roomId
-        INNER JOIN members
-            ON user_room_cross.userId = members.userId
-        WHERE feed.roomId = :roomId AND DATE(createAt) = DATE(:date)
-        ORDER BY feed.createAt DESC
+        INNER JOIN user_room_cross 
+            ON feed.roomId = user_room_cross.roomId AND feed.userId = user_room_cross.userId
+        INNER JOIN members 
+            ON feed.userId = members.userId
+        WHERE feed.roomId = :roomId AND DATE(feed.createAt) = DATE(:date)
         """,
     )
     fun getFeedWithRoomIdAndDate(roomId: Long, date: LocalDateTime): Flow<List<FeedWithAuthor>>

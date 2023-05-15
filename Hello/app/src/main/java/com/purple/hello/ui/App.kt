@@ -9,7 +9,6 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.purple.hello.domain.account.CheckLoggedInUseCase
-import com.purple.hello.domain.account.GetUserIdUseCase
 import com.purple.hello.loading.LoadingScreen
 import com.purple.hello.login.LoginScreen
 import com.purple.hello.navigation.HiNavHost
@@ -20,11 +19,9 @@ import com.purple.hello.navigation.HiNavHost
 fun HiApp(
     windowSizeClass: WindowSizeClass,
     checkLoggedInUseCase: CheckLoggedInUseCase,
-    getUserIdUseCase: GetUserIdUseCase,
     appState: AppState = rememberAppState(
         windowSizeClass = windowSizeClass,
         checkLoggedInUseCase = checkLoggedInUseCase,
-        getUserIdUseCase = getUserIdUseCase,
     ).value,
 ) {
     Scaffold { padding ->
