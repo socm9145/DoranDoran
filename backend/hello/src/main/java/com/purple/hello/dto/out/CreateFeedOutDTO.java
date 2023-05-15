@@ -1,6 +1,7 @@
 package com.purple.hello.dto.out;
 
 import com.purple.hello.enu.FeedType;
+import com.purple.hello.util.DateUtils;
 import lombok.*;
 
 import java.util.Date;
@@ -20,7 +21,7 @@ public class CreateFeedOutDTO {
         this.feedId = feedId;
         this.userRoomId = userRoomId;
         this.content = content;
-        this.createAt = createAt;
+        this.createAt = DateUtils.addHours(createAt, 9);
         this.feedType = feedType;
         this.feedUrl = feedUrl;
     }
