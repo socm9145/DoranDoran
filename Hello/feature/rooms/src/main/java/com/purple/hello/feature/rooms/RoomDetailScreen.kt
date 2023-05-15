@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOutlinedButton
 import com.purple.core.designsystem.component.HiTopAppBar
@@ -34,8 +38,10 @@ import com.purple.hello.feature.rooms.viewmodel.FeedViewModel
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun RoomDetailRoute(
@@ -48,20 +54,26 @@ internal fun RoomDetailRoute(
     val selectedRoom by roomsViewModel.selectedRoom.collectAsState()
     val roomCode by roomsViewModel.roomCode.collectAsState()
     val feedUiState by feedViewModel.feedUiState.collectAsState()
-
+    val isShowCalendar = remember { mutableStateOf(false) }
     val currentDate = remember { mutableStateOf(LocalDateTime.now()) }
 
     if (selectedRoom != null) {
-        LaunchedEffect(currentDate) {
+        LaunchedEffect(currentDate.value) {
             feedViewModel.selectDate(currentDate.value)
-            feedViewModel.fetchFeed(selectedRoom!!.roomId, currentDate.value)
         }
 
         LaunchedEffect(selectedRoom) {
             currentDate.value = LocalDateTime.now()
-            feedViewModel.fetchFeed(selectedRoom!!.roomId, currentDate.value)
-            roomsViewModel.fetchRoomDetail()
         }
+    }
+
+    if (isShowCalendar.value) {
+        CalendarDialog(
+            state = rememberUseCaseState(visible = true, onCloseRequest = { isShowCalendar.value = false }),
+            selection = CalendarSelection.Date { newDate ->
+                currentDate.value = LocalDateTime.of(newDate, LocalTime.now())
+            },
+        )
     }
 
     Column(
@@ -76,6 +88,7 @@ internal fun RoomDetailRoute(
                 onClickRoomSetting = {
                     onClickRoomSetting(it)
                 },
+                onClickCalendar = { isShowCalendar.value = true },
                 roomCode = roomCode,
             )
             Divider()
@@ -133,6 +146,7 @@ private fun RoomDetailScreen(
     roomDetail: Room,
     onBackClick: () -> Unit,
     onClickRoomSetting: (roomId: Long) -> Unit,
+    onClickCalendar: () -> Unit,
     roomCode: String,
 ) {
     Column {
@@ -143,6 +157,7 @@ private fun RoomDetailScreen(
                     roomDetail.roomId,
                 )
             },
+            onClickCalendar = onClickCalendar,
             roomName = roomDetail.roomName,
             roomCode = roomCode,
         )
@@ -155,6 +170,7 @@ private fun RoomDetailAppBar(
     roomName: String,
     onBackClick: () -> Unit,
     onClickRoomSetting: () -> Unit,
+    onClickCalendar: () -> Unit,
     roomCode: String,
 ) {
     val sendIntent: Intent = Intent().apply {
@@ -179,6 +195,15 @@ private fun RoomDetailAppBar(
                     Icon(
                         painter = painterResource(id = HiIcons.PersonAdd),
                         contentDescription = "공유하기",
+                    )
+                },
+            )
+            HiIconButton(
+                onClick = onClickCalendar,
+                icon = {
+                    Icon(
+                        imageVector = HiIcons.Calendar,
+                        contentDescription = "캘린더",
                     )
                 },
             )
