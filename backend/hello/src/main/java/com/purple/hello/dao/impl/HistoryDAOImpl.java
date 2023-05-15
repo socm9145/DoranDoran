@@ -1,14 +1,12 @@
 package com.purple.hello.dao.impl;
 
 import com.purple.hello.dao.HistoryDAO;
-import com.purple.hello.dto.in.CreateQuestionInDTO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
 import com.purple.hello.dto.tool.DeviceWithQuestionDTO;
 import com.purple.hello.entity.*;
 import com.purple.hello.repo.HistoryRepo;
 import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.repo.RoomRepo;
-import com.querydsl.core.Fetchable;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -45,21 +43,6 @@ public class HistoryDAOImpl implements HistoryDAO {
         this.historyRepo = historyRepo;
         this.roomRepo = roomRepo;
         this.questionRepo = questionRepo;
-    }
-
-    @Override
-    public boolean createHistory(CreateQuestionInDTO createQuestionInDTO) {
-        Room realRoom = roomRepo.findById(createQuestionInDTO.getRoomId()).get();
-        Question question = questionRepo.findById(createQuestionInDTO.getNo()).get();
-
-        History history = History.builder()
-                .createAt(new Date())
-                .question(question)
-                .room(realRoom)
-                .build();
-        historyRepo.save(history);
-
-        return true;
     }
 
     @Override

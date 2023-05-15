@@ -5,7 +5,6 @@ import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.*;
 import com.purple.hello.entity.Room;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +17,6 @@ public interface RoomDAO {
     String readRoomCodeByRoomId(long roomId);
     void updateRoomCodeByRoomId(UpdateRoomCodeInDTO updateRoomCodeInDTO);
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
-    LocalDate getCreatedAtByRoomId(long roomId);
     List<Room> getRoom();
     Map<Long, List<HistoryTypeDTO>> getHistoryTypeCount(List<Long> roomListIdx);
     Map<Long, List<HistoryTypeDTO>> getHistoryTypeFeedCount(List<Long> roomListIdx);

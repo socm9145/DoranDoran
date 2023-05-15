@@ -7,7 +7,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "questions")
 public class Question {
@@ -32,4 +31,12 @@ public class Question {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     QuestionType questionType;
+
+    @Builder
+    public Question(long questionId, long no, String content, QuestionType questionType){
+        this.questionId = questionId;
+        this.no = no;
+        this.content = content;
+        this.questionType = questionType;
+    }
 }
