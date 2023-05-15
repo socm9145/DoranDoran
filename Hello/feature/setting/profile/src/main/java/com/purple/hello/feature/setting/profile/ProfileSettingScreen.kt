@@ -2,6 +2,7 @@ package com.purple.hello.feature.setting.profile
 
 import android.icu.util.Calendar
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,23 +44,24 @@ fun ProfileSettingRoute(
     onClickRooms: () -> Unit,
 ) {
     val isFirst = profileSettingViewModel.isFirst
+    val profile by profileSettingViewModel.profile.collectAsState()
 
-    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
-    val currentDay = Calendar.getInstance().get(Calendar.DATE)
+    val currentYear = LocalDate.now().year
     val years = (1920..currentYear).toList().map { it.toString() }
-    var selectedYear by remember { mutableStateOf(currentYear) }
-    var selectedMonth by remember { mutableStateOf(currentMonth) }
-    var selectedDay by remember { mutableStateOf(currentDay) }
+    var selectedYear by remember { mutableStateOf(profile.birth?.year ?: currentYear) }
+    var selectedMonth by remember { mutableStateOf(profile.birth?.monthValue ?: LocalDate.now().monthValue) }
+    var selectedDay by remember { mutableStateOf(profile.birth?.dayOfMonth ?: 1) }
     val days = (1..getDaysInMonth(selectedYear.toInt(), selectedMonth.toInt())).toList().map { it.toString() }
 
     val selectedBirth = LocalDate.of(selectedYear, selectedMonth, selectedDay)
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    // TODO : rooster -> 기존 url
-    val existedImageName =
-        if (!isFirst) coilUrl + "rooster.png" else ""
-    var selectedImageUrl by remember { mutableStateOf(existedImageName) }
+    var selectedImageUrl by remember(isFirst, profile) {
+        Log.d("User Profile", profile.profileUrl ?: "")
+        mutableStateOf(
+            if (!isFirst) profile.profileUrl?: coilUrl else coilUrl,
+        )
+    }
 
     HiTheme {
         Column(

@@ -2,45 +2,49 @@ package com.purple.hello.sync.work
 
 import android.content.Context
 import android.util.Log
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.purple.core.database.dao.NotificationDao
 import com.purple.core.database.entity.NotificationEntity
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class SaveNotificationWorker @Inject constructor(
-    appContext: Context,
-    workerParams: WorkerParameters,
+@HiltWorker
+class SaveNotificationWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
     private val notificationDao: NotificationDao,
 ) : CoroutineWorker(appContext, workerParams) {
 
-    override suspend fun doWork(): Result {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         Log.d(TAG, "do work")
-
         val title = inputData.getString("title") ?: ""
         val body = inputData.getString("body") ?: ""
-        val time = inputData.getLong("time", 0L)
+        val timestamp = inputData.getLong("timestamp", 0L)
 
-        saveNotificationToDatabase(title, body, time)
-
-        return Result.success()
-    }
-
-    private suspend fun saveNotificationToDatabase(title: String, body: String, time: Long) {
-        Log.d(TAG, "message: $title")
-        notificationDao.insertNotificationEntity(
-            NotificationEntity(
-                title = title,
-                body = body,
-                timestamp = time,
-            ),
-        )
+        try {
+            notificationDao.insertNotificationEntity(
+                NotificationEntity(
+                    title = title,
+                    body = body,
+                    timestamp = timestamp,
+                ),
+            )
+            Log.d(TAG, "NotificationEntity: $title")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.retry()
+        }
+        Result.success()
     }
 
     companion object {
         const val KEY_TITLE = "title"
         const val KEY_BODY = "body"
-        const val KEY_TIMESTAMP = "time"
+        const val KEY_TIMESTAMP = "timestamp"
         private const val TAG = "WorkManager"
     }
 }

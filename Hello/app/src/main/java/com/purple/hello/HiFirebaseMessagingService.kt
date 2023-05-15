@@ -11,7 +11,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -19,6 +19,7 @@ import com.purple.hello.core.datastore.DeviceDataStore
 import com.purple.hello.sync.work.SaveNotificationWorker
 import kotlinx.coroutines.runBlocking
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class HiFirebaseMessagingService : FirebaseMessagingService() {
@@ -79,12 +80,13 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
             .putString(SaveNotificationWorker.KEY_BODY, body)
             .putLong(SaveNotificationWorker.KEY_TIMESTAMP, System.currentTimeMillis())
             .build()
-        val work = OneTimeWorkRequest.Builder(SaveNotificationWorker::class.java)
+        val work = OneTimeWorkRequestBuilder<SaveNotificationWorker>()
             .setInputData(inputData)
+            .setInitialDelay(1, TimeUnit.SECONDS)
             .build()
         WorkManager.getInstance(this)
-            .beginWith(work)
-            .enqueue()
+//            .beginWith(work)
+            .enqueue(work)
         // [END dispatch_job]
     }
 

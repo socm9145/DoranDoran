@@ -20,4 +20,8 @@ enum class DeleteDialogType(
         "회원 탈퇴 하기",
         "탈퇴",
     ),
+    DELETE_NOTIFICATIONS(
+        "알림 목록 모두 비우기",
+        "비우기",
+    ),
 }

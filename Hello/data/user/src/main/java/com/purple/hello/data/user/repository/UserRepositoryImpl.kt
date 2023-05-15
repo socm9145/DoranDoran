@@ -1,14 +1,20 @@
 package com.purple.hello.data.user.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.MemberEntity
+import com.purple.core.model.Profile
 import com.purple.hello.core.datastore.UserDataStore
 import com.purple.hello.core.network.utils.birthToDate
 import com.purple.hello.data.user.datasource.RemoteUserDataSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -51,6 +57,17 @@ class UserRepositoryImpl @Inject constructor(
                     ),
                 )
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getProfile(): Flow<Profile> {
+        val userId = runBlocking { userDataStore.userId.first() }
+        return userDao.getProfileUrl(userId).map {
+            Profile(
+                profileUrl = it.profileUrl,
+                birth = LocalDateTime.now(),
+            )
         }
     }
 }

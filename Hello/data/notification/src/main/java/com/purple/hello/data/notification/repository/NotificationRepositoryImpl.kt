@@ -20,5 +20,9 @@ class NotificationRepositoryImpl @Inject constructor(
                 )
             }
         }
+
+    override suspend fun deleteNotifications() {
+        notificationDao.deleteAllNotifications()
+    }
 }
 
