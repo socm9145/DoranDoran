@@ -38,6 +38,7 @@ android {
 dependencies {
 
     implementation(project(":data:user"))
+    implementation(project(":core:model"))
 
     implementation(appDependencies)
     testImplementation(defaultUnitTest)

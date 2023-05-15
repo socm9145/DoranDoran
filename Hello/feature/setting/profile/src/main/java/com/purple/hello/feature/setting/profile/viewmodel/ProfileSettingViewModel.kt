@@ -13,13 +13,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileSettingViewModel @Inject constructor(
+    getProfileUseCase: GetProfileUseCase,
     private val setProfileUseCase: SetProfileUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
 ) : ViewModel() {
 
     // TODO : Fake
@@ -34,6 +33,6 @@ class ProfileSettingViewModel @Inject constructor(
     val profile: StateFlow<Profile> = getProfileUseCase().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        initialValue = Profile(null, LocalDateTime.now()),
+        initialValue = Profile(null, null),
     )
 }

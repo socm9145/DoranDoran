@@ -22,7 +22,7 @@ import com.purple.core.designsystem.component.NotificationItem
 import com.purple.core.designsystem.dialog.HiAlertDialog
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.model.DeleteDialogType
+import com.purple.core.model.type.DeleteDialogType
 import com.purple.core.model.Notification
 import com.purple.hello.feature.notification.viewmodel.NotificationViewModel
 import java.text.SimpleDateFormat
