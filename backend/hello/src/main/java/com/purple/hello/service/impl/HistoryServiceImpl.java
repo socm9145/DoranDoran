@@ -5,6 +5,11 @@ import com.purple.hello.dao.RoomDAO;
 import com.purple.hello.dto.out.ReadQuestionOutDTO;
 import com.purple.hello.dto.tool.DeviceWithQuestionDTO;
 import com.purple.hello.dto.tool.NotificationDTO;
+import com.purple.hello.entity.History;
+import com.purple.hello.entity.Question;
+import com.purple.hello.entity.Room;
+import com.purple.hello.repo.QuestionRepo;
+import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.service.HistoryService;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +63,11 @@ public class HistoryServiceImpl implements HistoryService {
         List<DeviceWithQuestionDTO> deviceWithQuestionDTOS = historyDAO.readDevicesNotUploadedByBeginTime(beginTime);
         String sentence = "의 오늘의 질문 마감 1시간 전입니다.";
         return parseNotificationList(deviceWithQuestionDTOS, sentence);
+    }
+
+    @Override
+    public void createFirstHistory(Long roomId) {
+        historyDAO.createFirstHistory(roomId);
     }
 
     private List<NotificationDTO> parseNotificationList(List<DeviceWithQuestionDTO> deviceWithQuestionDTOS, String sentence) {

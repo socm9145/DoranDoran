@@ -57,6 +57,10 @@ public class RoomController {
         createUserRoomInDTO.setUserId(userId);
         CreateRoomDTO createRoomDTO = this.roomService.createRoom(createUserRoomInDTO);
 
+        if(createRoomDTO != null){
+            historyService.createFirstHistory(createRoomDTO.getRoomId());
+        }
+
         // userRoom 객체 생성
         CreateRoomOutDTO createRoomOutDTO = this.userRoomService.createUserRoom(createUserRoomInDTO, createRoomDTO.getRoomId());
 
