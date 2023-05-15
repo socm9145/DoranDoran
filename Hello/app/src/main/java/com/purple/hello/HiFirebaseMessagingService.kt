@@ -49,7 +49,7 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
             sendNotification(remoteMessage.notification?.title, remoteMessage.notification!!.body!!)
-            scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
+//            scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
