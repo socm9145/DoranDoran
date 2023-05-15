@@ -2,7 +2,6 @@ package com.purple.hello.feature.setting.profile
 
 import android.icu.util.Calendar
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,18 +47,17 @@ fun ProfileSettingRoute(
 
     val currentYear = LocalDate.now().year
     val years = (1920..currentYear).toList().map { it.toString() }
-    var selectedYear by remember { mutableStateOf(profile.birth?.year ?: currentYear) }
-    var selectedMonth by remember { mutableStateOf(profile.birth?.monthValue ?: LocalDate.now().monthValue) }
-    var selectedDay by remember { mutableStateOf(profile.birth?.dayOfMonth ?: 1) }
+    var selectedYear by remember(profile.birth) { mutableStateOf(profile.birth?.year ?: currentYear) }
+    var selectedMonth by remember(profile.birth) { mutableStateOf(profile.birth?.monthValue ?: LocalDate.now().monthValue) } // ktlint-disable wrapping
+    var selectedDay by remember(profile.birth) { mutableStateOf(profile.birth?.dayOfMonth ?: 1) }
     val days = (1..getDaysInMonth(selectedYear.toInt(), selectedMonth.toInt())).toList().map { it.toString() }
 
     val selectedBirth = LocalDate.of(selectedYear, selectedMonth, selectedDay)
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     var selectedImageUrl by remember(isFirst, profile) {
-        Log.d("User Profile", profile.profileUrl ?: "")
         mutableStateOf(
-            if (!isFirst) profile.profileUrl?: coilUrl else coilUrl,
+            if (!isFirst) profile.profileUrl ?: coilUrl else coilUrl,
         )
     }
 

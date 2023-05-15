@@ -22,6 +22,10 @@ import com.purple.core.designsystem.component.NotificationItem
 import com.purple.core.designsystem.dialog.HiAlertDialog
 import com.purple.core.designsystem.icon.HiIcons
 import com.purple.core.designsystem.theme.HiTheme
+<<<<<<< HEAD
+=======
+import com.purple.core.model.type.DeleteDialogType
+>>>>>>> e7f8141581ce41f9ce5d844af628db2af0d2b50f
 import com.purple.core.model.Notification
 import com.purple.core.model.type.DeleteDialogType
 import com.purple.hello.feature.notification.viewmodel.NotificationViewModel

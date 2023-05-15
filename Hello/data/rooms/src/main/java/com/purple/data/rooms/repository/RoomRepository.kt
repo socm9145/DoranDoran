@@ -1,6 +1,5 @@
 package com.purple.data.rooms.repository
 
-import com.purple.core.model.InputData
 import com.purple.core.model.JoinRoomInputValue
 import com.purple.core.model.Room
 import kotlinx.coroutines.flow.Flow

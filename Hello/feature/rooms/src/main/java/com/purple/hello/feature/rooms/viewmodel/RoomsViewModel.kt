@@ -47,7 +47,7 @@ class RoomsViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val selectedRoom: StateFlow<Room?> = selectedRoomId.flatMapLatest {
         rooms.map {
-            when(it) {
+            when (it) {
                 is Result.Success -> {
                     it.data.filter { it.roomId == selectedRoomId.value }.let { selectedRoom ->
                         if (selectedRoom.isEmpty()) {
