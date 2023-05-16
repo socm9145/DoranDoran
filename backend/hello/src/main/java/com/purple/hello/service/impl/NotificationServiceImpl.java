@@ -21,10 +21,6 @@ public class NotificationServiceImpl implements NotificationService {
                    .putData("time", LocalDateTime.now().toString())
                    .putData("title", notificationDTO.getTitle())
                    .putData("body", notificationDTO.getContent())
-                   .setNotification(Notification.builder()
-                           .setTitle(notificationDTO.getTitle())
-                           .setBody(notificationDTO.getContent())
-                           .build())
                    .setToken(notificationDTO.getDeviceToken())
                    .build()).collect(Collectors.toList());
 
@@ -71,7 +67,6 @@ public class NotificationServiceImpl implements NotificationService {
                 .putData("time", LocalDateTime.now().toString())
                 .putData("title", title)
                 .putData("body", body)
-                .setNotification(Notification.builder().setTitle(title).setBody(body).build())
                 .setToken(token)
                 .build()).collect(Collectors.toList());
 
