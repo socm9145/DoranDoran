@@ -42,7 +42,6 @@ fun RoomSettingRoute(
     val roomSettingInfo by roomSettingViewModel.roomSettingInfo.collectAsState()
     val isHost = roomSettingInfo.role == "ROLE1"
 
-
     HiTheme {
         Column(
             modifier = Modifier
@@ -195,7 +194,10 @@ private fun ChangePasswordDialog(
     onDismiss: () -> Unit,
     onConfirm: (newPasswordQuestion: String, newPassword: String) -> Unit,
 ) {
-    val newPasswordQuestion = createInputDataByInputType(InputDialogType.EDIT_QUESTION_PASSWORD, inputValue = nowPasswordQuestion)
+    val newPasswordQuestion = createInputDataByInputType(
+        InputDialogType.EDIT_QUESTION_PASSWORD,
+        inputValue = nowPasswordQuestion,
+    )
     val newPassword = createInputDataByInputType(InputDialogType.EDIT_PASSWORD, inputValue = "")
     HiInputDialog(
         questionContent = listOf(newPasswordQuestion, newPassword),
