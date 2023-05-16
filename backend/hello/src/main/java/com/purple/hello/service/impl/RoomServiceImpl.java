@@ -224,7 +224,10 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception {
-        return roomDAO.readRoomQuestionByRoomIdAndUserId(roomId, userId);
+        ReadRoomQuestionOutDTO readRoomQuestionOutDTO = roomDAO.readRoomQuestionByRoomIdAndUserId(roomId, userId);
+        if(readRoomQuestionOutDTO == null)
+            throw new IllegalArgumentException();
+        return readRoomQuestionOutDTO;
     }
 
     @Override

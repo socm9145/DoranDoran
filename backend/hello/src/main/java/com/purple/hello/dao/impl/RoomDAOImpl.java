@@ -256,9 +256,6 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId) throws Exception{
-        if (!qRoom.roomId.equals(roomId) || !qUser.userId.equals(userId))
-            throw new IllegalArgumentException();
-
         ReadRoomQuestionOutDTO readRoomQuestionOutDTO = new JPAQuery<>(em)
                 .select(Projections.constructor(ReadRoomQuestionOutDTO.class, qRoom.roomId, qRoom.roomQuestion))
                 .from(qRoom)
