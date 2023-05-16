@@ -230,6 +230,16 @@ class RoomRepositoryImpl @Inject constructor(
         remoteRoomDataSource.deleteRoom(
             roomId,
         ).let {
+//            if (it.isSuccessful) {
+//                try {
+//                    roomDao.deleteRoom(
+//                        roomId = roomId,
+//                    )
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                    Log.e("delete", "delete error occurred", e)
+//                }
+//            }
             if (it.isSuccessful) {
                 roomDao.deleteRoom(
                     roomId = roomId,
