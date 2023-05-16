@@ -239,26 +239,29 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<NotificationDTO> makeNotificationForOtherDevicesByRoomId(long roomId, long userId) throws Exception{
-        UserRoom userRoom = userRoomDAO.readUserRoomByUserIdAndRoomId(userId, roomId);
-        if(userRoom == null) {
-            throw new IllegalArgumentException();
-        }
-        List<ReadUserRoomDeviceDTO> readUserRoomDeviceDTOS = userDAO.readOtherDevicesByRoomId(roomId, userId);
-        if(readUserRoomDeviceDTOS.size() == 0) {
+    public List<NotificationDTO> makeNotificationForOtherDevicesByRoomId(long userId) throws Exception{
+        List<UserRoom> userRooms = userRoomDAO.readUserRoomsByUserId(userId);
+        if(userRooms.size() == 0) {
             throw new IllegalArgumentException();
         }
         List<NotificationDTO> notificationDTOS = new ArrayList<>();
-        for(ReadUserRoomDeviceDTO readUserRoomDeviceDTO : readUserRoomDeviceDTOS) {
-            String title = "무동작 감지";
-            String content = readUserRoomDeviceDTO.getRoomName() + "의 " + userRoom.getUserName() + "(이)가\n24시간 동안 활동하지 않았습니다.";
-            notificationDTOS.add(NotificationDTO
-                    .builder()
-                    .deviceToken(readUserRoomDeviceDTO.getDeviceToken())
-                    .title(title)
-                    .content(content)
-                    .build());
+        for(UserRoom userRoom:userRooms) {
+            List<ReadUserRoomDeviceDTO> readUserRoomDeviceDTOS = userDAO.readOtherDevicesByRoomId(userRoom.getRoom().getRoomId(), userId);
+            if(readUserRoomDeviceDTOS.size() == 0) {
+                continue;
+            }
+            for(ReadUserRoomDeviceDTO readUserRoomDeviceDTO : readUserRoomDeviceDTOS) {
+                String title = "무동작 감지";
+                String content = readUserRoomDeviceDTO.getRoomName() + "의 " + userRoom.getUserName() + "(이)가\n24시간 동안 활동하지 않았습니다.";
+                notificationDTOS.add(NotificationDTO
+                        .builder()
+                        .deviceToken(readUserRoomDeviceDTO.getDeviceToken())
+                        .title(title)
+                        .content(content)
+                        .build());
+            }
         }
+
         return notificationDTOS;
     }
     private List<History> makeData(List<QuestionIdRoomIdDTO> data, boolean type){

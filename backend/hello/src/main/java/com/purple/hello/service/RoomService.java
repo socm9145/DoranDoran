@@ -27,5 +27,5 @@ public interface RoomService {
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId)throws Exception;
     ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId)throws Exception;
-    List<NotificationDTO> makeNotificationForOtherDevicesByRoomId(long roomId, long userId) throws Exception;
+    List<NotificationDTO> makeNotificationForOtherDevicesByRoomId(long userId) throws Exception;
 }

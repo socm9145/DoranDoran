@@ -284,4 +284,13 @@ public class UserRoomDAOImpl implements UserRoomDAO {
         }
         return map;
     }
+
+    @Override
+    public List<UserRoom> readUserRoomsByUserId(long userId) {
+        return new JPAQuery<>(em)
+                .select(qUserRoom)
+                .from(qUserRoom)
+                .where(qUserRoom.user.userId.eq(userId))
+                .fetch();
+    }
 }
