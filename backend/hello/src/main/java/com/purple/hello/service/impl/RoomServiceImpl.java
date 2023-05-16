@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.purple.hello.dao.HistoryDAO;
-import com.purple.hello.dao.QuestionDAO;
-import com.purple.hello.dao.RoomDAO;
-import com.purple.hello.dao.UserRoomDAO;
+import com.purple.hello.dao.*;
 import com.purple.hello.dto.in.*;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.*;
@@ -22,7 +19,6 @@ import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.service.AwsS3Service;
 import com.purple.hello.service.RoomService;
-import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -56,13 +52,16 @@ public class RoomServiceImpl implements RoomService {
     @Value("${server_addr}")
     private String url;
     private final AwsS3Service awsS3Service;
+    private final UserDAO userDAO;
+    private final UserRoomDAO userRoomDAO;
 
-    RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, AwsS3Service awsS3Service, UserRoomDAO userRoomDAO, HistoryRepo historyRepo, RoomRepo roomRepo) {
+    public RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, AwsS3Service awsS3Service, UserDAO userDAO, UserRoomDAO userRoomDAO, HistoryRepo historyRepo, RoomRepo roomRepo){
         this.roomDAO = roomDAO;
         this.passwordEncoder = passwordEncoder;
         this.historyDAO = historyDAO;
         this.questionRepo = questionRepo;
         this.awsS3Service = awsS3Service;
+        this.userDAO = userDAO;
         this.userRoomDAO = userRoomDAO;
         this.historyRepo = historyRepo;
         this.roomRepo = roomRepo;
@@ -240,6 +239,29 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
+    @Override
+    public List<NotificationDTO> makeNotificationForOtherDevicesByRoomId(long roomId, long userId) throws Exception{
+        UserRoom userRoom = userRoomDAO.readUserRoomByUserIdAndRoomId(userId, roomId);
+        if(userRoom == null) {
+            throw new IllegalArgumentException();
+        }
+        List<ReadUserRoomDeviceDTO> readUserRoomDeviceDTOS = userDAO.readOtherDevicesByRoomId(roomId, userId);
+        if(readUserRoomDeviceDTOS.size() == 0) {
+            throw new IllegalArgumentException();
+        }
+        List<NotificationDTO> notificationDTOS = new ArrayList<>();
+        for(ReadUserRoomDeviceDTO readUserRoomDeviceDTO : readUserRoomDeviceDTOS) {
+            String title = "무동작 감지";
+            String content = readUserRoomDeviceDTO.getRoomName() + "의 " + userRoom.getUserName() + "(이)가\n24시간 동안 활동하지 않았습니다.";
+            notificationDTOS.add(NotificationDTO
+                    .builder()
+                    .deviceToken(readUserRoomDeviceDTO.getDeviceToken())
+                    .title(title)
+                    .content(content)
+                    .build());
+        }
+        return notificationDTOS;
+    }
     private List<History> makeData(List<QuestionIdRoomIdDTO> data, boolean type){
         List<History> result = new ArrayList<>();
         for(QuestionIdRoomIdDTO questionIdRoomIdDTO : data){

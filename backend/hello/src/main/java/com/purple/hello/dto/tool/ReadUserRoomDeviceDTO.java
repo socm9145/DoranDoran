@@ -5,20 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
 @NoArgsConstructor
-public class NotificationDTO {
+public class ReadUserRoomDeviceDTO {
+    String roomName;
     String deviceToken;
-    String title;
-    String content;
 
     @Builder
-    public NotificationDTO(String deviceToken, String title, String content) {
+    public ReadUserRoomDeviceDTO(String roomName, String deviceToken) {
+        this.roomName = roomName;
         this.deviceToken = deviceToken;
-        this.title = title;
-        this.content = content;
     }
 }

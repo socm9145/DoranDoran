@@ -7,6 +7,7 @@ import com.purple.hello.dto.in.UpdateRoomCodeInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
+import com.purple.hello.dto.tool.NotificationDTO;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,6 @@ public interface RoomService {
     @Transactional
     boolean deleteRoom(DeleteRoomInDTO deleteRoomInDTO) throws Exception;
     ReadRoomQuestionOutDTO readRoomQuestionByRoomIdAndUserId(long roomId, long userId)throws Exception;
-
     ReadMemberListOutDTO readMemberListByRoomId(long roomId, long userId)throws Exception;
+    List<NotificationDTO> makeNotificationForOtherDevicesByRoomId(long roomId, long userId) throws Exception;
 }

@@ -3,7 +3,10 @@ package com.purple.hello.dao.impl;
 import com.purple.hello.dao.UserDAO;
 import com.purple.hello.dto.in.UpdateUserInfoInDTO;
 import com.purple.hello.dto.out.ReadUserInfoOutDTO;
+import com.purple.hello.dto.tool.ReadUserRoomDeviceDTO;
+import com.purple.hello.entity.QRoom;
 import com.purple.hello.entity.QUser;
+import com.purple.hello.entity.QUserRoom;
 import com.purple.hello.entity.User;
 import com.purple.hello.repo.UserRepo;
 import com.querydsl.core.types.Projections;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -24,6 +28,8 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager em;
     private final UserRepo userRepo;
     private final QUser qUser = QUser.user;
+    private final QUserRoom qUserRoom = QUserRoom.userRoom;
+    private final QRoom qRoom = QRoom.room;
     @Autowired
     public UserDAOImpl(UserRepo userRepo) {
         this.userRepo = userRepo;
@@ -73,6 +79,21 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public List<ReadUserRoomDeviceDTO> readOtherDevicesByRoomId(long roomId, long userId) {
+        return new JPAQuery<>(em)
+                .select(Projections.constructor(ReadUserRoomDeviceDTO.class, qUserRoom.roomName, qUser.deviceToken))
+                .from(qUser)
+                .join(qUserRoom)
+                .on(qUser.userId.eq(qUserRoom.user.userId))
+                .join(qRoom)
+                .on(qUserRoom.room.roomId.eq(qRoom.roomId))
+                .where(qRoom.roomId.eq(roomId))
+                .where(qUser.userId.ne(userId))
+                .where(qUserRoom.roomName.isNotNull())
+                .where(qUser.deviceToken.isNotNull())
+                .fetch();
+    }
+
     public void updateDeviceToken(User user) {
         JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(em, qUser);
         jpaUpdateClause.set(qUser.deviceToken, user.getDeviceToken())

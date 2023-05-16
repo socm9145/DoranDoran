@@ -10,14 +10,14 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class NotificationDTO {
-    String deviceToken;
+public class CommonNotificationDTO {
+    List<String> tokenList;
     String title;
     String content;
 
     @Builder
-    public NotificationDTO(String deviceToken, String title, String content) {
-        this.deviceToken = deviceToken;
+    public CommonNotificationDTO(List<String> tokenList, String title, String content) {
+        this.tokenList = tokenList;
         this.title = title;
         this.content = content;
     }

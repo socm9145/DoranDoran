@@ -6,6 +6,7 @@ import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
+import com.purple.hello.dto.tool.NotificationDTO;
 import com.purple.hello.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,9 @@ public class RoomController {
     private final UserService userService;
     @Autowired
     private final HistoryService historyService;
+    private final NotificationService notificationService;
     RoomController(AlarmService alarmService, FeedService feedService, QuestionService questionService, RoomService roomService,
-                   UserRoomService userRoomService, UserService userService, HistoryService historyService){
+                   UserRoomService userRoomService, UserService userService, HistoryService historyService, NotificationService notificationService){
         this.alarmService = alarmService;
         this.feedService = feedService;
         this.questionService = questionService;
@@ -46,6 +48,7 @@ public class RoomController {
         this.userRoomService = userRoomService;
         this.userService = userService;
         this.historyService = historyService;
+        this.notificationService = notificationService;
     }
 
     @ApiOperation(
@@ -163,7 +166,7 @@ public class RoomController {
     @ApiOperation(value = "질문 출력 API",
             notes = "해당 날짜에 사용할 질문을 랜덤으로 출력해주는 API")
     @GetMapping("/question")
-    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId) throws Exception, NullPointerException{
+    public ResponseEntity<ReadQuestionOutDTO> readQuestionByQuestionId(@RequestParam("questionId") long questionId) throws Exception{
         try{
             roomService.createQuestion();
         }catch (NullPointerException e){
@@ -176,7 +179,7 @@ public class RoomController {
             value = "비밀번호 질문 출력 API "
             , notes = "그룹 비밀번호 질문을 출력하는 API.")
     @GetMapping("/room-question")
-    public ResponseEntity<ReadRoomQuestionOutDTO> readRoomQuestion(@RequestParam("roomId") long roomId, HttpServletRequest request)throws Exception{
+    public ResponseEntity<ReadRoomQuestionOutDTO> readRoomQuestion(@RequestParam("roomId") long roomId, HttpServletRequest request) throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         ReadRoomQuestionOutDTO readRoomQuestionOutDTO = roomService.readRoomQuestionByRoomIdAndUserId(roomId, userId);
         if(readRoomQuestionOutDTO == null){
@@ -189,7 +192,7 @@ public class RoomController {
     @ApiOperation(value = "그룹 유저 리스트 출력 API (v) vv",
             notes = "해당 그룹방 유저리스트를 출력")
     @GetMapping("/user-list")
-    public ResponseEntity<ReadMemberListOutDTO> readMemberListByRoomId(@RequestParam long roomId, HttpServletRequest request)throws Exception{
+    public ResponseEntity<ReadMemberListOutDTO> readMemberListByRoomId(@RequestParam long roomId, HttpServletRequest request) throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         ReadMemberListOutDTO result = roomService.readMemberListByRoomId(roomId, userId);
 
@@ -197,6 +200,20 @@ public class RoomController {
             throw new IllegalArgumentException();
         }else {
             return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
+    }
+
+    @ApiOperation(value = "무응답 알림 전송 API (v) vv",
+            notes = "해당 그룹방의 나머지 유저에게 알림 전송")
+    @GetMapping("/no-response-notification")
+    public ResponseEntity<ReadUserRoomNotificationOutDTO> sendNoResponseNotificationByRoomId(@RequestParam long roomId, HttpServletRequest request) throws Exception{
+        long userId = Long.parseLong(request.getAttribute("userId").toString());
+        List<NotificationDTO> notificationDTOS = roomService.makeNotificationForOtherDevicesByRoomId(roomId, userId);
+        int notificationCount = notificationService.sendNotifications(notificationDTOS);
+        if(notificationCount == 0) {
+            throw new IllegalArgumentException();
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(ReadUserRoomNotificationOutDTO.builder().notificationCount(notificationCount).build());
         }
     }
 }
