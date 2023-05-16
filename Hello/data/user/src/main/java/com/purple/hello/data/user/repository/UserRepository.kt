@@ -12,4 +12,6 @@ interface UserRepository {
     suspend fun setProfile(profileUrl: String, birth: String)
 
     fun getProfile(): Flow<Profile>
+
+    suspend fun sendSafeAlarm()
 }

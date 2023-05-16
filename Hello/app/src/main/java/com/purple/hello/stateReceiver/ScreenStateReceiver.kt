@@ -70,7 +70,7 @@ class ScreenStateReceiver : BroadcastReceiver() {
             .build()
 
         val screenStateRequest = OneTimeWorkRequestBuilder<TimerWorker>()
-            .setInitialDelay(5, TimeUnit.SECONDS)
+            .setInitialDelay(1, TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 

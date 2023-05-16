@@ -62,10 +62,12 @@ dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":core:model"))
     implementation(project(":sync:work"))
+    implementation("androidx.hilt:hilt-work:1.0.0")
 
     implementation(composeDependencies)
     implementation(appDependencies)
     implementation(navDependencies)
+    implementation(project(mapOf("path" to ":domain:user")))
 
     debugImplementation(composeDebug)
     testImplementation(defaultUnitTest)

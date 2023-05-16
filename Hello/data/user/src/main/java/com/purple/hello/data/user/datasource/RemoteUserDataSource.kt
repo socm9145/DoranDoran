@@ -15,4 +15,7 @@ class RemoteUserDataSource @Inject constructor(
 
     override suspend fun setProfile(profileUrl: String, birth: String) =
         userService.setProfile(ProfileSettingRequest(profileUrl, birth))
+
+    override suspend fun sendSafeAlarm(): Response<String> =
+        userService.putSafeAlarm()
 }

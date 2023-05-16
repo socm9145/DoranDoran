@@ -73,4 +73,8 @@ class UserRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun sendSafeAlarm() {
+        remoteUserDataSource.sendSafeAlarm()
+    }
 }
