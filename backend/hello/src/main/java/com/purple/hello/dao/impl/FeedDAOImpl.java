@@ -132,7 +132,7 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) {
+    public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) throws Exception{
         DateTemplate feedCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
         StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", feedCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
         Date dateKST = DateUtils.addHours(date, 9);

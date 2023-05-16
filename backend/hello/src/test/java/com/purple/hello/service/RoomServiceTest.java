@@ -1,5 +1,9 @@
 package com.purple.hello.service;
 
+import com.purple.hello.dao.HistoryDAO;
+import com.purple.hello.dao.RoomDAO;
+import com.purple.hello.dao.UserDAO;
+import com.purple.hello.dao.UserRoomDAO;
 import com.purple.hello.dao.impl.*;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
@@ -9,7 +13,9 @@ import com.purple.hello.dto.tool.CreateRoomDTO;
 import com.purple.hello.dto.tool.MemberDTO;
 import com.purple.hello.encoder.PasswordEncoder;
 import com.purple.hello.enu.UserRoomRole;
+import com.purple.hello.repo.HistoryRepo;
 import com.purple.hello.repo.QuestionRepo;
+import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.service.impl.AwsS3ServiceImpl;
 import com.purple.hello.service.impl.RoomServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -34,11 +40,16 @@ class RoomServiceTest {
     static private HistoryDAOImpl historyDAO;
     static private QuestionDAOImpl questionDAO;
     static private QuestionRepo questionRepo;
+    static private HistoryRepo historyRepo;
+    static private RoomRepo roomRepo;
     static private AwsS3ServiceImpl awsS3Service;
     static private PasswordEncoder passwordEncoder;
     static private PythonInterpreter interpreter;
     @BeforeAll
     static void beforeAll(){
+    }
+    @BeforeEach
+    void setUp() {
         roomDAO = Mockito.mock(RoomDAOImpl.class);
         historyDAO = Mockito.mock(HistoryDAOImpl.class);
         questionDAO = Mockito.mock(QuestionDAOImpl.class);
@@ -46,11 +57,11 @@ class RoomServiceTest {
         awsS3Service = Mockito.mock(AwsS3ServiceImpl.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         interpreter = Mockito.mock(PythonInterpreter.class);
-    }
-    @BeforeEach
-    void setUp() {
-        roomService = new RoomServiceImpl(roomDAO, passwordEncoder, historyDAO,
-                questionRepo, questionDAO, interpreter, awsS3Service, userDAO, userRoomDAO);
+        historyRepo = Mockito.mock(HistoryRepo.class);
+        roomRepo = Mockito.mock(RoomRepo.class);
+
+        roomService = new RoomServiceImpl(roomDAO, passwordEncoder, historyDAO, questionRepo,
+                awsS3Service, userDAO, userRoomDAO, historyRepo, roomRepo);
     }
 
     @AfterEach
@@ -206,6 +217,8 @@ class RoomServiceTest {
     @Test
     void readUserRoomJoinByRoomCode() throws Exception {
         // init
+        long initRoomId = 1;
+
         ReadUserRoomJoinOutDTO initReadUserRoomJoinOutDTO = ReadUserRoomJoinOutDTO.builder()
                 .roomQuestion("test_roomQuestion")
                 .roomName("test_roomName")
@@ -213,11 +226,11 @@ class RoomServiceTest {
                 .build();
 
         // given
-        Mockito.when(roomDAO.readUserRoomJoinByRoomId(any(String.class)))
+        Mockito.when(roomDAO.readUserRoomJoinByRoomId(any(Long.class)))
                 .thenReturn(initReadUserRoomJoinOutDTO);
 
         // when
-        ReadUserRoomJoinOutDTO whenReadUserRoomJoinOutDTO = roomService.readUserRoomJoinByRoomId("test_roomCode");
+        ReadUserRoomJoinOutDTO whenReadUserRoomJoinOutDTO = roomService.readUserRoomJoinByRoomId(initRoomId);
 
         // then
         assertEquals(whenReadUserRoomJoinOutDTO.getRoomId(), initReadUserRoomJoinOutDTO.getRoomId());
@@ -228,14 +241,14 @@ class RoomServiceTest {
     @Test
     void readUserRoomJoinByRoomCode_InvalidService() throws Exception {
         // init
-
+        long initRoomId = 1;
         // given
-        Mockito.when(roomDAO.readUserRoomJoinByRoomId(any(String.class)))
+        Mockito.when(roomDAO.readUserRoomJoinByRoomId(any(Long.class)))
                 .thenThrow(new IllegalArgumentException());
 
         // when - then
         assertThrows(IllegalArgumentException.class, () -> {
-            roomService.readUserRoomJoinByRoomId("test_roomCode");
+            roomService.readUserRoomJoinByRoomId(initRoomId);
         });
     }
 

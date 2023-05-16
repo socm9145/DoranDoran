@@ -60,9 +60,9 @@ public class RoomController {
         createUserRoomInDTO.setUserId(userId);
         CreateRoomDTO createRoomDTO = this.roomService.createRoom(createUserRoomInDTO);
 
-        if(createRoomDTO != null){
+        if(createRoomDTO != null)
             historyService.createFirstHistory(createRoomDTO.getRoomId());
-        }
+
 
         // userRoom 객체 생성
         CreateRoomOutDTO createRoomOutDTO = this.userRoomService.createUserRoom(createUserRoomInDTO, createRoomDTO.getRoomId());
@@ -73,7 +73,7 @@ public class RoomController {
             value = "그룹방 입장 정보 출력 API (v) vv",
             notes = "그룹방 코드를 입력할 경우 다이얼로그에 사용할 정보를 출력해주는 API")
     @GetMapping("/join-info")
-    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomCode(@RequestParam long roomId)throws Exception{
+    public ResponseEntity<ReadUserRoomJoinOutDTO> readUserRoomJoinByRoomId(@RequestParam long roomId)throws Exception{
         ReadUserRoomJoinOutDTO readUserRoomJoinOutDTO = this.roomService.readUserRoomJoinByRoomId(roomId);
 
         if (readUserRoomJoinOutDTO == null)
@@ -140,7 +140,7 @@ public class RoomController {
     @ApiOperation(value = "날짜 기반 피드 출력 API (x)",
             notes = "해당 날짜에 기재한 피드 전체를 출력해주는 API / timezone 차이로 날짜 인식을 못하는 오류")
     @GetMapping("/date-feed")
-    public ResponseEntity<List<ReadFeedOutDTO>> readFeedByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+    public ResponseEntity<List<ReadFeedOutDTO>> readFeedByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) throws Exception{
         List<ReadFeedOutDTO> readFeedOutDTOs = this.feedService.readFeedByRoomIdAndDate(roomId, date);
 
         return ResponseEntity.status(HttpStatus.OK).body(readFeedOutDTOs);

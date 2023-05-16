@@ -12,5 +12,5 @@ import java.util.List;
 public interface FeedDAO {
     List<CompareFeedByRoomIdOutDTO> compareFeedByRoomIdAndDate(long roomId, Date date)throws Exception;
     CreateFeedOutDTO createFeed(CreateFeedInDTO createFeedInDTO) throws Exception;
-    List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date);
+    List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date)throws Exception;
 }

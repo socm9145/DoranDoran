@@ -29,11 +29,13 @@ class AwsS3ServiceTest {
     static private AwsS3ServiceImpl mockAwsS3Service;
     @BeforeAll
     static void beforeAll(){
-        amazonS3 = Mockito.mock(AmazonS3.class);
-        mockAwsS3Service = Mockito.mock(AwsS3ServiceImpl.class);
+
     }
     @BeforeEach
     void setUp() {
+        amazonS3 = Mockito.mock(AmazonS3.class);
+        mockAwsS3Service = Mockito.mock(AwsS3ServiceImpl.class);
+
         awsS3Service = new AwsS3ServiceImpl(amazonS3);
     }
 

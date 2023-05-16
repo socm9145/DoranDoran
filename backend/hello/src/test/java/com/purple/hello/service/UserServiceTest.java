@@ -170,7 +170,7 @@ class UserServiceTest {
         // init
         UpdateUserInfoInDTO initUpdateUserInfoInDTO = UpdateUserInfoInDTO.builder()
                 .userId(1)
-                .userProfileUrl("test_userProfileUrl")
+                .profileURL("test_userProfileUrl")
                 .birth(new Date())
                 .build();
         
@@ -190,7 +190,7 @@ class UserServiceTest {
         // init
         UpdateUserInfoInDTO initUpdateUserInfoInDTO = UpdateUserInfoInDTO.builder()
                 .userId(1)
-                .userProfileUrl("test_userProfileUrl")
+                .profileURL("test_userProfileUrl")
                 .birth(new Date())
                 .build();
 

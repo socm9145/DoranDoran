@@ -6,10 +6,9 @@ import com.purple.hello.dto.in.*;
 import com.purple.hello.enu.BoolAlarm;
 import com.purple.hello.repo.UserRoomRepo;
 import com.purple.hello.service.impl.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,21 +30,25 @@ class OptionControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
+    RoomServiceImpl roomService;
+    @MockBean
+    UserRoomServiceImpl userRoomService;
+    @MockBean
     AlarmServiceImpl alarmService;
     @MockBean
     FeedServiceImpl feedService;
     @MockBean
     QuestionServiceImpl questionService;
     @MockBean
-    RoomServiceImpl roomService;
-    @MockBean
-    UserRoomServiceImpl userRoomService;
-    @MockBean
     UserServiceImpl userService;
     @MockBean
-    UserRoomRepo userRoomRepo;
+    HistoryServiceImpl historyService;
+    @MockBean
+    NotificationServiceImpl notificationService;
+
     @BeforeEach
     void setUp() {
+
     }
 
     @AfterEach
