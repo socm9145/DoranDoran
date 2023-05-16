@@ -32,7 +32,6 @@
                 <action android:name="android.intent.action.SCREEN_OFF" />
             </intent-filter>
         </receiver>
-        <service android:name=".stateReceiver.ScreenStateService"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -61,6 +60,7 @@
                 android:scheme="${kakaoApiKey}" />
         </intent-filter>
         </activity>
+        <service android:name=".stateReceiver.ScreenStateService"/>
         <service
             android:name=".HiFirebaseMessagingService"
             android:exported="false">

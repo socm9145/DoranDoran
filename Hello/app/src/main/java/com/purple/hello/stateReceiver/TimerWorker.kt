@@ -6,7 +6,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import java.util.*
 
-
 class TimerWorker(context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
 
