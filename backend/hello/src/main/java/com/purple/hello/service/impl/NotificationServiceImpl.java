@@ -19,6 +19,8 @@ public class NotificationServiceImpl implements NotificationService {
     public int sendNotifications(List<NotificationDTO> notificationDTOS) {
         List<Message> messages = notificationDTOS.stream().map((notificationDTO) -> Message.builder()
                    .putData("time", LocalDateTime.now().toString())
+                   .putData("title", notificationDTO.getTitle())
+                   .putData("body", notificationDTO.getContent())
                    .setNotification(Notification.builder()
                            .setTitle(notificationDTO.getTitle())
                            .setBody(notificationDTO.getContent())
@@ -67,6 +69,8 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendCommonNotifications(List<String> tokenList, String title, String body){
         List<Message> messages = tokenList.stream().map(token -> Message.builder()
                 .putData("time", LocalDateTime.now().toString())
+                .putData("title", title)
+                .putData("body", body)
                 .setNotification(Notification.builder().setTitle(title).setBody(body).build())
                 .setToken(token)
                 .build()).collect(Collectors.toList());

@@ -25,8 +25,7 @@ public class Scheduler {
         this.roomService = roomService;
     }
 
-//    @Scheduled(cron = "0 * * * * ?")
-//    @Scheduled(cron = "0 0 23,0,1,2 * * ?")
+    @Scheduled(cron = "0 0 23,0,1,2 * * ?")
     public void createQuestionAlarm() {
         LocalDateTime localDateTime = LocalDateTime.now();
         int beginTime = localDateTime.plusHours(9).getHour();
@@ -39,8 +38,7 @@ public class Scheduler {
         }
     }
 
-//    @Scheduled(cron = "30 * * * * ?")
-//    @Scheduled(cron = "0 0 10,11,12,13 * * ?")
+    @Scheduled(cron = "0 0 10,11,12,13 * * ?")
     public void remindQuestionAlarm() {
         LocalDateTime localDateTime = LocalDateTime.now();
         int beginTime = localDateTime.plusHours(9).getHour() - EXPIRATION_PERIOD + 1;
@@ -52,8 +50,8 @@ public class Scheduler {
             log.error(e.getMessage());
         }
     }
-//    @Scheduled(cron = "0 * * * * ?")
 //    @Scheduled(cron = "0 0 15 * * ?")
+    @Scheduled(cron = "0 0 5 * * ?")
     public void createQuestion() {
         try {
             roomService.createQuestion();
