@@ -1,8 +1,10 @@
 package com.purple.hello
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -42,7 +44,10 @@ class MainActivity : ComponentActivity() {
         val firebaseNotification = HiFirebaseNotificationManager(activity = this, deviceDataStore)
         firebaseNotification.init()
 
-        val serviceIntent = Intent(this, ScreenStateService::class.java)
-        ContextCompat.startForegroundService(this, serviceIntent)
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            intent.data = Uri.parse("package:" + this.packageName)
+            this.startActivity(intent)
+        }
     }
 }
