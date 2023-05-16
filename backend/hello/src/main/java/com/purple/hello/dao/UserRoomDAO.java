@@ -23,4 +23,5 @@ public interface UserRoomDAO {
     UserRoom readUserRoomByUserRoomId(long userRoomId) throws Exception;
     List<UserRoom> readUserRoomsByRoomIdWithoutUserRoomIdUsingLimit(long roomId, long userRoomId, int userRoomLimit) throws Exception;
     Map<Long, Integer> getMemberCount(List<Long> roomList);
+    List<UserRoom> readUserRoomsByUserId(long userId);
 }

@@ -206,9 +206,9 @@ public class RoomController {
     @ApiOperation(value = "무응답 알림 전송 API (v) vv",
             notes = "해당 그룹방의 나머지 유저에게 알림 전송")
     @GetMapping("/no-response-notification")
-    public ResponseEntity<ReadUserRoomNotificationOutDTO> sendNoResponseNotificationByRoomId(@RequestParam long roomId, HttpServletRequest request) throws Exception{
+    public ResponseEntity<ReadUserRoomNotificationOutDTO> sendNoResponseNotificationByRoomId(HttpServletRequest request) throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
-        List<NotificationDTO> notificationDTOS = roomService.makeNotificationForOtherDevicesByRoomId(roomId, userId);
+        List<NotificationDTO> notificationDTOS = roomService.makeNotificationForOtherDevicesByRoomId(userId);
         int notificationCount = notificationService.sendNotifications(notificationDTOS);
         if(notificationCount == 0) {
             throw new IllegalArgumentException();
