@@ -41,6 +41,7 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
                 scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
+//                scheduleJob(remoteMessage.data["title"]!!, remoteMessage.data["body"]!!)
             } else {
                 // Handle message within 10 seconds
                 handleNow()
