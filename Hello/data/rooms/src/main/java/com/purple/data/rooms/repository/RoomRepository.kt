@@ -2,6 +2,7 @@ package com.purple.data.rooms.repository
 
 import com.purple.core.model.JoinRoomInputValue
 import com.purple.core.model.Room
+import com.purple.core.model.RoomSettingOptions
 import kotlinx.coroutines.flow.Flow
 
 interface RoomRepository {
@@ -20,8 +21,7 @@ interface RoomRepository {
     )
     suspend fun fetchRooms()
     suspend fun joinRoom(roomId: Long, joinRoomInputValue: JoinRoomInputValue): String
-
-    suspend fun getRoomSettings(roomId: Long)
+    fun getRoomSettings(roomId: Long): Flow<RoomSettingOptions>
     suspend fun updateUserName(userRoomId: Long, userName: String)
     suspend fun updateRoomName(userRoomId: Long, roomName: String)
     suspend fun updatePassword(roomId: Long, passwordQuestion: String, password: String)

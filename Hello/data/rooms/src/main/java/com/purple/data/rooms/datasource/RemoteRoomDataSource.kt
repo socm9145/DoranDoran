@@ -1,10 +1,7 @@
 package com.purple.data.rooms.datasource
 
-import com.purple.data.rooms.model.response.MembersResponse
-import com.purple.data.rooms.model.response.RoomCodeResponse
-import com.purple.data.rooms.model.response.RoomListResponse
 import com.purple.data.rooms.model.request.*
-import com.purple.data.rooms.model.response.RoomJoinInfoResponse
+import com.purple.data.rooms.model.response.*
 import com.purple.data.rooms.service.RoomService
 import retrofit2.Response
 import javax.inject.Inject
@@ -32,6 +29,8 @@ class RemoteRoomDataSource @Inject constructor(
     override suspend fun getJoinInfo(roomId: Long): Response<RoomJoinInfoResponse> =
         roomService.getJoinInfo(roomId)
 
+    override suspend fun getPasswordQuestion(roomId: Long): Response<RoomPasswordQuestionResponse> =
+        roomService.getPasswordQuestion(roomId)
 
     override suspend fun updateRoomName(userRoomId: Long, roomName: String) =
         roomService.updateRoomName(

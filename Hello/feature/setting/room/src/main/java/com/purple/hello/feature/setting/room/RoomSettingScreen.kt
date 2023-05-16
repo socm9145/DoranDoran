@@ -1,5 +1,7 @@
 package com.purple.hello.feature.setting.room
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,7 @@ import com.purple.core.model.type.SettingItemType.Companion.getItemsForHost
 import com.purple.core.model.type.SettingItemType.Companion.getItemsForUser
 import com.purple.hello.feature.setting.room.viewmodel.RoomSettingViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RoomSettingRoute(
     roomSettingViewModel: RoomSettingViewModel = hiltViewModel(),
@@ -35,7 +38,10 @@ fun RoomSettingRoute(
     var shouldShowChangePasswordDialog by remember { mutableStateOf(false) }
     var shouldShowExitRoomDialog by remember { mutableStateOf(false) }
     var shouldShowDeleteRoomDialog by remember { mutableStateOf(false) }
-    val isHost = roomSettingViewModel.isHost
+
+    val roomSettingInfo by roomSettingViewModel.roomSettingInfo.collectAsState()
+    val isHost = roomSettingInfo.role == "ROLE1"
+
 
     HiTheme {
         Column(
@@ -70,6 +76,7 @@ fun RoomSettingRoute(
         when {
             shouldShowChangeRoomNameDialog -> {
                 ChangeRoomNameDialog(
+                    nowRoomName = roomSettingInfo.roomName,
                     onDismiss = {
                         shouldShowChangeRoomNameDialog = false
                     },
@@ -78,6 +85,7 @@ fun RoomSettingRoute(
             }
             shouldShowChangeUserNameDialog -> {
                 ChangeUserNameDialog(
+                    nowUserName = roomSettingInfo.userName,
                     onDismiss = {
                         shouldShowChangeUserNameDialog = false
                     },
@@ -86,6 +94,7 @@ fun RoomSettingRoute(
             }
             shouldShowChangePasswordDialog -> {
                 ChangePasswordDialog(
+                    nowPasswordQuestion = roomSettingInfo.passwordQuestion,
                     onDismiss = {
                         shouldShowChangePasswordDialog = false
                     },
@@ -142,11 +151,11 @@ private fun RoomSettingScreen(
 
 @Composable
 private fun ChangeRoomNameDialog(
+    nowRoomName: String,
     onDismiss: () -> Unit,
     onConfirm: (newRoomName: String) -> Unit,
 ) {
-    /* TODO : inputValue 에 현재 RoomName 넣기 */
-    val newRoomName = createInputDataByInputType(InputDialogType.EDIT_ROOM_NAME, inputValue = "")
+    val newRoomName = createInputDataByInputType(InputDialogType.EDIT_ROOM_NAME, inputValue = nowRoomName)
 
     HiInputDialog(
         questionContent = listOf(newRoomName),
@@ -162,11 +171,11 @@ private fun ChangeRoomNameDialog(
 
 @Composable
 private fun ChangeUserNameDialog(
+    nowUserName: String,
     onDismiss: () -> Unit,
     onConfirm: (newUserName: String) -> Unit,
 ) {
-    /* TODO : inputValue 에 현재 UserName 넣기 */
-    val newUserName = createInputDataByInputType(InputDialogType.EDIT_NAME, inputValue = "")
+    val newUserName = createInputDataByInputType(InputDialogType.EDIT_NAME, inputValue = nowUserName)
 
     HiInputDialog(
         questionContent = listOf(newUserName),
@@ -182,11 +191,11 @@ private fun ChangeUserNameDialog(
 
 @Composable
 private fun ChangePasswordDialog(
+    nowPasswordQuestion: String,
     onDismiss: () -> Unit,
     onConfirm: (newPasswordQuestion: String, newPassword: String) -> Unit,
 ) {
-    /* TODO : QUESTION_PASSWORD -> inputValue 에 현재 password 질문 넣기 */
-    val newPasswordQuestion = createInputDataByInputType(InputDialogType.EDIT_QUESTION_PASSWORD, inputValue = "")
+    val newPasswordQuestion = createInputDataByInputType(InputDialogType.EDIT_QUESTION_PASSWORD, inputValue = nowPasswordQuestion)
     val newPassword = createInputDataByInputType(InputDialogType.EDIT_PASSWORD, inputValue = "")
     HiInputDialog(
         questionContent = listOf(newPasswordQuestion, newPassword),
@@ -243,6 +252,7 @@ private fun RoomSettingAppBar(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun PreviewRoomSettingScreen() {

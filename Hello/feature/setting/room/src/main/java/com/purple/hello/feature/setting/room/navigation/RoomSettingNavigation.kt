@@ -1,5 +1,7 @@
 package com.purple.hello.feature.setting.room.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.*
 import com.google.accompanist.navigation.animation.composable
@@ -12,6 +14,7 @@ fun NavController.navigateToRoomSetting(navOptions: NavOptions? = null, roomId: 
     this.navigate("$roomSettingNavigationRoute/$roomId", navOptions)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.roomSettingScreen(
     onBackClick: () -> Unit,

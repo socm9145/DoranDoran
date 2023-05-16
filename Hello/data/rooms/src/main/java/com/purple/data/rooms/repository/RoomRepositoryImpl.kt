@@ -8,25 +8,24 @@ import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.RoomEntity
 import com.purple.core.database.model.RoomWithMembers
 import com.purple.core.database.model.asExternalModel
-import com.purple.core.model.InputData
-import com.purple.core.model.JoinRoomInputValue
-import com.purple.core.model.Room
-import com.purple.core.model.createInputDataByInputType
+import com.purple.core.model.*
 import com.purple.core.model.type.InputDialogType
 import com.purple.data.rooms.datasource.RemoteRoomDataSource
 import com.purple.data.rooms.model.request.RoomJoinRequest
-import com.purple.data.rooms.model.response.RoomJoinInfoResponse
 import com.purple.data.rooms.model.response.asMemberEntity
 import com.purple.data.rooms.model.response.asMemberRoomEntity
 import com.purple.data.rooms.model.response.asRoomEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.purple.hello.core.datastore.UserDataStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RoomRepositoryImpl @Inject constructor(
     private val roomDao: RoomDao,
     private val userDao: UserDao,
     private val remoteRoomDataSource: RemoteRoomDataSource,
+    private val userDataStore: UserDataStore,
 ) : RoomRepository {
     override fun getRooms(): Flow<List<Room>> =
         roomDao.getRoomsWithMembers().map { it.map(RoomWithMembers::asExternalModel) }
@@ -58,7 +57,7 @@ class RoomRepositoryImpl @Inject constructor(
                     placeHolder = "",
                     supportingText = "비밀번호를 입력해주세요",
                     inputValue = "",
-                )
+                ),
             )
         }
     }
@@ -126,28 +125,24 @@ class RoomRepositoryImpl @Inject constructor(
                     roomId = roomId,
                     roomName = joinRoomInputValue.roomName.inputValue,
                     roomPassword = joinRoomInputValue.password.inputValue,
-                    userName = joinRoomInputValue.nickName.inputValue
-                )
+                    userName = joinRoomInputValue.nickName.inputValue,
+                ),
             )
-        }
-        .onFailure {
-
+        }.onFailure {
         }.getOrThrow().let {
-            if(it.isSuccessful) {
+            if (it.isSuccessful) {
                 val response = checkNotNull(it.body())
-
                 roomDao.insertRoom(
                     RoomEntity(
                         roomId = roomId,
                         userRoomId = response.userRoomId,
                         roomName = response.roomName,
-                        recentVisitedTime = System.currentTimeMillis()
-                    )
+                        recentVisitedTime = System.currentTimeMillis(),
+                    ),
                 )
-
                 "Success"
-            }else {
-                when(it.code()) {
+            } else {
+                when (it.code()) {
                     400 -> "Password Error"
                     else -> "Error"
                 }
@@ -155,20 +150,24 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRoomSettings(roomId: Long) {
-//        TODO
-    }
-
-//    override suspend fun getRoomSettings(roomId: Long): RoomSetting {
-//        val room = roomDao.getRoom(roomId)
-//        val user = userDao.getUserInRoom(userId, roomId)
-//
-//        return RoomSetting(
-//            room.roomName,
-//            room.userRoomId,
-//
-//        )
-//    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getRoomSettings(roomId: Long): Flow<RoomSettingOptions> = flow {
+        val userId = userDataStore.userId.first()
+        val roomName = roomDao.getRoom(roomId).roomName
+        val userRoomId = roomDao.getRoom(roomId).userRoomId
+        val role = userDao.getUserInRoom(userId, roomId).role
+        val userName = userDao.getUserInRoom(userId, roomId).nickName
+        val passwordQuestion = remoteRoomDataSource.getPasswordQuestion(roomId).body()?.roomQuestion ?: ""
+        emit(
+            RoomSettingOptions(
+                roomName = roomName,
+                userRoomId = userRoomId,
+                role = role,
+                userName = userName,
+                passwordQuestion = passwordQuestion,
+            )
+        )
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun updateRoomName(userRoomId: Long, roomName: String) {
         remoteRoomDataSource.updateRoomName(

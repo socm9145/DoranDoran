@@ -18,8 +18,8 @@ import com.purple.core.database.utils.LocalDateTimeTypeConverter
     entities = [
         MemberRoomEntity::class,
         MemberEntity::class,
-        RoomCommonOptionsEntity::class,
         RoomEntity::class,
+        RoomCommonOptionsEntity::class,
         QuestionEntity::class,
         QuestionRoomCrossEntity::class,
         FeedEntity::class,
@@ -30,7 +30,7 @@ import com.purple.core.database.utils.LocalDateTimeTypeConverter
 )
 @TypeConverters(
     DateConverters::class,
-    LocalDateTimeTypeConverter::class
+    LocalDateTimeTypeConverter::class,
 )
 abstract class HiDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
