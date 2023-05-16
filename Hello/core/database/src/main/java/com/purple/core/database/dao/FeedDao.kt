@@ -6,6 +6,7 @@ import com.purple.core.database.entity.QuestionEntity
 import com.purple.core.database.entity.QuestionRoomCrossEntity
 import com.purple.core.database.model.FeedWithAuthor
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -17,12 +18,12 @@ interface FeedDao {
             "INNER JOIN room_question_cross ON question.questionId = room_question_cross.questionId" +
             " WHERE room_question_cross.roomId = :roomId AND room_question_cross.date = :date",
     )
-    fun getQuestionWithRoomIdAndDate(roomId: Long, date: LocalDateTime): Flow<String>
+    fun getQuestionWithRoomIdAndDate(roomId: Long, date: LocalDate): Flow<String>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertQuestionRoomCrossEntity(crossEntity: QuestionRoomCrossEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertQuestionEntity(questionEntity: QuestionEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -43,4 +44,7 @@ interface FeedDao {
 
     @Query("SELECT COUNT(*) FROM feed WHERE roomId = :roomId AND DATE(createAt) = DATE(:date)")
     fun getCountOfFeedByDate(roomId: Long, date: LocalDateTime): Int
+
+    @Query("SELECT COUNT(*) FROM room_question_cross WHERE roomId = :roomId AND DATE(date) = DATE(:date)")
+    fun getCountOfQuestionByDate(roomId: Long, date: LocalDateTime): Int
 }

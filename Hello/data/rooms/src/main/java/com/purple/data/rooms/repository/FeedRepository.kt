@@ -18,4 +18,6 @@ interface FeedRepository {
     suspend fun uploadFeed(roomId: Long, feedImage: File)
 
     suspend fun isFeedExistByDate(roomId: Long, date: LocalDateTime): Boolean
+
+    suspend fun isExistQuestionInRoomByDate(roomId: Long, date: LocalDateTime): Boolean
 }

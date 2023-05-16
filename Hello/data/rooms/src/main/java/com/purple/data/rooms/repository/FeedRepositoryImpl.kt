@@ -30,8 +30,9 @@ class FeedRepositoryImpl @Inject constructor(
     private val remoteFeedDataSource: RemoteFeedDataSource,
 ) : FeedRepository {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String?> =
-        feedDao.getQuestionWithRoomIdAndDate(roomId, date)
+        feedDao.getQuestionWithRoomIdAndDate(roomId, date.toLocalDate())
 
     override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> {
         return feedDao.getFeedWithRoomIdAndDate(roomId, date).map {
@@ -46,17 +47,17 @@ class FeedRepositoryImpl @Inject constructor(
         if (response.isSuccessful) {
             val question = response.body()
             if (question != null) {
-                feedDao.insertQuestionRoomCrossEntity(
-                    QuestionRoomCrossEntity(
-                        questionId = question.questionId,
-                        date = date,
-                        roomId = roomId,
-                    ),
-                )
                 feedDao.insertQuestionEntity(
                     QuestionEntity(
                         questionId = question.questionId,
                         content = question.content,
+                    ),
+                )
+                feedDao.insertQuestionRoomCrossEntity(
+                    QuestionRoomCrossEntity(
+                        questionId = question.questionId,
+                        date = date.toLocalDate(),
+                        roomId = roomId,
                     ),
                 )
             }
@@ -103,4 +104,7 @@ class FeedRepositoryImpl @Inject constructor(
 
     override suspend fun isFeedExistByDate(roomId: Long, date: LocalDateTime): Boolean =
         feedDao.getCountOfFeedByDate(roomId, date) != 0
+
+    override suspend fun isExistQuestionInRoomByDate(roomId: Long, date: LocalDateTime): Boolean =
+        feedDao.getCountOfQuestionByDate(roomId, date) != 0
 }

@@ -66,6 +66,7 @@ internal fun RoomDetailRoute(
     if (selectedRoom != null) {
         LaunchedEffect(currentDate.value) {
             feedViewModel.selectDate(currentDate.value)
+            feedViewModel.fetchFeed(currentDate.value)
         }
 
         LaunchedEffect(selectedRoom) {

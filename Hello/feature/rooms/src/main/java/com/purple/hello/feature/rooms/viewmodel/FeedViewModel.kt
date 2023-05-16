@@ -48,25 +48,25 @@ class FeedViewModel @Inject constructor(
 
     val feedUiState: StateFlow<FeedUiState> =
         combine(
-            dateQuestion,
             dateFeedList,
-        ) { question, feedList ->
+            dateQuestion,
+        ) { feedList, question ->
             when (feedList) {
                 is Result.Loading -> FeedUiState.Loading
                 is Result.Success -> {
                     val userId = runBlocking { getUserIdUseCase().first() }
-                    FeedUiState.Success(
-                        feeds = feedList.data,
-                        isPossibleToUpload = feedList.data.none { feed ->
-                            Log.d("Feed check", "author id = ${feed.author.id}, userId = $userId")
-                            feed.author.id == userId
-                        },
-                        question = when (question) {
-                            is Result.Loading -> "로딩중..."
-                            is Result.Success -> question.data
-                            is Result.Error -> "질문을 가져오지 못했습니다.."
-                        },
-                    )
+                    when(question) {
+                        is Result.Loading -> FeedUiState.Loading
+                        is Result.Success -> FeedUiState.Success(
+                            feeds = feedList.data,
+                            isPossibleToUpload = feedList.data.none { feed ->
+                                Log.d("Feed check", "author id = ${feed.author.id}, userId = $userId")
+                                feed.author.id == userId
+                            },
+                            question = question.data
+                        )
+                        is Result.Error -> FeedUiState.Error(question.exception)
+                    }
                 }
                 is Result.Error -> FeedUiState.Error(feedList.exception)
             }

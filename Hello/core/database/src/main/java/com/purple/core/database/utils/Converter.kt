@@ -3,6 +3,7 @@ package com.purple.core.database.utils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -32,6 +33,23 @@ object LocalDateTimeTypeConverter {
     @TypeConverter
     @JvmStatic
     fun fromLocalDateTime(date: LocalDateTime?): String? {
+        return date?.format(formatter)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+object LocalDateTypeConverter {
+    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+
+    @TypeConverter
+    @JvmStatic
+    fun toLocalDate(value: String?): LocalDate? {
+        return value?.let { LocalDate.parse(it, formatter) }
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromLocalDate(date: LocalDate?): String? {
         return date?.format(formatter)
     }
 }
