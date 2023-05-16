@@ -2,6 +2,7 @@ package com.purple.hello.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.purple.hello.dto.in.CreateRoomInDTO;
+import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.CreateUserRoomJoinInDTO;
 import com.purple.hello.dto.out.*;
 import com.purple.hello.dto.tool.CreateRoomDTO;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ class RoomControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
     @MockBean
     AlarmServiceImpl alarmService;
     @MockBean
@@ -49,7 +51,11 @@ class RoomControllerTest {
     @MockBean
     UserServiceImpl userService;
     @MockBean
+    HistoryServiceImpl historyService;
+    @MockBean
     UserRoomRepo userRoomRepo;
+    @MockBean
+    NotificationServiceImpl notificationService;
     @BeforeEach
     void setUp() {
     }
@@ -91,12 +97,12 @@ class RoomControllerTest {
                         .build());
 
         // when - then
-        mockMvc.perform(post("/room/create")
+        mockMvc.perform(post("/room/create", 1)
+                        .requestAttr("userId", 1)
                         .characterEncoding("UTF-8")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .requestAttr("userId", 1L))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -119,7 +125,7 @@ class RoomControllerTest {
                         .roomId(1)
                         .build());
 
-        given(userRoomService.createUserRoom(any(), eq(1L)))
+        given(userRoomService.createUserRoom(any(CreateUserRoomInDTO.class), any(Long.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
@@ -129,6 +135,7 @@ class RoomControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .requestAttr("userId", 1L))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof IllegalArgumentException))
                 .andReturn();
     }
@@ -189,28 +196,28 @@ class RoomControllerTest {
                 .willThrow(new IllegalArgumentException());
 
         // when - then
-        mockMvc.perform(get("/room/create")
-                        .requestAttr("userId", 1L))
+        mockMvc.perform(get("/room/create?userId={userId}", 1))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof HttpRequestMethodNotSupportedException))
                 .andReturn();
     }
     @Test
     void readUserRoomJoinByRoomCode() throws Exception {
         // init
-        String roomCode = "test_roomCode";
+        long initRoomId = 1;
 
-        String content = objectMapper.writeValueAsString(roomCode);
+        String content = objectMapper.writeValueAsString(initRoomId);
 
         // given
-        given(roomService.readUserRoomJoinByRoomId(any(String.class)))
+        given(roomService.readUserRoomJoinByRoomId(any(Long.class)))
                 .willReturn(ReadUserRoomJoinOutDTO.builder()
                         .roomId(1)
                         .roomName("test_roomName")
                         .roomQuestion("test_roomQuestion").build());
 
         // when - then
-        mockMvc.perform(get("/room/join-info?code=testCode")
-                        .requestAttr("userId", 1L))
+        mockMvc.perform(get("/room/join-info?roomId=1"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -223,11 +230,11 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomId(any()))
+        given(roomService.readUserRoomJoinByRoomId(any(Long.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
-        mockMvc.perform(get("/room/join-info?code=roomCode")
+        mockMvc.perform(get("/room/join-info?roomId=1")
                         .requestAttr("userId", 1L))
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof IllegalArgumentException))
                 .andReturn();
@@ -241,7 +248,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomId(any()))
+        given(roomService.readUserRoomJoinByRoomId(any(Long.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
@@ -263,7 +270,7 @@ class RoomControllerTest {
         String content = objectMapper.writeValueAsString(roomCode);
 
         // given
-        given(roomService.readUserRoomJoinByRoomId(any()))
+        given(roomService.readUserRoomJoinByRoomId(any(Long.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
@@ -718,7 +725,7 @@ class RoomControllerTest {
                 .willReturn(new ArrayList<>());
 
         // when - then
-        mockMvc.perform(get("/room/date-question?roomId=1")
+        mockMvc.perform(get("/room/date-feed?roomId=1&date=2023-05-08")
                         .requestAttr("userId", 1L))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -730,15 +737,12 @@ class RoomControllerTest {
         long roomId = 1;
 
 
-        String content = objectMapper.writeValueAsString(roomId);
-
         // given
         given(feedService.readFeedByRoomIdAndDate(any(Long.class), any(Date.class)))
                 .willThrow(new IllegalArgumentException());
 
         // when - then
-        mockMvc.perform(get("/room/date-question?roomId=1&date=2023-05-08")
-                        .requestAttr("userId", 1L))
+        mockMvc.perform(get("/room/date-feed?roomId=1&date=2023-05-08"))
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof IllegalArgumentException))
                 .andReturn();
     }
@@ -799,9 +803,9 @@ class RoomControllerTest {
                 .willReturn(new ReadRoomQuestionOutDTO(1L, "content"));
 
         // when - then
-        mockMvc.perform(get("/room/question?questionId=1")
-                        .requestAttr("userId", 1L))
+        mockMvc.perform(get("/room/question?questionId=1"))
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andReturn();
     }
 
@@ -817,7 +821,7 @@ class RoomControllerTest {
                 .willThrow(new IllegalArgumentException());
 
         // when - then
-        mockMvc.perform(get("/room/question?questionId=1")
+        mockMvc.perform(get("/room/room-question?roomId={roomId}", 1)
                         .requestAttr("userId", 1L))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalArgumentException))
                 .andReturn();

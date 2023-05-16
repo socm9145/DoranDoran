@@ -25,11 +25,12 @@ class HistoryServiceTest {
     static private HistoryDAO historyDAO;
     @BeforeAll
     static void beforeAll(){
-        roomDAO = Mockito.mock(RoomDAOImpl.class);
-        historyDAO = Mockito.mock(HistoryDAOImpl.class);
     }
     @BeforeEach
     void setUp() {
+        roomDAO = Mockito.mock(RoomDAOImpl.class);
+        historyDAO = Mockito.mock(HistoryDAOImpl.class);
+
         historyService = new HistoryServiceImpl(roomDAO, historyDAO);
     }
 

@@ -63,7 +63,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) {
+    public List<ReadFeedOutDTO> readFeedByRoomIdAndDate(long roomId, Date date) throws Exception{
         return this.feedDAO.readFeedByRoomIdAndDate(roomId, date);
     }
 }

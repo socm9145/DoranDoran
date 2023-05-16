@@ -8,11 +8,13 @@ import com.purple.hello.dto.out.CompareFeedByRoomIdOutDTO;
 import com.purple.hello.dto.out.CreateFeedOutDTO;
 import com.purple.hello.dto.out.ReadFeedOutDTO;
 import com.purple.hello.dto.tool.AwsS3DTO;
+import com.purple.hello.entity.Room;
 import com.purple.hello.enu.FeedType;
 import com.purple.hello.service.impl.AwsS3ServiceImpl;
 import com.purple.hello.service.impl.FeedServiceImpl;
 import com.purple.hello.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,14 +35,15 @@ class FeedServiceTest {
 
     @BeforeAll
     static void beforeAll() {
-        awsS3Service = Mockito.mock(AwsS3ServiceImpl.class);
-        fileService = Mockito.mock(FileServiceImpl.class);
-        feedDAO = Mockito.mock(FeedDAOImpl.class);
-        roomDAO = Mockito.mock(RoomDAOImpl.class);
     }
 
     @BeforeEach
     void setUp() {
+        awsS3Service = Mockito.mock(AwsS3ServiceImpl.class);
+        fileService = Mockito.mock(FileServiceImpl.class);
+        feedDAO = Mockito.mock(FeedDAOImpl.class);
+        roomDAO = Mockito.mock(RoomDAOImpl.class);
+
         feedService = new FeedServiceImpl(awsS3Service, fileService, feedDAO, roomDAO);
     }
 
@@ -122,6 +125,14 @@ class FeedServiceTest {
 
         Mockito.when(feedDAO.createFeed(any(CreateFeedInDTO.class)))
                 .thenReturn(createFeedOutDTO);
+
+        Mockito.when(roomDAO.readRoomByUserRoomId(any(Long.class)))
+                .thenReturn(Room.builder()
+                        .beginTime(8)
+                        .createAt(new Date())
+                        .roomQuestion("test_roomQuestion")
+                        .roomPassword("test_roomPassword")
+                        .build());
 
         // when
         CreateFeedOutDTO testCreateFeedOutDTO
@@ -225,7 +236,7 @@ class FeedServiceTest {
     }
 
     @Test
-    void readFeedByRoomIdAndDate() {
+    void readFeedByRoomIdAndDate()throws Exception {
         // given
         List<ReadFeedOutDTO> testReadFeedOutDTOs = new ArrayList<>();
 
@@ -256,7 +267,7 @@ class FeedServiceTest {
     }
 
     @Test
-    void readFeedByRoomIdAndDate_InvalidService() {
+    void readFeedByRoomIdAndDate_InvalidService() throws Exception{
         // given
         List<ReadFeedOutDTO> readFeedOutDTOs = new ArrayList<>();
 
