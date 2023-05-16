@@ -50,7 +50,7 @@ public class HistoryDAOImpl implements HistoryDAO {
 
     @Override
     public List<DeviceWithQuestionDTO> readDevicesWithDailyQuestionByBeginTime(int beginTime) throws Exception {
-        DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qHistory.createAt, "HOUR(9)");
         StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", historyCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
         Date currentDateKST = DateUtils.addHours(new Date(), 9);
         String currentDateString = DateUtils.format(currentDateKST, "yyyy-MM-dd");
@@ -72,7 +72,7 @@ public class HistoryDAOImpl implements HistoryDAO {
 
     @Override
     public List<DeviceWithQuestionDTO> readDevicesNotUploadedByBeginTime(int beginTime) throws Exception {
-        DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
+        DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qHistory.createAt, "HOUR(9)");
         StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", historyCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
         DateTemplate feedCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qFeed.createAt, "HOUR(9)");
         StringTemplate feedCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", feedCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
