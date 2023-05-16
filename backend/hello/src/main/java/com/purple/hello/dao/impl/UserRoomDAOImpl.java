@@ -204,6 +204,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .set(qUserRoom.userName, createUserRoomJoinInDTO.getUserName())
                 .set(qUserRoom.roomName, createUserRoomJoinInDTO.getRoomName())
                 .where(qUserRoom.userRoomId.eq(userRoom.getUserRoomId()))
+                .where(qUserRoom.userRoomRole.eq(UserRoomRole.ROLE3))
                 .execute();
         if(updatedRowCount == 0) {
             throw new IllegalArgumentException();

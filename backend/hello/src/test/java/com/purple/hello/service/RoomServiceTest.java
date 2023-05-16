@@ -1,8 +1,6 @@
 package com.purple.hello.service;
 
-import com.purple.hello.dao.impl.HistoryDAOImpl;
-import com.purple.hello.dao.impl.QuestionDAOImpl;
-import com.purple.hello.dao.impl.RoomDAOImpl;
+import com.purple.hello.dao.impl.*;
 import com.purple.hello.dto.in.CreateUserRoomInDTO;
 import com.purple.hello.dto.in.DeleteRoomInDTO;
 import com.purple.hello.dto.in.UpdateRoomPasswordInDTO;
@@ -29,6 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 
 class RoomServiceTest {
     static private RoomServiceImpl roomService;
+    static private UserDAOImpl userDAO;
+    static private UserRoomDAOImpl userRoomDAO;
     static private RoomDAOImpl roomDAO;
     static private RoomDAOImpl realRoomDAO;
     static private HistoryDAOImpl historyDAO;
@@ -50,7 +50,7 @@ class RoomServiceTest {
     @BeforeEach
     void setUp() {
         roomService = new RoomServiceImpl(roomDAO, passwordEncoder, historyDAO,
-                questionRepo, questionDAO, interpreter, awsS3Service);
+                questionRepo, questionDAO, interpreter, awsS3Service, userDAO, userRoomDAO);
     }
 
     @AfterEach

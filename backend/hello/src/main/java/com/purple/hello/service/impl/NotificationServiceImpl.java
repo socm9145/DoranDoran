@@ -1,6 +1,7 @@
 package com.purple.hello.service.impl;
 
 import com.google.firebase.messaging.*;
+import com.purple.hello.dto.tool.CommonNotificationDTO;
 import com.purple.hello.dto.tool.NotificationDTO;
 import com.purple.hello.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +16,47 @@ import java.util.stream.Collectors;
 @Service
 public class NotificationServiceImpl implements NotificationService {
     @Override
-    public int sendCommonNotifications(List<NotificationDTO> notificationDTOS){
+    public int sendNotifications(List<NotificationDTO> notificationDTOS) {
+        List<Message> messages = notificationDTOS.stream().map((notificationDTO) -> Message.builder()
+                   .putData("time", LocalDateTime.now().toString())
+                   .setNotification(Notification.builder()
+                           .setTitle(notificationDTO.getTitle())
+                           .setBody(notificationDTO.getContent())
+                           .build())
+                   .setToken(notificationDTO.getDeviceToken())
+                   .build()).collect(Collectors.toList());
+
+        // 요청에 대한 응답을 받을 response
+        BatchResponse response;
+        try {
+            // 알림 발송
+            response = FirebaseMessaging.getInstance().sendAll(messages);
+            // 요청에 대한 응답 처리
+            if (response.getFailureCount() > 0) {
+                List<SendResponse> responses = response.getResponses();
+                List<String> failedTokens = new ArrayList<>();
+
+                for (int i = 0; i < responses.size(); i++) {
+                    if (!responses.get(i).isSuccessful()) {
+                        failedTokens.add(notificationDTOS.get(i).getDeviceToken());
+                    }
+                }
+                log.error("List of tokens are not valid FCM token : " + failedTokens);
+            }
+        } catch (FirebaseMessagingException e) {
+            log.error("cannot send to memberList push message. error info : {}", e.getMessage());
+        }
+
+        return notificationDTOS.size();
+    }
+
+    @Override
+    public int sendCommonNotifications(List<CommonNotificationDTO> commonNotificationDTOS){
         int notificationCount = 0;
-        for(NotificationDTO notificationDTO : notificationDTOS) {
-            List<String> tokenList = notificationDTO.getTokenList();
-            String title = notificationDTO.getTitle();
-            String content = notificationDTO.getContent();
+        for(CommonNotificationDTO commonNotificationDTO : commonNotificationDTOS) {
+            List<String> tokenList = commonNotificationDTO.getTokenList();
+            String title = commonNotificationDTO.getTitle();
+            String content = commonNotificationDTO.getContent();
             this.sendCommonNotifications(tokenList, title, content);
             notificationCount += tokenList.size();
         }
