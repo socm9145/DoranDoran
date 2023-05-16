@@ -50,8 +50,7 @@ public class Scheduler {
             log.error(e.getMessage());
         }
     }
-//    @Scheduled(cron = "0 0 15 * * ?")
-    @Scheduled(cron = "0 0 5 * * ?")
+   @Scheduled(cron = "0 0 15 * * ?")
     public void createQuestion() {
         try {
             roomService.createQuestion();
