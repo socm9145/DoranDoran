@@ -13,4 +13,5 @@ public interface HistoryService {
     ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date date) throws IOException, NullPointerException;
     List<CommonNotificationDTO> createNewQuestionNotificationsByBeginTime(int beginTime) throws Exception;
     List<CommonNotificationDTO> createRemindQuestionNotificationsByBeginTime(int beginTime) throws Exception;
+    public void createFirstHistory(Long roomId);
 }

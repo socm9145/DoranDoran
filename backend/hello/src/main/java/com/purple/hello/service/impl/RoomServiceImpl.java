@@ -53,7 +53,6 @@ public class RoomServiceImpl implements RoomService {
     private String url;
     private final AwsS3Service awsS3Service;
     private final UserDAO userDAO;
-    private final UserRoomDAO userRoomDAO;
 
     public RoomServiceImpl(RoomDAO roomDAO, PasswordEncoder passwordEncoder, HistoryDAO historyDAO, QuestionRepo questionRepo, AwsS3Service awsS3Service, UserDAO userDAO, UserRoomDAO userRoomDAO, HistoryRepo historyRepo, RoomRepo roomRepo){
         this.roomDAO = roomDAO;
