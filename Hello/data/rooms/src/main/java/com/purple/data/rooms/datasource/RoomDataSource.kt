@@ -43,9 +43,9 @@ interface RoomDataSource {
         question: String,
     ): Response<Void>
 
-    suspend fun exitRoom(
-        userRoomId: Long,
-    ): Response<Void>
+//    suspend fun exitRoom(
+//        userRoomId: Long,
+//    ): Response<Void>
 
     suspend fun deleteRoom(
         roomId: Long,

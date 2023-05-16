@@ -32,6 +32,7 @@ import com.purple.hello.feature.setting.room.viewmodel.RoomSettingViewModel
 fun RoomSettingRoute(
     roomSettingViewModel: RoomSettingViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
+    onClickRooms: () -> Unit,
 ) {
     var shouldShowChangeRoomNameDialog by remember { mutableStateOf(false) }
     var shouldShowChangeUserNameDialog by remember { mutableStateOf(false) }
@@ -80,6 +81,7 @@ fun RoomSettingRoute(
                         shouldShowChangeRoomNameDialog = false
                     },
                     onConfirm = roomSettingViewModel::updateRoomName,
+                    onBackClick = onBackClick,
                 )
             }
             shouldShowChangeUserNameDialog -> {
@@ -89,6 +91,7 @@ fun RoomSettingRoute(
                         shouldShowChangeUserNameDialog = false
                     },
                     onConfirm = roomSettingViewModel::updateUserName,
+                    onBackClick = onBackClick,
                 )
             }
             shouldShowChangePasswordDialog -> {
@@ -98,6 +101,7 @@ fun RoomSettingRoute(
                         shouldShowChangePasswordDialog = false
                     },
                     onConfirm = roomSettingViewModel::updateRoomPassword,
+                    onBackClick = onBackClick,
                 )
             }
             shouldShowExitRoomDialog -> {
@@ -106,6 +110,7 @@ fun RoomSettingRoute(
                         shouldShowExitRoomDialog = false
                     },
                     onDelete = roomSettingViewModel::exitRoom,
+                    onClickRooms = onClickRooms,
                 )
             }
             shouldShowDeleteRoomDialog -> {
@@ -114,6 +119,7 @@ fun RoomSettingRoute(
                         shouldShowDeleteRoomDialog = false
                     },
                     onDelete = roomSettingViewModel::deleteRoom,
+                    onClickRooms = onClickRooms,
                 )
             }
         }
@@ -153,6 +159,7 @@ private fun ChangeRoomNameDialog(
     nowRoomName: String,
     onDismiss: () -> Unit,
     onConfirm: (newRoomName: String) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val newRoomName = createInputDataByInputType(InputDialogType.EDIT_ROOM_NAME, inputValue = nowRoomName)
 
@@ -162,6 +169,7 @@ private fun ChangeRoomNameDialog(
         onConfirm = {
             onConfirm(newRoomName.inputValue)
             onDismiss()
+            onBackClick()
         },
         confirmButtonText = "변경하기",
         dismissButtonText = "취소",
@@ -173,6 +181,7 @@ private fun ChangeUserNameDialog(
     nowUserName: String,
     onDismiss: () -> Unit,
     onConfirm: (newUserName: String) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val newUserName = createInputDataByInputType(InputDialogType.EDIT_NAME, inputValue = nowUserName)
 
@@ -182,6 +191,7 @@ private fun ChangeUserNameDialog(
         onConfirm = {
             onConfirm(newUserName.inputValue)
             onDismiss()
+            onBackClick()
         },
         confirmButtonText = "변경하기",
         dismissButtonText = "취소",
@@ -193,6 +203,7 @@ private fun ChangePasswordDialog(
     nowPasswordQuestion: String,
     onDismiss: () -> Unit,
     onConfirm: (newPasswordQuestion: String, newPassword: String) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val newPasswordQuestion = createInputDataByInputType(
         InputDialogType.EDIT_QUESTION_PASSWORD,
@@ -205,6 +216,7 @@ private fun ChangePasswordDialog(
         onConfirm = {
             onConfirm(newPasswordQuestion.inputValue, newPassword.inputValue)
             onDismiss()
+            onBackClick()
         },
         confirmButtonText = "변경하기",
         dismissButtonText = "취소",
@@ -215,12 +227,14 @@ private fun ChangePasswordDialog(
 private fun ExitRoomDialog(
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
+    onClickRooms: () -> Unit,
 ) {
     HiAlertDialog(
         onDismiss = { onDismiss() },
         onDelete = {
             onDelete()
             onDismiss()
+            onClickRooms()
         },
         content = DeleteDialogType.EXIT_GROUP,
     )
@@ -230,12 +244,14 @@ private fun ExitRoomDialog(
 private fun DeleteRoomDialog(
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
+    onClickRooms: () -> Unit,
 ) {
     HiAlertDialog(
         onDismiss = { onDismiss() },
         onDelete = {
             onDelete()
             onDismiss()
+            onClickRooms()
         },
         content = DeleteDialogType.DELETE_GROUP,
     )
@@ -258,5 +274,5 @@ private fun RoomSettingAppBar(
 @Preview
 @Composable
 private fun PreviewRoomSettingScreen() {
-    RoomSettingRoute(onBackClick = {})
+    RoomSettingRoute(onBackClick = {}, onClickRooms = {})
 }

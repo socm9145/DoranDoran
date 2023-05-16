@@ -18,7 +18,6 @@ import com.purple.data.rooms.model.response.asRoomEntity
 import com.purple.hello.core.datastore.UserDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RoomRepositoryImpl @Inject constructor(
@@ -165,7 +164,7 @@ class RoomRepositoryImpl @Inject constructor(
                 role = role,
                 userName = userName,
                 passwordQuestion = passwordQuestion,
-            )
+            ),
         )
     }.flowOn(Dispatchers.IO)
 
@@ -214,8 +213,10 @@ class RoomRepositoryImpl @Inject constructor(
     }
 
     override suspend fun leaveRoom(userRoomId: Long) {
+        val userId = userDataStore.userId.first()
         remoteRoomDataSource.exitRoom(
             userRoomId,
+            userId,
         ).let {
             if (it.isSuccessful) {
                 roomDao.exitRoom(

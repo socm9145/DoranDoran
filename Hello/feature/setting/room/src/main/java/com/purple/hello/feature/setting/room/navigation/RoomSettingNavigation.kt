@@ -18,6 +18,7 @@ fun NavController.navigateToRoomSetting(navOptions: NavOptions? = null, roomId: 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.roomSettingScreen(
     onBackClick: () -> Unit,
+    onClickRooms: () -> Unit,
 ) {
     composable(
         route = "$roomSettingNavigationRoute/{$roomIdArg}",
@@ -27,6 +28,7 @@ fun NavGraphBuilder.roomSettingScreen(
     ) {
         RoomSettingRoute(
             onBackClick = onBackClick,
+            onClickRooms = onClickRooms,
         )
     }
 }

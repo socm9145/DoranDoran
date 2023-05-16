@@ -26,13 +26,13 @@ enum class SettingItemType(
     ),
     EXIT_GROUP(
         "방에서 나가기",
-        "나가면 다시 초대를 받아야 들어올 수 있어요",
+        "초대를 받으면 다시 들어올 수 있어요",
         true,
         false,
     ),
     DELETE_GROUP(
         "방 삭제",
-        "방을 삭제하면 아무것도 남지않아요....ㅠ",
+        "모두에게 방이 삭제되고 아무것도 남지않아요...ㅠ",
         true,
         false,
     ),

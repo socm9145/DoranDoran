@@ -57,10 +57,11 @@ interface RoomService {
 
     @PUT("room/exit")
     suspend fun exitRoom(
-        @Body requestForExitRoom: ExitRoomRequest,
+        @Query("userId") userId: Long,
+        @Query("userRoomId") userRoomId: Long,
     ): Response<Void>
 
-    @HTTP(method = "DELETE", hasBody = true, path = "room")
+    @HTTP(method = "DELETE", path = "room", hasBody = true)
     suspend fun deleteRoom(
         @Body requestForDeleteRoom: DeleteRoomRequest,
     ): Response<Void>
