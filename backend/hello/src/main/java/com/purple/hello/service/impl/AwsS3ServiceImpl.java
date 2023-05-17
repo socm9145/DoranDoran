@@ -37,15 +37,13 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     public boolean removeDirectory(String dirName) throws Exception{
         List<S3ObjectSummary> fileList = amazonS3.listObjects(bucket, dirName).getObjectSummaries();
 
-        if(fileList.size() == 0) {
-            throw new IllegalArgumentException();
-        }else {
+        if(fileList.size() != 0) {
             for(S3ObjectSummary file : fileList)
                 amazonS3.deleteObject(bucket, file.getKey());
 
             amazonS3.deleteObject(bucket, dirName);
-            return true;
         }
+        return true;
     }
 
     private String randomFileName(MultipartFile file, String dirName) {
