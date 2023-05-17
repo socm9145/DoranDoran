@@ -37,10 +37,10 @@ fun RoomItem(
             LottieCompositionSpec.RawRes(R.raw.party_room_wallpaper)
         } else {
             LottieCompositionSpec.RawRes(R.raw.k_room_wallpaper)
-        }
+        },
     )
     val birthParticleComposition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.happy_birthday)
+        LottieCompositionSpec.RawRes(R.raw.happy_birthday),
     )
 
     val wallpaperAnimate = rememberLottieAnimatable()
@@ -50,7 +50,7 @@ fun RoomItem(
         wallpaperAnimate.animate(
             composition = wallpaperComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
-            initialProgress = 0f
+            initialProgress = 0f,
         )
     }
 
@@ -59,7 +59,7 @@ fun RoomItem(
             birthAnimate.animate(
                 composition = birthParticleComposition,
                 clipSpec = LottieClipSpec.Frame(0, 1200),
-                initialProgress = 0f
+                initialProgress = 0f,
             )
         }
     }
@@ -74,15 +74,15 @@ fun RoomItem(
             LottieAnimation(
                 modifier = Modifier.fillMaxSize().zIndex(-1f),
                 composition = birthParticleComposition,
-                progress = {birthAnimate.progress},
-                contentScale = ContentScale.Fit
+                progress = { birthAnimate.progress },
+                contentScale = ContentScale.Fit,
             )
         }
         LottieAnimation(
             modifier = Modifier.fillMaxSize().zIndex(-2f),
             composition = wallpaperComposition,
-            progress = {wallpaperAnimate.progress},
-            contentScale = ContentScale.Crop
+            progress = { wallpaperAnimate.progress },
+            contentScale = ContentScale.Crop,
         )
 
         Column {
@@ -96,7 +96,6 @@ fun RoomItem(
                 text = members.joinToString(", ") { it.nickName },
                 style = MaterialTheme.typography.bodyLarge,
             )
-
         }
         Row(
             modifier = Modifier

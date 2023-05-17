@@ -1,5 +1,7 @@
 package com.purple.hello.feature.rooms
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -36,6 +38,7 @@ import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun RoomsRoute(
     roomsViewModel: RoomsViewModel = hiltViewModel(),
@@ -64,12 +67,11 @@ internal fun RoomsRoute(
         Box(
             Modifier
                 .fillMaxSize()
-                .background(Color.Gray),
+                .background(MaterialTheme.colorScheme.background),
         ) {
             LazyVerticalGrid(
                 columns = Adaptive(300.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
             ) {
@@ -180,6 +182,7 @@ private fun OpenAddRoomDialogButton(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun LazyGridScope.roomsScreen(
     roomsState: RoomsUiState,
     onClick: (roomId: Long) -> Unit,
@@ -188,11 +191,19 @@ private fun LazyGridScope.roomsScreen(
         RoomsUiState.Loading -> Unit
         is RoomsUiState.Success -> {
             items(roomsState.rooms, key = { it.roomId }) { room ->
-                RoomItem(
-                    roomName = room.roomName,
-                    members = room.members,
-                    onClick = { onClick(room.roomId) },
-                )
+                Column {
+                    RoomItem(
+                        roomName = room.roomName,
+                        members = room.members,
+                        onClick = { onClick(room.roomId) },
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                            .background(Color.Gray),
+                    )
+                }
             }
         }
         is RoomsUiState.Error -> Unit

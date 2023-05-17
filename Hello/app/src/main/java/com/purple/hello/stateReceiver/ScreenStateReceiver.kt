@@ -30,7 +30,7 @@ class ScreenStateReceiver : BroadcastReceiver() {
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or
                         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                    PixelFormat.TRANSLUCENT
+                    PixelFormat.TRANSLUCENT,
                 )
 
                 val view = View(context)
@@ -57,13 +57,12 @@ class ScreenStateReceiver : BroadcastReceiver() {
     }
 
     private fun scheduleWorker(context: Context) {
-
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
             .build()
 
         val screenStateRequest = OneTimeWorkRequestBuilder<TimerWorker>()
-            .setInitialDelay(1, TimeUnit.HOURS)
+            .setInitialDelay(24, TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 
@@ -71,7 +70,7 @@ class ScreenStateReceiver : BroadcastReceiver() {
         workManager?.enqueueUniqueWork(
             "TimerWorker",
             ExistingWorkPolicy.KEEP,
-            screenStateRequest
+            screenStateRequest,
         )
     }
 }
