@@ -1,7 +1,6 @@
 package com.purple.hello.feature.rooms.viewmodel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -58,7 +57,6 @@ class FeedViewModel @Inject constructor(
                     FeedUiState.Success(
                         feeds = feedList.data,
                         isPossibleToUpload = feedList.data.none { feed ->
-                            Log.d("Feed check", "author name = ${feed.author.nickName}")
                             feed.author.id == userId
                         },
                         question = when(question) {

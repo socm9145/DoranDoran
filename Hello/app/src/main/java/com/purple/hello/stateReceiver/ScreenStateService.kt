@@ -49,8 +49,8 @@ class ScreenStateService : Service() {
 
         return NotificationCompat.Builder(this, channelId)
             .setSmallIcon(com.purple.hello.R.drawable.ic_dorandoran_notification)
-            .setContentTitle("Screen State Service")
-            .setContentText("Running in the background")
+            .setContentTitle("가족안전알림이 켜져있어요.")
+            .setContentText("24시간 동안 폰 조작이 없으면 다른 가족에게 알려줍니다")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
