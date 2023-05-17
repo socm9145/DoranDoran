@@ -15,13 +15,15 @@ pipeline {
             }
         }
         stage('SonarQube analysis') {
-            withSonarQubeEnv('SonarQube') {
+            steps {
                 dir('backend/hello'){
-                    sh './gradlew --info sonarqube'
-                    + ' -Dsonar.projectKey=purple' 
-                    + ' -Dsonar.projectName=sonar-project'
+                    withSonarQubeEnv('SonarQube') {
+                            sh './gradlew --info sonarqube'
+                            + ' -Dsonar.projectKey=purple' 
+                            + ' -Dsonar.projectName=sonar-project'
+                    }
                 }
-            } 
+            }
         }
         stage('Test') {
             steps {
