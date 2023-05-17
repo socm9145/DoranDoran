@@ -6,12 +6,10 @@ data class Room(
     val members: List<Member>,
 )
 
-data class PersonalOptions(
-    val userRoomId: Long,
+data class RoomSettingOptions(
     val roomName: String,
+    val userRoomId: Long,
+    val role: String,
     val userName: String,
-)
-
-data class CommonOptions(
     val passwordQuestion: String,
 )

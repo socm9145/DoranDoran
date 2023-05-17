@@ -44,8 +44,8 @@ dependencies {
     implementation(Hilt.HILT_ANDROID)
     kapt(Hilt.HILT_ANDROID_COMPILER)
 
-    implementation("androidx.hilt:hilt-work:1.0.0")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation(Hilt.HILT_WORK)
+    kapt(Hilt.HILT_COMPILER)
 
     implementation(WorkmanagerKotlin.WORKMANAGER_KOTLIN)
 }

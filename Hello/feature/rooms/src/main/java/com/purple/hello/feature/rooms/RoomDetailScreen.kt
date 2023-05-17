@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,6 +34,7 @@ import com.purple.core.designsystem.component.HiIconButton
 import com.purple.core.designsystem.component.HiOutlinedButton
 import com.purple.core.designsystem.component.HiTopAppBar
 import com.purple.core.designsystem.icon.HiIcons
+import com.purple.core.designsystem.theme.LocalGradientColors
 import com.purple.core.model.Member
 import com.purple.core.model.Room
 import com.purple.hello.feature.rooms.state.FeedUiState
@@ -94,7 +96,13 @@ internal fun RoomDetailRoute(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(LocalGradientColors.current.top, LocalGradientColors.current.bottom),
+                    startY = 0f,
+                    endY = Float.POSITIVE_INFINITY,
+                ),
+            ),
     ) {
         if (selectedRoom != null) {
             RoomDetailScreen(

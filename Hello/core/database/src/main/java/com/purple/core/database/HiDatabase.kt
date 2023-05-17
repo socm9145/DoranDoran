@@ -19,8 +19,8 @@ import com.purple.core.database.utils.LocalDateTypeConverter
     entities = [
         MemberRoomEntity::class,
         MemberEntity::class,
-        RoomCommonOptionsEntity::class,
         RoomEntity::class,
+        RoomCommonOptionsEntity::class,
         QuestionEntity::class,
         QuestionRoomCrossEntity::class,
         FeedEntity::class,

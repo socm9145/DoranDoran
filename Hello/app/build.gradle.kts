@@ -85,8 +85,8 @@ dependencies {
     implementation(firebaseDependencies)
     implementation(WorkmanagerKotlin.WORKMANAGER_KOTLIN)
 
-    implementation("androidx.hilt:hilt-work:1.0.0")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation(Hilt.HILT_WORK)
+    kapt(Hilt.HILT_COMPILER)
 }
 
 fun getApiKey(propertyKey: String): String {

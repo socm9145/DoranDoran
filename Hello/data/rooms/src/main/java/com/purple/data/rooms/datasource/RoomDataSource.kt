@@ -25,6 +25,8 @@ interface RoomDataSource {
 
     suspend fun getJoinInfo(roomId: Long): Response<RoomJoinInfoResponse>
 
+    suspend fun getPasswordQuestion(roomId: Long): Response<RoomPasswordQuestionResponse>
+
     suspend fun updateRoomName(
         userRoomId: Long,
         roomName: String,
@@ -41,9 +43,9 @@ interface RoomDataSource {
         question: String,
     ): Response<Void>
 
-    suspend fun exitRoom(
-        userRoomId: Long,
-    ): Response<Void>
+//    suspend fun exitRoom(
+//        userRoomId: Long,
+//    ): Response<Void>
 
     suspend fun deleteRoom(
         roomId: Long,

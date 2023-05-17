@@ -65,6 +65,13 @@ fun HiNavHost(
             onBackClick = {
                 navController.popBackStack()
             },
+            onClickRooms = {
+                navController.navigateToRooms(
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(roomsNavigationRoute, true)
+                        .build(),
+                )
+            },
         )
         profileSettingScreen(
             onBackClick = {

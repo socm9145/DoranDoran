@@ -1,7 +1,6 @@
 package com.purple.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.purple.core.database.entity.NotificationEntity

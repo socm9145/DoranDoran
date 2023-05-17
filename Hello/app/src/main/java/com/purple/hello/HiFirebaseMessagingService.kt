@@ -40,7 +40,7 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
+                scheduleJob(remoteMessage.data["title"]!!, remoteMessage.data["body"]!!)
             } else {
                 // Handle message within 10 seconds
                 handleNow()
@@ -48,9 +48,11 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         // Check if message contains a notification payload.
-        remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-            sendNotification(remoteMessage.notification?.title, remoteMessage.notification!!.body!!)
+//        remoteMessage.notification?.let {
+        remoteMessage.data.let {
+            Log.d(TAG, "Message Notification Body: ${it["body"]}")
+//            sendNotification(remoteMessage.notification?.title, remoteMessage.notification!!.body!!)
+            sendNotification(remoteMessage.data["title"]!!, remoteMessage.data["body"]!!)
 //            scheduleJob(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
         }
 
