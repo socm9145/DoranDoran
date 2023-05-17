@@ -44,32 +44,39 @@ class FeedRepositoryImpl @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun updateQuestion(roomId: Long, date: LocalDateTime) {
-        val response = remoteFeedDataSource.getDateQuestion(roomId, date)
+        runCatching {
+            remoteFeedDataSource.getDateQuestion(roomId, date)
+        }.onFailure {
 
-        if (response.isSuccessful) {
-            val question = response.body()
-            if (question != null) {
-                feedDao.insertQuestionEntity(
-                    QuestionEntity(
-                        questionId = question.questionId,
-                        content = question.content,
-                    ),
-                )
-                feedDao.insertQuestionRoomCrossEntity(
-                    QuestionRoomCrossEntity(
-                        questionId = question.questionId,
-                        date = date.toLocalDate(),
-                        roomId = roomId,
-                    ),
-                )
+        }.onSuccess { response ->
+            if (response.isSuccessful) {
+                val question = response.body()
+                if (question != null) {
+                    feedDao.insertQuestionEntity(
+                        QuestionEntity(
+                            questionId = question.questionId,
+                            content = question.content,
+                        ),
+                    )
+                    feedDao.insertQuestionRoomCrossEntity(
+                        QuestionRoomCrossEntity(
+                            questionId = question.questionId,
+                            date = date.toLocalDate(),
+                            roomId = roomId,
+                        ),
+                    )
+                }
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun updateDateFeed(roomId: Long, date: LocalDateTime) {
-        run {
-            val response = remoteFeedDataSource.getDateFeed(roomId, date)
+        runCatching {
+            remoteFeedDataSource.getDateFeed(roomId, date)
+        }.onFailure {
+            it.printStackTrace()
+        }.onSuccess { response ->
             if (response.isSuccessful) {
                 val feedList = response.body() ?: emptyList()
                 feedList.map { feed ->

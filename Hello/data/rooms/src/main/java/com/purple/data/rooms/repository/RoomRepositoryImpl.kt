@@ -36,9 +36,9 @@ class RoomRepositoryImpl @Inject constructor(
         runCatching {
             remoteRoomDataSource.getRoomCode(roomId)
         }.onFailure {
-            throw it
-        }.getOrThrow().let {
-            return it.body()?.roomCode ?: ""
+
+        }.getOrNull().let {
+            return it?.body()?.roomCode ?: ""
         }
     }
 
@@ -87,13 +87,17 @@ class RoomRepositoryImpl @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun fetchMembersInRoom(roomId: Long) {
-        val response = remoteRoomDataSource.getMembersInRoom(roomId)
+        runCatching {
+            remoteRoomDataSource.getMembersInRoom(roomId)
+        }.onFailure {
 
-        if (response.isSuccessful) {
-            val membersInRoom = response.body()
-            membersInRoom?.members?.map {
-                userDao.upsertMember(it.asMemberEntity())
-                userDao.upsertMemberRoom(it.asMemberRoomEntity(roomId))
+        }.onSuccess { response ->
+            if (response.isSuccessful) {
+                val membersInRoom = response.body()
+                membersInRoom?.members?.map {
+                    userDao.upsertMember(it.asMemberEntity())
+                    userDao.upsertMemberRoom(it.asMemberRoomEntity(roomId))
+                }
             }
         }
     }
@@ -103,10 +107,9 @@ class RoomRepositoryImpl @Inject constructor(
         runCatching {
             remoteRoomDataSource.getRoomList()
         }.onFailure { e ->
-            throw e
-        }.getOrThrow().let {
+            e.printStackTrace()
+        }.getOrNull()?.let {
             val roomList = checkNotNull(it.body())
-
             roomList.map { room ->
                 roomDao.upsertRoom(room.asRoomEntity())
                 room.members.map { member ->
