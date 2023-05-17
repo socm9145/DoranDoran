@@ -137,7 +137,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @ApiOperation(value = "날짜 기반 피드 출력 API (x)",
+    @ApiOperation(value = "날짜 기반 피드 출력 API (o)",
             notes = "해당 날짜에 기재한 피드 전체를 출력해주는 API / timezone 차이로 날짜 인식을 못하는 오류")
     @GetMapping("/date-feed")
     public ResponseEntity<List<ReadFeedOutDTO>> readFeedByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) throws Exception{
@@ -146,7 +146,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(readFeedOutDTOs);
     }
 
-    @ApiOperation(value = "날짜 기반 질문 출력 API (x)",
+    @ApiOperation(value = "날짜 기반 질문 출력 API (o)",
             notes = "해당 날짜에 해당하는 질문을 출력해주는 API")
     @GetMapping("/date-question")
     public ResponseEntity<ReadQuestionOutDTO> readQuestionByRoomIdAndDate(@RequestParam("roomId") long roomId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
