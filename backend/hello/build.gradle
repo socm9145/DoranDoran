@@ -106,7 +106,7 @@ sonarqube {
 
         property 'sonar.host.url', "http://15.165.77.191:8003"
         // property 'sonar.host.url', "${sonarqube_addr}"
-        property 'sonar.login', "56e83e6b83075d049e29a0612e59c68fa0647ced"
+        property 'sonar.login', "ca4cf2f35be5e906b9bcf3af9e90efac4b0bd3c6"
         ///property 'sonar.login', "${sonarqube_token_secret}"
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
