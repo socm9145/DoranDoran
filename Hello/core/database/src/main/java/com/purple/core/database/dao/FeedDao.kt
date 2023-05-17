@@ -31,14 +31,14 @@ interface FeedDao {
 
     @Query(
         """
-        SELECT *
+        SELECT feed.*, members.*, user_room_cross.nickName AS nickName
         FROM feed
-        INNER JOIN user_room_cross 
+        INNER JOIN user_room_cross
             ON feed.roomId = user_room_cross.roomId AND feed.userId = user_room_cross.userId
-        INNER JOIN members 
+        INNER JOIN members
             ON feed.userId = members.userId
         WHERE feed.roomId = :roomId AND DATE(feed.createAt) = DATE(:date)
-        """,
+        """
     )
     fun getFeedWithRoomIdAndDate(roomId: Long, date: LocalDateTime): Flow<List<FeedWithAuthor>>
 

@@ -55,18 +55,18 @@ class FeedViewModel @Inject constructor(
                 is Result.Loading -> FeedUiState.Loading
                 is Result.Success -> {
                     val userId = runBlocking { getUserIdUseCase().first() }
-                    when(question) {
-                        is Result.Loading -> FeedUiState.Loading
-                        is Result.Success -> FeedUiState.Success(
-                            feeds = feedList.data,
-                            isPossibleToUpload = feedList.data.none { feed ->
-                                Log.d("Feed check", "author id = ${feed.author.id}, userId = $userId")
-                                feed.author.id == userId
-                            },
-                            question = question.data
-                        )
-                        is Result.Error -> FeedUiState.Error(question.exception)
-                    }
+                    FeedUiState.Success(
+                        feeds = feedList.data,
+                        isPossibleToUpload = feedList.data.none { feed ->
+                            Log.d("Feed check", "author name = ${feed.author.nickName}")
+                            feed.author.id == userId
+                        },
+                        question = when(question) {
+                            is Result.Error -> ""
+                            is Result.Loading -> ""
+                            is Result.Success -> question.data
+                        }
+                    )
                 }
                 is Result.Error -> FeedUiState.Error(feedList.exception)
             }

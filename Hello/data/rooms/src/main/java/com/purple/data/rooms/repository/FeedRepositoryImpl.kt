@@ -7,7 +7,6 @@ import com.purple.core.database.dao.RoomDao
 import com.purple.core.database.entity.FeedEntity
 import com.purple.core.database.entity.QuestionEntity
 import com.purple.core.database.entity.QuestionRoomCrossEntity
-import com.purple.core.database.model.FeedWithAuthor
 import com.purple.core.database.model.asExternalModel
 import com.purple.core.model.Feed
 import com.purple.data.rooms.datasource.RemoteFeedDataSource
@@ -34,9 +33,12 @@ class FeedRepositoryImpl @Inject constructor(
     override fun getQuestion(roomId: Long, date: LocalDateTime): Flow<String?> =
         feedDao.getQuestionWithRoomIdAndDate(roomId, date.toLocalDate())
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getDateFeed(roomId: Long, date: LocalDateTime): Flow<List<Feed>> {
         return feedDao.getFeedWithRoomIdAndDate(roomId, date).map {
-            it.map(FeedWithAuthor::asExternalModel)
+            it.map { feedWithAuthor ->
+                feedWithAuthor.asExternalModel()
+            }
         }
     }
 
