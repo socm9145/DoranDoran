@@ -13,5 +13,5 @@ interface UserRepository {
 
     fun getProfile(): Flow<Profile>
 
-    suspend fun sendSafeAlarm()
+    suspend fun sendSafeAlarm(): Result<String>
 }

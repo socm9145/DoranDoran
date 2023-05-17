@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":sync:work"))
     implementation("androidx.hilt:hilt-work:1.0.0")
+    implementation(project(mapOf("path" to ":domain:user")))
     kapt("androidx.hilt:hilt-compiler:1.0.0")
 
     implementation(composeDependencies)

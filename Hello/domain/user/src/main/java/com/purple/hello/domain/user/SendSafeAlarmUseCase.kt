@@ -6,5 +6,5 @@ import javax.inject.Inject
 class SendSafeAlarmUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend fun invoke() = userRepository.sendSafeAlarm()
+    suspend operator fun invoke(): Result<String> = userRepository.sendSafeAlarm()
 }

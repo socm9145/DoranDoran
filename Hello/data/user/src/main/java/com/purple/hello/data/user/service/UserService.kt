@@ -17,7 +17,7 @@ interface UserService {
         @Body requestForProfileSetting: ProfileSettingRequest,
     ): Response<Void>
 
-    @PUT("room/safe-alarm")
-    suspend fun putSafeAlarm(): Response<String>
+    @GET("room/no-response-notification")
+    suspend fun sendSafeAlarm(): Response<String>
 
 }

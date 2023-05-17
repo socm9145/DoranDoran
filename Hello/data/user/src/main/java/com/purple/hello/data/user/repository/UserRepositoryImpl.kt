@@ -74,7 +74,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendSafeAlarm() {
-        remoteUserDataSource.sendSafeAlarm()
+    override suspend fun sendSafeAlarm(): Result<String> = runCatching {
+        val response = remoteUserDataSource.sendSafeAlarm()
+        response.body() ?: ""
     }
 }
