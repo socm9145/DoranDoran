@@ -47,8 +47,8 @@ class RemoteRoomDataSource @Inject constructor(
             RoomPasswordUpdateRequest(roomId, password, question),
         )
 
-    suspend fun exitRoom(userId: Long, userRoomId: Long) =
-        roomService.exitRoom(userId, userRoomId)
+    suspend fun exitRoom(userRoomId: Long) =
+        roomService.exitRoom(userRoomId)
 
     override suspend fun deleteRoom(roomId: Long) =
         roomService.deleteRoom(

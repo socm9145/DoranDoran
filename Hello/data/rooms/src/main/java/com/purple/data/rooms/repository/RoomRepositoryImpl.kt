@@ -212,11 +212,9 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun leaveRoom(userRoomId: Long) {
-        val userId = userDataStore.userId.first()
+    override suspend fun exitRoom(userRoomId: Long) {
         remoteRoomDataSource.exitRoom(
             userRoomId,
-            userId,
         ).let {
             if (it.isSuccessful) {
                 roomDao.exitRoom(
@@ -230,16 +228,6 @@ class RoomRepositoryImpl @Inject constructor(
         remoteRoomDataSource.deleteRoom(
             roomId,
         ).let {
-//            if (it.isSuccessful) {
-//                try {
-//                    roomDao.deleteRoom(
-//                        roomId = roomId,
-//                    )
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                    Log.e("delete", "delete error occurred", e)
-//                }
-//            }
             if (it.isSuccessful) {
                 roomDao.deleteRoom(
                     roomId = roomId,

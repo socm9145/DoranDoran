@@ -25,6 +25,6 @@ interface RoomRepository {
     suspend fun updateUserName(userRoomId: Long, userName: String)
     suspend fun updateRoomName(userRoomId: Long, roomName: String)
     suspend fun updatePassword(roomId: Long, passwordQuestion: String, password: String)
-    suspend fun leaveRoom(userRoomId: Long)
+    suspend fun exitRoom(userRoomId: Long)
     suspend fun deleteRoom(roomId: Long)
 }

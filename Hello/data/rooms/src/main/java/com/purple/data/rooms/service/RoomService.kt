@@ -57,7 +57,6 @@ interface RoomService {
 
     @PUT("room/exit")
     suspend fun exitRoom(
-        @Query("userId") userId: Long,
         @Query("userRoomId") userRoomId: Long,
     ): Response<Void>
 
