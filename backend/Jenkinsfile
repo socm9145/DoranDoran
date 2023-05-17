@@ -14,17 +14,17 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube analysis') {
-            steps {
-                dir('backend/hello'){
-                    withSonarQubeEnv('SonarQube') {
-                            sh "./gradlew --info sonarqube"
-                            sh " -Dsonar.projectKey=purple"
-                            sh " -Dsonar.projectName=sonar-project"
-                    }
-                }
-            }
-        }
+        // stage('SonarQube analysis') {
+        //     steps {
+        //         dir('backend/hello'){
+        //             withSonarQubeEnv('SonarQube') {
+        //                     sh "./gradlew --info sonarqube"
+        //                     sh " -Dsonar.projectKey=purple"
+        //                     sh " -Dsonar.projectName=sonar-project"
+        //             }
+        //         }
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 dir('backend'){
