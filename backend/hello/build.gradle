@@ -96,17 +96,11 @@ dependencies {
 
 sonarqube {
     properties {
-        '''
-        Properties properties = new Properties()
-        properties.load(new FileInputStream(rootProject.file('/src/main/resources/properties/env.properties')))
 
-        String sonarqube_addr = properties.getProperty('sonarqube_addr')
-        String sonarqube_token_secret = properties.getProperty('sonarqube_token_secret')
-        '''
 
-        property 'sonar.host.url', "http://15.165.77.191:8003"
+        property 'sonar.host.url', "http://localhost:9000"
         // property 'sonar.host.url', "${sonarqube_addr}"
-        property 'sonar.login', "ca4cf2f35be5e906b9bcf3af9e90efac4b0bd3c6"
+        property 'sonar.login', "ddb7e9c23cd2ba24ba3c898a3aaf209a6c97c7a5"
         ///property 'sonar.login', "${sonarqube_token_secret}"
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
