@@ -1,12 +1,12 @@
 package com.purple.hello.feature.rooms.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -21,19 +21,22 @@ import com.purple.core.designsystem.theme.HiTheme
 import com.purple.core.model.Member
 import com.purple.hello.feature.groups.R
 import com.purple.hello.feature.rooms.fake.FakeFactory
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RoomItem(
     roomName: String,
     members: List<Member>,
     onClick: () -> Unit,
 ) {
-    val isBirthDay = true
+    val isBirthDay by remember(members) { mutableStateOf(checkIsBirthDay(members)) }
+
     val wallpaperComposition by rememberLottieComposition(
         if (isBirthDay) {
             LottieCompositionSpec.RawRes(R.raw.party_room_wallpaper)
         } else {
-            LottieCompositionSpec.RawRes(R.raw.grey_room_wallpaper)
+            LottieCompositionSpec.RawRes(R.raw.k_room_wallpaper)
         }
     )
     val birthParticleComposition by rememberLottieComposition(
@@ -81,6 +84,7 @@ fun RoomItem(
             progress = {wallpaperAnimate.progress},
             contentScale = ContentScale.Crop
         )
+
         Column {
             Text(
                 modifier = Modifier.padding(24.dp),
@@ -114,7 +118,16 @@ fun RoomItem(
             }
         }
     }
+}
 
+@RequiresApi(Build.VERSION_CODES.O)
+private fun checkIsBirthDay(members: List<Member>): Boolean {
+    val today = LocalDate.now()
+    return members.any { member ->
+        member.birth?.let {
+            it.month == today.month && it.dayOfMonth == today.dayOfMonth
+        } ?: false
+    }
 }
 
 @Preview
