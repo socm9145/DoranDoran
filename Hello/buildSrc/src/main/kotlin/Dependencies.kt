@@ -30,6 +30,7 @@ object Versions {
     // Hilt
     const val HILT_ANDROID = "2.44"
     const val HILT_COMPOSE = "1.0.0"
+    const val HILT_WORK = "1.0.0"
 
     // Kotlin
     const val KOTLIN = "1.8.10"
@@ -117,6 +118,8 @@ object Hilt {
     const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT_COMPOSE}"
     const val HILT_ANDROID = "com.google.dagger:hilt-android:${Versions.HILT_ANDROID}"
     const val HILT_ANDROID_COMPILER = "com.google.dagger:hilt-android-compiler:${Versions.HILT_ANDROID}"
+    const val HILT_WORK = "androidx.hilt:hilt-work:${Versions.HILT_WORK}"
+    const val HILT_COMPILER = "androidx.hilt:hilt-compiler:${Versions.HILT_WORK}"
 }
 
 object Kotlin {
