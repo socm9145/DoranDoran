@@ -54,6 +54,7 @@ dependencies {
     implementation(calendarLibrary)
     implementation(Compose.PERMISSION)
 
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
     implementation(Hilt.HILT_ANDROID)
     implementation("androidx.camera:camera-view:1.1.0-beta02")
     kapt(Hilt.HILT_ANDROID_COMPILER)

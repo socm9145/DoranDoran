@@ -15,8 +15,8 @@ import com.purple.core.designsystem.icon.Icon
 @Composable
 fun HiTopAppBar(
     title: String,
-    navigationIcon: ImageVector,
-    navigationIconContentDescription: String?,
+    navigationIcon: ImageVector? = null,
+    navigationIconContentDescription: String? = null,
     actions: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
     onNavigationClick: () -> Unit = {},
@@ -24,12 +24,14 @@ fun HiTopAppBar(
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = navigationIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            if(navigationIcon != null) {
+                IconButton(onClick = onNavigationClick) {
+                    Icon(
+                        imageVector = navigationIcon,
+                        contentDescription = navigationIconContentDescription,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         },
         actions = actions,
