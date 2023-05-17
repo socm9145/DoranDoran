@@ -1,5 +1,7 @@
 package com.purple.core.database.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.purple.core.database.entity.MemberEntity
@@ -15,8 +17,10 @@ data class MemberInRoom(
     val member: MemberEntity
 )
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun MemberInRoom.asExternalModel() = Member(
     id = memberRoom.userId,
     nickName = memberRoom.nickName,
-    profileUrl = member.profileUrl
+    profileUrl = member.profileUrl,
+    birth = member.birth?.toLocalDate()
 )

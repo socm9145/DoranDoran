@@ -11,4 +11,6 @@ interface UserDataSource {
         profileUrl: String,
         birth: String,
     ): Response<Void>
+
+    suspend fun sendSafeAlarm(): Response<String>
 }

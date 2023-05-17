@@ -1,7 +1,6 @@
 package com.purple.hello.feature.rooms.viewmodel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -48,9 +47,9 @@ class FeedViewModel @Inject constructor(
 
     val feedUiState: StateFlow<FeedUiState> =
         combine(
-            dateQuestion,
             dateFeedList,
-        ) { question, feedList ->
+            dateQuestion,
+        ) { feedList, question ->
             when (feedList) {
                 is Result.Loading -> FeedUiState.Loading
                 is Result.Success -> {
@@ -58,14 +57,13 @@ class FeedViewModel @Inject constructor(
                     FeedUiState.Success(
                         feeds = feedList.data,
                         isPossibleToUpload = feedList.data.none { feed ->
-                            Log.d("Feed check", "author id = ${feed.author.id}, userId = $userId")
                             feed.author.id == userId
                         },
-                        question = when (question) {
-                            is Result.Loading -> "로딩중..."
+                        question = when(question) {
+                            is Result.Error -> ""
+                            is Result.Loading -> ""
                             is Result.Success -> question.data
-                            is Result.Error -> "질문을 가져오지 못했습니다.."
-                        },
+                        }
                     )
                 }
                 is Result.Error -> FeedUiState.Error(feedList.exception)

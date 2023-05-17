@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- 화면 상태 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".HiApplication"
@@ -20,6 +23,15 @@
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove">
         </provider>
+        <receiver
+            android:name=".stateReceiver.ScreenStateReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -48,6 +60,7 @@
                 android:scheme="${kakaoApiKey}" />
         </intent-filter>
         </activity>
+        <service android:name=".stateReceiver.ScreenStateService"/>
         <service
             android:name=".HiFirebaseMessagingService"
             android:exported="false">

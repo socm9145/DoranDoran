@@ -19,5 +19,9 @@ class FetchDateFeedUseCase @Inject constructor(
                 feedRepository.updateDateFeed(roomId, date)
             }
         }
+        if (!feedRepository.isExistQuestionInRoomByDate(roomId, date)) {
+            feedRepository.updateQuestion(roomId, date)
+        }
+
     }
 }

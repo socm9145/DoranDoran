@@ -2,7 +2,7 @@ package com.purple.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Entity(
     tableName = "room_question_cross",
@@ -12,7 +12,7 @@ import java.time.LocalDateTime
             entity = QuestionEntity::class,
             parentColumns = ["questionId"],
             childColumns = ["questionId"],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.NO_ACTION,
         ),
         ForeignKey(
             entity = RoomEntity::class,
@@ -24,6 +24,6 @@ import java.time.LocalDateTime
 )
 data class QuestionRoomCrossEntity(
     val questionId: Long,
-    val date: LocalDateTime,
+    val date: LocalDate,
     val roomId: Long,
 )

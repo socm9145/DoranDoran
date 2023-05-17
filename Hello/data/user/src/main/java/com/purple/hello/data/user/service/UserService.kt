@@ -16,4 +16,8 @@ interface UserService {
     suspend fun setProfile(
         @Body requestForProfileSetting: ProfileSettingRequest,
     ): Response<Void>
+
+    @GET("room/no-response-notification")
+    suspend fun sendSafeAlarm(): Response<String>
+
 }

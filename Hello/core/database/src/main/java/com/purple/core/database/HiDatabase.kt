@@ -12,6 +12,7 @@ import com.purple.core.database.dao.UserDao
 import com.purple.core.database.entity.*
 import com.purple.core.database.utils.DateConverters
 import com.purple.core.database.utils.LocalDateTimeTypeConverter
+import com.purple.core.database.utils.LocalDateTypeConverter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Database(
@@ -31,6 +32,7 @@ import com.purple.core.database.utils.LocalDateTimeTypeConverter
 @TypeConverters(
     DateConverters::class,
     LocalDateTimeTypeConverter::class,
+    LocalDateTypeConverter::class,
 )
 abstract class HiDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
