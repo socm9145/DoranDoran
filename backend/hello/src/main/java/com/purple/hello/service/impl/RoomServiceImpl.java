@@ -19,6 +19,7 @@ import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.service.AwsS3Service;
 import com.purple.hello.service.RoomService;
+import com.purple.hello.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -141,12 +143,12 @@ public class RoomServiceImpl implements RoomService {
             if (roomList.size() == 0)
                 throw new NullPointerException("Don't Created Room");
 
-            LocalDate currentDate = LocalDate.now();
+            LocalDateTime currentDate = LocalDateTime.now().plusHours(9);
             List<Long> roomListIdxUpper = new ArrayList<>();
             List<QuestionIdRoomIdDTO> roomListIdxLower = new ArrayList<>();
 
             for (Room room : roomList) {
-                LocalDate createdAt = room.getCreateAt().toInstant()
+                LocalDate createdAt = DateUtils.addHours(room.getCreateAt(), 9).toInstant()
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate();
                 long result = currentDate.getDayOfYear() - createdAt.getDayOfYear();

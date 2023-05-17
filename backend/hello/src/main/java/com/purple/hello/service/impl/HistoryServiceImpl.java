@@ -12,6 +12,7 @@ import com.purple.hello.entity.Room;
 import com.purple.hello.repo.QuestionRepo;
 import com.purple.hello.repo.RoomRepo;
 import com.purple.hello.service.HistoryService;
+import com.purple.hello.util.DateUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -36,14 +37,14 @@ public class HistoryServiceImpl implements HistoryService {
 
         else {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date currentDate = new Date();
-
+            Date currentDate = DateUtils.addHours(new Date(), 9);
+            date = DateUtils.addHours(date, 9);
             if(currentDate.compareTo(date) < 0)
                 throw new IllegalArgumentException();
 
             if(simpleDateFormat.format(currentDate).equals(simpleDateFormat.format(date))) {
                 int beginTime = roomDAO.readBeginTimeByRoomId(roomId);
-                int currentHour = LocalDateTime.now().getHour();
+                int currentHour = LocalDateTime.now().plusHours(9).getHour();
 
                 if(currentHour < beginTime)
                     throw new IllegalArgumentException();

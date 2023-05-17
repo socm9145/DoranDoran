@@ -47,10 +47,6 @@ public class UserController {
     public ResponseEntity<List<ReadRoomOutDTO>> readRoomByUserId(HttpServletRequest request)throws Exception{
         long userId = Long.parseLong(request.getAttribute("userId").toString());
         List<ReadRoomOutDTO> readRoomOutDTOs = roomService.readRoomByUserId(userId);
-
-        if (readRoomOutDTOs == null)
-            throw new IllegalArgumentException();
-
         return ResponseEntity.status(HttpStatus.OK).body(readRoomOutDTOs);
     }
 
