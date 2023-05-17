@@ -18,9 +18,9 @@ pipeline {
             steps {
                 dir('backend/hello'){
                     withSonarQubeEnv('SonarQube') {
-                            sh './gradlew --info sonarqube'
-                            + ' -Dsonar.projectKey=purple' 
-                            + ' -Dsonar.projectName=sonar-project'
+                            sh "./gradlew --info sonarqube"
+                            sh " -Dsonar.projectKey=purple"
+                            sh " -Dsonar.projectName=sonar-project"
                     }
                 }
             }
