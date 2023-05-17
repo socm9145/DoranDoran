@@ -117,10 +117,9 @@ public class HistoryDAOImpl implements HistoryDAO {
     }
 
     @Override
-    public ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date date) throws IOException {
+    public ReadQuestionOutDTO readQuestionByRoomIdAndDate(long roomId, Date currentDateKST) throws IOException {
         DateTemplate historyCreateAtKST = Expressions.dateTemplate(Date.class, "ADDDATE({0},{1})", qHistory.createAt, "HOUR(9)");
         StringTemplate historyCreateAt = Expressions.stringTemplate("DATE_FORMAT({0}, {1})", historyCreateAtKST, ConstantImpl.create("%Y-%m-%d"));
-        Date currentDateKST = DateUtils.addHours(new Date(), 9);
         String currentDateString = DateUtils.format(currentDateKST, "yyyy-MM-dd");
         return new JPAQuery<>(em)
                 .select(Projections.constructor(ReadQuestionOutDTO.class, qHistory.question.questionId, qHistory.question.content))

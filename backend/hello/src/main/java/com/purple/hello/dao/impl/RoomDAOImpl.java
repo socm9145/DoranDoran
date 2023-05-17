@@ -60,7 +60,7 @@ public class RoomDAOImpl implements RoomDAO {
         List resultList = query.getResultList();
 
         if (resultList.size() == 0)
-            throw new IllegalArgumentException();
+            return new ArrayList<>();
 
         Map<Long, List<ReadRoomDTO>> map = new HashMap<>();
 
@@ -271,10 +271,10 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public Map<Long, List<HistoryTypeDTO>> getHistoryTypeFeedCount(List<Long> roomListIdx) {
         String jpql = "select question_type, count(question_type), room_id " +
-                "from (select history_id, h.question_id, question_type, room_id, DATE_FORMAT(create_at,'%Y-%m-%d') as date " +
+                "from (select history_id, h.question_id, question_type, room_id, DATE_FORMAT(ADDDATE(create_at, HOUR(9)),'%Y-%m-%d') as date " +
                 "      from histories h, questions q " +
                 "      where h.question_id = q.question_id) t, feeds f " +
-                "where DATE_FORMAT(f.create_at,'%Y-%m-%d') = date AND room_id in (:roomListIdx) " +
+                "where DATE_FORMAT(ADDDATE(f.create_at, HOUR(9)),'%Y-%m-%d') = date AND room_id in (:roomListIdx) " +
                 "group by room_id, question_type ";
         Query query = em.createNativeQuery(jpql);
         query.setParameter("roomListIdx", roomListIdx);
