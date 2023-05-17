@@ -35,6 +35,11 @@ interface RoomService {
         @Query("roomId") roomId: Long,
     ): Response<RoomJoinInfoResponse>
 
+    @GET("room/room-question")
+    suspend fun getPasswordQuestion(
+        @Query("roomId") roomId: Long,
+    ): Response<RoomPasswordQuestionResponse>
+
     @PUT("room/name")
     suspend fun updateRoomName(
         @Body requestForUpdateRoomName: RoomNameUpdateRequest,
@@ -52,10 +57,10 @@ interface RoomService {
 
     @PUT("room/exit")
     suspend fun exitRoom(
-        @Body requestForExitRoom: ExitRoomRequest,
+        @Query("userRoomId") userRoomId: Long,
     ): Response<Void>
 
-    @DELETE("room")
+    @HTTP(method = "DELETE", path = "room", hasBody = true)
     suspend fun deleteRoom(
         @Body requestForDeleteRoom: DeleteRoomRequest,
     ): Response<Void>
