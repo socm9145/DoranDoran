@@ -21,7 +21,7 @@ public class CreateFeedOutDTO {
         this.feedId = feedId;
         this.userRoomId = userRoomId;
         this.content = content;
-        this.createAt = DateUtils.addHours(createAt, 9);
+        this.createAt = createAt;
         this.feedType = feedType;
         this.feedUrl = feedUrl;
     }

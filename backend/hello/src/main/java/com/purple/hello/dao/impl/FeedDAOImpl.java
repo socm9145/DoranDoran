@@ -140,7 +140,7 @@ public class FeedDAOImpl implements FeedDAO {
                 .content(rFeed.getContent())
                 .feedType(rFeed.getFeedType())
                 .feedUrl(rFeed.getFeedUrl())
-                .createAt(rFeed.getCreateAt())
+                .createAt(DateUtils.addHours(rFeed.getCreateAt(), 9))
                 .userRoomId(userRoom.getUserRoomId())
                 .build();
 

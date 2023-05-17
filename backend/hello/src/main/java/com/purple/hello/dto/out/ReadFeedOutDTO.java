@@ -22,6 +22,6 @@ public class ReadFeedOutDTO {
         this.feedUrl = feedUrl;
         this.content = content;
         this.userId = userId;
-        this.createAt = DateUtils.addHours(createAt, 9);
+        this.createAt = createAt;
     }
 }
