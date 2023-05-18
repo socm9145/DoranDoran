@@ -14,19 +14,17 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube analysis') {
-            steps{
-                dir('backend/hello'){
-                    withSonarQubeEnv('SonarQube-Server'){
-                        sh "./gradlew --info sonarqube"
-                        sh " -Dsonar.projectKey=demo" 
-                        sh " -Dsonar.host.url=http://15.165.77.191:8003"
-                        sh " -Dsonar.login=46ee7835cab10f04d8c8da015141082d815588da"
-                    }
-                }
-            }
-        }
-        
+        // stage('SonarQube analysis') {
+        //     steps {
+        //         dir('backend/hello'){
+        //             withSonarQubeEnv('SonarQube') {
+        //                     sh "./gradlew --info sonarqube"
+        //                     sh " -Dsonar.projectKey=purple"
+        //                     sh " -Dsonar.projectName=sonar-project"
+        //             }
+        //         }
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 dir('backend'){
