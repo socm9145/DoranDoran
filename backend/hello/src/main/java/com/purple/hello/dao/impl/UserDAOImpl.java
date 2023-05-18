@@ -8,6 +8,7 @@ import com.purple.hello.entity.QRoom;
 import com.purple.hello.entity.QUser;
 import com.purple.hello.entity.QUserRoom;
 import com.purple.hello.entity.User;
+import com.purple.hello.enu.UserRoomRole;
 import com.purple.hello.repo.UserRepo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,6 +91,7 @@ public class UserDAOImpl implements UserDAO {
                 .where(qUser.userId.ne(userId))
                 .where(qUserRoom.roomName.isNotNull())
                 .where(qUser.deviceToken.isNotNull())
+                .where(qUserRoom.userRoomRole.ne(UserRoomRole.ROLE3))
                 .fetch();
     }
 
