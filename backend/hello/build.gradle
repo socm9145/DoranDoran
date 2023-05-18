@@ -97,7 +97,6 @@ dependencies {
 
 sonarqube {
     properties {
-
         property 'sonar.projectKey', 'demo'
         property 'sonar.host.url', "http://15.165.77.191:8003"
         // property 'sonar.host.url', "${sonarqube_addr}"
