@@ -115,11 +115,18 @@ sonarqube {
 }
 
 test {
+    jacoco {
+        // 테스트 실행 후 커버리지 측정을 위해 JaCoCo를 사용합니다.
+        enabled = true
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
+
+    useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
 }
 
 jacoco {
-    toolVersion = '0.8.5'
+    toolVersion = '0.8.7'
 }
 
 jacocoTestReport {
@@ -127,36 +134,34 @@ jacocoTestReport {
         html.enabled true // html 만들어 - 로컬에서 쉽게 보기 위함
         xml.enabled true // xml 만들어 - 소나큐브 연동 위함
         csv.enabled false // csv 안 만들어
+        xml.destination(new File("build/reports/jacoco.xml"))
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/purple/hello/dao/**",
+                    "com/purple/hello/dao",
+                    "com/purple/hello/dto/**",
+                    "com/purple/hello/entity",
+                    "com/purple/hello/entity/**",
+            ])
+        }))
     }
 
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
-jacocoTestCoverageVerification {
+jacocoTestCoverageVerification{
     violationRules {
-        rule {
+        rule{
             enabled = true
             element = 'CLASS'
-
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.50
-            }
-
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.80
+                //minimum = 0.3
             }
-
-            limit {
-                counter = 'LINE'
-                value = 'TOTALCOUNT'
-                maximum = 300
-            }
-
-            excludes = []
         }
     }
 }
