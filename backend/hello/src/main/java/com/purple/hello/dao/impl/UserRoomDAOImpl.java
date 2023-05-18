@@ -291,6 +291,7 @@ public class UserRoomDAOImpl implements UserRoomDAO {
                 .select(qUserRoom)
                 .from(qUserRoom)
                 .where(qUserRoom.user.userId.eq(userId))
+                .where(qUserRoom.userRoomRole.ne(UserRoomRole.ROLE3))
                 .fetch();
     }
 }
