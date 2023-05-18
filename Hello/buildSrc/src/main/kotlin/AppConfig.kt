@@ -3,8 +3,8 @@ object AppConfig {
     const val buildToolsVersion = "33.0.1"
     const val minSdk = 24
     const val targetSdk = 33
-    const val versionCode = 11
-    const val versionName = "1.1.0"
+    const val versionCode = 12
+    const val versionName = "1.1.1"
 }
 
 object KotlinOptions {
