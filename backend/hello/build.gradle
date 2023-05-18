@@ -98,9 +98,9 @@ sonarqube {
     properties {
 
 
-        property 'sonar.host.url', "http://localhost:9000"
+        property 'sonar.host.url', "http://15.165.77.191:8003"
         // property 'sonar.host.url', "${sonarqube_addr}"
-        property 'sonar.login', "ddb7e9c23cd2ba24ba3c898a3aaf209a6c97c7a5"
+        property 'sonar.login', "46ee7835cab10f04d8c8da015141082d815588da"
         ///property 'sonar.login', "${sonarqube_token_secret}"
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
