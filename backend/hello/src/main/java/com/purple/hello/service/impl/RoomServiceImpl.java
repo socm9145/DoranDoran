@@ -155,7 +155,7 @@ public class RoomServiceImpl implements RoomService {
 
                 if (result < 9) {    // 방이 생성된지 10일 이전
                     long totalQuestion = questionRepo.count() - 1;
-                    long questionId = (result % totalQuestion) + 2;
+                    long questionId = (result % totalQuestion) + 1;
 
                     QuestionIdRoomIdDTO questionIdRoomIdDTO = QuestionIdRoomIdDTO.builder()
                             .questionID(questionId)
