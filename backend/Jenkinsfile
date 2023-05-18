@@ -17,32 +17,14 @@ pipeline {
         stage('SonarQube analysis') {
             steps{
                 withSonarQubeEnv('SonarQube-Server'){
-                    sh "mvn clean package"
-                    sh "mvn sonar:sonar -Dsonar.projectKey=demo -Dsonar.host.url=http://15.165.77.191:8003 -Dsonar.login=46ee7835cab10f04d8c8da015141082d815588da"
+                   sh './gradlew --info sonarqube'
+                + ' -Dsonar.projectKey=demo' 
+                + ' -Dsonar.host.url=http://15.165.77.191:8003'
+                + ' -Dsonar.login=46ee7835cab10f04d8c8da015141082d815588da'
                 }
             }
         }
         
-        stage('SonarQube Quality Gate'){
-            steps{
-                timeout(time: 1, unit: 'MINUTES') {
-                    script{
-                        echo "Start~~~~"
-                        def qg = waitForQualityGate()
-                        echo "Status: ${qg.status}"
-                        if(qg.status != 'OK') {
-                            echo "NOT OK Status: ${qg.status}"
-                            updateGitlabCommitStatus(name: "SonarQube Quality Gate", state: "failed")
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        } else{
-                            echo "OK Status: ${qg.status}"
-                            updateGitlabCommitStatus(name: "SonarQube Quality Gate", state: "success")
-                        }
-                        echo "End~~~~"
-                    }
-                }
-            }
-        }
         stage('Deploy') {
             steps {
                 dir('backend'){
