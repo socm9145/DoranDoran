@@ -18,7 +18,8 @@ plugins {
     // sonarqube
     id "org.sonarqube" version "3.0"
 
-
+    // jacoco
+    id 'jacoco'
 }
 
 
@@ -97,12 +98,13 @@ dependencies {
 sonarqube {
     properties {
 
-
+        property 'sonar.projectKey', 'demo'
         property 'sonar.host.url', "http://15.165.77.191:8003"
         // property 'sonar.host.url', "${sonarqube_addr}"
         property 'sonar.login', "46ee7835cab10f04d8c8da015141082d815588da"
         ///property 'sonar.login', "${sonarqube_token_secret}"
-        property 'sonar.sources', 'src'
+        property 'sonar.sources', 'src/main/java'
+        property "sonar.tests", "src/test/java"
         property 'sonar.language', 'java'
         property 'sonar.projectVersion', '1.1.0-SNAPSHOT'
         property 'sonar.sourceEncoding', 'UTF-8'
@@ -110,6 +112,53 @@ sonarqube {
         property 'sonar.java.binaries', "$buildDir/classes"
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
+    }
+}
+
+test {
+    finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true // html 만들어 - 로컬에서 쉽게 보기 위함
+        xml.enabled true // xml 만들어 - 소나큐브 연동 위함
+        csv.enabled false // csv 안 만들어
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 300
+            }
+
+            excludes = []
+        }
     }
 }
 
