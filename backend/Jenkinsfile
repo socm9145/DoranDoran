@@ -14,6 +14,7 @@ pipeline {
                 }
             }
         }
+<<<<<<< HEAD
         stage('SonarQube analysis') {
             steps{
                 dir('backend/hello'){
@@ -26,6 +27,19 @@ pipeline {
                 }
             }
         }
+=======
+        // stage('SonarQube analysis') {
+        //     steps {
+        //         dir('backend/hello'){
+        //             withSonarQubeEnv('SonarQube') {
+        //                     sh "./gradlew --info sonarqube"
+        //                     sh " -Dsonar.projectKey=purple"
+        //                     sh " -Dsonar.projectName=sonar-project"
+        //             }
+        //         }
+        //     }
+        // }
+>>>>>>> 4c3befe71855baeb044fab6791b6d6d721bfde61
         stage('Deploy') {
             steps {
                 dir('backend'){
