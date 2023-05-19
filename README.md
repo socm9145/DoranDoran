@@ -200,33 +200,42 @@ S08P31A408
 │   │                           ├── service
 │   │                           └── test
 │   └── hello@tmp
-├── android
-│   └── app
-│       ├── feature
-│       │   ├── model
-│       │   │   └── domain
-│       │   └── designsystem
-│       ├── notification
-│       │   └── notification
-│       │       └── notification
-│       ├── room
-│       │   ├── account
-│       │   │   └── account
-│       │   └── rooms
-│       │       └── rooms
-│       ├── setting:app
-│       │   └── account
-│       │       └── account
-│       ├── setting:profile
-│       │   └── user
-│       │       └── user
-│       ├── setting:room
-│       │   └── rooms
-│       │       └── rooms
-│       └── sync: work
-│           ├── database
-│           ├── network
-│           └── datastore
+│ 
+├── Hello
+│   │
+│   │── app
+│   │
+│   │── feature
+│   │   ├── room
+│   │   ├── notification
+│   │   └── setting
+│   │       ├── app
+│   │       ├── profile
+│   │       └── room   
+│   │  
+│   ├── sync
+│   │   └── work
+│   │
+│   ├── domain
+│   │   ├── rooms
+│   │   ├── notification
+│   │   ├── account
+│   │   └── user
+│   │
+│   ├── data
+│   │   ├── rooms
+│   │   ├── notification
+│   │   ├── account
+│   │   └── user
+│   │
+│   └── core
+│       ├── database
+│       ├── datastore
+│       ├── designsystem
+│       ├── model
+│       ├── network
+│       └── ui
+│  
 ├── data
 │   ├── certbot
 │   │   └── www
