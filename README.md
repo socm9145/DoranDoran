@@ -2,7 +2,7 @@
 
 ## ![도란도란](./DOCS/도란도란.png)
 
-## DoeranDoeran 바로가기 : [https://doeran.kr](https://doeran.kr/)
+## DoeranDoeran 바로가기 : [https://doeran.kr](https://play.google.com/store/apps/details?id=com.purple.hello&hl=ko&pli=1)
 
 <!-- ## UCC 보러가기 : [UCC!!](https://www.youtube.com/) -->
 
