@@ -5,13 +5,11 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +21,6 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.purple.core.designsystem.component.SignInButton
 import com.purple.core.designsystem.theme.HiTheme
-import com.purple.core.designsystem.theme.LocalGradientColors
 import com.purple.hello.R
 import com.purple.hello.login.google.GoogleAuthResultContract
 import kotlinx.coroutines.launch
