@@ -294,22 +294,20 @@ class RoomServiceTest {
 
     @Test
     void readRoomCodeByRoomId()throws Exception {
-        /*
+
         // init
-        ReadRoomCodeOutDTO initReadRoomCodeOutDTO = new ReadRoomCodeOutDTO("test_roomCode");
+        ReadRoomCodeOutDTO initReadRoomCodeOutDTO = new ReadRoomCodeOutDTO("test_url");
         long initRoomId = 1;
 
         // given
         Mockito.when(roomDAO.readRoomCodeByRoomId(any(Long.class)))
                 .thenReturn("test_url");
 
-
         // when
         ReadRoomCodeOutDTO whenReadRoomCodeOutDTO = roomService.readRoomCodeByRoomId(initRoomId);
 
         // then
         assertEquals(initReadRoomCodeOutDTO.getRoomCode(), whenReadRoomCodeOutDTO.getRoomCode());
-         */
     }
 
     @Test
