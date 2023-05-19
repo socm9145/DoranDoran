@@ -112,7 +112,7 @@ class HiFirebaseMessagingService : FirebaseMessagingService() {
             this,
             0 /* Request code */,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT,
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val channelId = "fcm_default_channel"

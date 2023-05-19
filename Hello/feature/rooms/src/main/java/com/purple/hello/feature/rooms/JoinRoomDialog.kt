@@ -5,11 +5,9 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.purple.core.designsystem.dialog.HiInputDialog
-import com.purple.core.model.InputData
 import com.purple.core.model.JoinRoomInputValue
 import com.purple.hello.feature.rooms.viewmodel.RoomsViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -29,7 +27,7 @@ internal fun JoinRoomDialog(
         }
     }
 
-    if(joinData != null) {
+    if (joinData != null) {
         HiInputDialog(
             questionContent = listOf(
                 joinData!!.roomName,
@@ -39,7 +37,7 @@ internal fun JoinRoomDialog(
             onDismiss = onDismiss,
             onConfirm = {
                 coroutineScope.launch(Dispatchers.IO) {
-                    when(roomsViewModel.joinRoom(joinRoomId, joinData!!)) {
+                    when (roomsViewModel.joinRoom(joinRoomId, joinData!!)) {
                         "Password Error" -> {
                             joinData!!.password.supportingText = "비밀번호가 틀렸습니다."
                             joinData!!.password.inputValue = ""
@@ -54,8 +52,8 @@ internal fun JoinRoomDialog(
                 Log.d("nickName", joinData!!.nickName.inputValue)
                 Log.d("password", joinData!!.password.inputValue)
             },
-            confirmButtonText = "confirm",
-            dismissButtonText = "dismiss"
+            confirmButtonText = "입장",
+            dismissButtonText = "취소",
         )
     }
 }

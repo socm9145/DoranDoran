@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -93,11 +94,20 @@ fun LoginScreen(
 fun HiLogoImage() {
     Column(
         modifier = Modifier
-            .fillMaxWidth(0.4f)
-            .fillMaxHeight(0.2f)
+            .fillMaxWidth(0.5f)
             .padding(all = 24.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally,
     ) {
-        Text(text = "LOGO IMAGE")
+        Image(
+            painter = painterResource(id = R.drawable.ic_dorandoran),
+            contentDescription = "로고 이미지",
+        )
+        Spacer(modifier = Modifier.padding(top = 24.dp))
+        Text(
+            text = "도란도란",
+            style = MaterialTheme.typography.headlineSmall,
+        )
     }
 }
 
@@ -128,7 +138,5 @@ private fun SignInGoogleButton(
 @Preview
 @Composable
 private fun PreviewLoginScreen() {
-//    LoginScreen(
-//        loginViewModel = LoginViewModel()
-//    )
+    LoginScreen()
 }
