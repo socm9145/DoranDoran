@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Asia/Seoul
-
     volumes:
+      - ./nginx/html:/usr/share/nginx/html
       - ./nginx:/etc/nginx/conf.d
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
@@ -22,7 +22,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Asia/Seoul
-
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
