@@ -2,6 +2,6 @@
 
 ![architecture.png](./img/architecture.png)
 
-### Android 아키텍처
+### Android
 ---
-![android.architecture.png](./image.png)
+![android.png](./img/android.png)
