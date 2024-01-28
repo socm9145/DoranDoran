@@ -58,10 +58,13 @@ public class HistoryDAOImpl implements HistoryDAO {
                     "on h.question_id = q.question_id " +
                     "where r.begin_time = :beginTime " +
                     "and DATE_FORMAT(ADDDATE(h.create_at, INTERVAL 9 HOUR), \"%Y-%m-%d\") = :createAt " +
-                    "and u.device_token is not null;";
+                    "and u.device_token is not null " +
+                    "and ur.user_room_role != :userRoomRole;";
         Query query = em.createNativeQuery(sql);
         query.setParameter("beginTime", beginTime);
         query.setParameter("createAt", currentDateString);
+        query.setParameter("userRoomRole", UserRoomRole.ROLE3.name());
+
         List resultList = query.getResultList();
         List<DeviceWithQuestionDTO> deviceWithQuestionDTOS = new ArrayList<>();
         for(Object object:resultList) {
@@ -101,6 +104,7 @@ public class HistoryDAOImpl implements HistoryDAO {
                     "where r.begin_time = :beginTime " +
                     "and DATE_FORMAT(ADDDATE(h.create_at, INTERVAL 9 HOUR), \"%Y-%m-%d\") = :createAt " +
                     "and u.device_token is not null " +
+                    "and ur.user_room_role != :userRoomRole " +
                     "and ur.user_room_id not in " +
                         "(select ur.user_room_id " +
                         "from users u " +
@@ -108,11 +112,14 @@ public class HistoryDAOImpl implements HistoryDAO {
                         "on u.user_id = ur.user_id " +
                         "join feeds f " +
                         "on ur.user_room_id = f.user_room_id " +
-                        "where DATE_FORMAT(ADDDATE(f.create_at, INTERVAL 9 HOUR), \"%Y-%m-%d\") = :createAt );";
+                        "where DATE_FORMAT(ADDDATE(f.create_at, INTERVAL 9 HOUR), \"%Y-%m-%d\") = :createAt ) " +
+                        "and ur.user_room_role != :userRoomRole;";
 
         Query query = em.createNativeQuery(sql);
         query.setParameter("beginTime", beginTime);
         query.setParameter("createAt", currentDateString);
+        query.setParameter("userRoomRole", UserRoomRole.ROLE3.name());
+        
         List resultList = query.getResultList();
         List<DeviceWithQuestionDTO> deviceWithQuestionDTOS = new ArrayList<>();
         for(Object object:resultList) {
